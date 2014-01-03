@@ -1,0 +1,29 @@
+\documentclass[a4paper,french]{report}
+\usepackage{aeguill,aecompl,geometry,babel,graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[color links=true,link color=black]{hyperref}
+\makeatother
+\input{preambule}
+\makeatletter
+\begin{document}
+
+\author{Sylvain}
+\date{\today}
+\title{Compta 2.0}
+
+\pagenumbering{alph}
+\maketitle
+
+\pagenumbering{arabic}
+\tableofcontents
+\newpage
+
+\input{intro}
+\chapter{Fonctionnement}
+\label{chap:func}
+\section{Les objets}
+\input{object.tex}
+\label{sec:object}
+
+\end{document}

@@ -1,0 +1,113 @@
+//-----------------------------------------------------------------------bl-
+//--------------------------------------------------------------------------
+//
+// Compta - A simple terminal based comptability software
+//
+// Copyright (C) 2013 Sylvain Plessis
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the Version 2.1 GNU Lesser General
+// Public License as published by the Free Software Foundation.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc. 51 Franklin Street, Fifth Floor,
+// Boston, MA  02110-1301  USA
+//
+//-----------------------------------------------------------------------el-
+#ifndef COMPTA_VERSION_H
+#define COMPTA_VERSION_H
+
+// C++
+#include <iostream>
+
+#define COMPTA_MAJOR_VERSION  @GENERIC_MAJOR_VERSION@
+#define COMPTA_MINOR_VERSION  @GENERIC_MINOR_VERSION@
+#define COMPTA_MICRO_VERSION  @GENERIC_MICRO_VERSION@
+
+#define COMPTA_VERSION_AT_LEAST(major, minor, micro) (COMPTA_MAJOR_VERSION > (major) || (COMPTA_MAJOR_VERSION == (major) && (COMPTA_MINOR_VERSION > (minor) || (COMPTA_MINOR_VERSION == (minor) && COMPTA_MICRO_VERSION > (micro)))))
+
+#define COMPTA_BUILD_USER     "@BUILD_USER@"
+#define COMPTA_BUILD_ARCH     "@BUILD_ARCH@"
+#define COMPTA_BUILD_HOST     "@BUILD_HOST@"
+#define COMPTA_BUILD_DATE     "@BUILD_DATE@"
+#define COMPTA_BUILD_VERSION  "@BUILD_VERSION@"
+
+#define COMPTA_LIB_VERSION    "@VERSION@"
+#define COMPTA_LIB_RELEASE    "@BUILD_DEVSTATUS@"
+
+#define COMPTA_CXX            "@CXX@"
+#define COMPTA_CXXFLAGS       "@CXXFLAGS@"
+
+namespace Compta
+{
+  void compta_version_stdout();
+  int  get_compta_version();
+
+  template< typename CharT, typename Traits >
+  std::basic_ostream<CharT,Traits>&
+  compta_version(std::basic_ostream<CharT,Traits> &os)
+  {
+    // A little automatic C-style string concatenation goes a long way.
+    // It also lets using strings(1) on a binary show something useful.
+    return
+    os << "--------------------------------------------------------\n"
+          "compta Package: Version = " COMPTA_LIB_VERSION " ("
+       << get_compta_version() << ")\n"
+          "\n"
+          COMPTA_LIB_RELEASE "\n"
+          "\n"
+          "Build Date   = " COMPTA_BUILD_DATE     "\n"
+          "Build Host   = " COMPTA_BUILD_HOST     "\n"
+          "Build User   = " COMPTA_BUILD_USER     "\n"
+          "Build Arch   = " COMPTA_BUILD_ARCH     "\n"
+          "Build Rev    = " COMPTA_BUILD_VERSION  "\n"
+          "\n"
+          "C++ Config   = " COMPTA_CXX " " COMPTA_CXXFLAGS "\n"
+          "--------------------------------------------------------\n";
+  }
+
+  void compta_version_stdout()
+  {
+    compta_version(std::cout).flush();
+  }
+
+  int get_compta_version()
+  {
+    /* Note: return format follows the versioning convention xx.yy.zz where
+
+       xx = major version number
+       yy = minor version number
+       zz = micro version number
+
+       For example:
+       v.   0.23  -> 002300 = 2300
+       v   0.23.1 -> 002301 = 2301
+       v. 10.23.2 -> 102302         */
+
+    int major_version = 0;
+    int minor_version = 0;
+    int micro_version = 0;
+
+#ifdef COMPTA_MAJOR_VERSION
+    major_version = COMPTA_MAJOR_VERSION;
+#endif
+
+#ifdef COMPTA_MINOR_VERSION
+    minor_version = COMPTA_MINOR_VERSION;
+#endif
+
+#ifdef COMPTA_MICRO_VERSION
+    micro_version = COMPTA_MICRO_VERSION;
+#endif
+
+    return major_version*10000 + minor_version*100 + micro_version;
+  }
+} // end namespace Compta
+
+#endif //COMPTA_VERSION_H

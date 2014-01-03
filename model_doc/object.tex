@@ -1,0 +1,47 @@
+Les instances prises en compte sont le prévisionnel
+(\forecast), le compte en banque (\bank) et le 
+liquide disponible (\liquid). Une opération est un flux d'argent, 
+entrant ou sortant du compte ou du liquide. Les combinaisons possibles 
+sont entre le compte et le liquide, ou à l'intérieur du compte entre le 
+compte courant et un ou plusieurs compte-épargne (\saving).
+
+Une prévision se fait sur un pas de temps prédéfinis, les sommes
+étant prévues pour une période fixe. Cette période est par convention
+dans ce programme le mois.
+
+\subsection{Prévisionnel}
+
+Prévoir les dépenses peut se faire en les classant et assignant
+un plafond à ne pas dépasser. La prédiction étant un art difficile,
+et surtout lorsqu'il s'agit du futur\footnote{\og Prediction is very
+difficult, especially about the futur.\fg\ \textsc{Niels Bohr}
+(1885--19620)}, ce plafond peut se nuancer d'une certaine marge
+pour le rendre flottant.
+Ainsi chaque catégorie se caractérise par un nom, un plafond, mais
+aussi une marge de man\oe uvre.
+
+Il est possible (et même fortement probable) qu'il existe des
+opérations récurrentes tous les mois, typiquement des factures, 
+un loyer, un prêt, etc\dots\ Ainsi il faut pouvoir ajouter
+à certaines catégories des opérations qui, par hypothèse,
+se passeront à un moment ou un autre dans le mois.
+Donc il est possible d'ajouter des opérations dans chaque
+catégorie.
+
+Le prévisionnel se décompose en catégories. Le but étant de classer 
+l'ensemble des opérations par catégorie, de définir un plafond par 
+catégorie et de comparer les dépenses et recettes réelles aux 
+provisions allouées à la catégorie. Une catégorie peut comprendre 
+des opérations attendues, comme par exemple un prêt ou un loyer à 
+payer, ou n'importe quel prélèvement automatique.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=\linewidth]{forecast}
+\caption{\label{forecast}Forecast}
+\end{figure}
+
+\subsection{Compte bancaire}
+\subsection{Compte épargne}
+\subsection{Liquide}
+
