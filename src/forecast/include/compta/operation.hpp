@@ -29,6 +29,8 @@
 
 //C++
 #include <string>
+#include <vector>
+#include <cmath>
 
 namespace Compta{
 
@@ -54,7 +56,8 @@ namespace Compta{
         Operation(const std::string &name, const float &amount,
                   const bool &automatic,
                   const Date &start = Date(DateUtils::date_min()), 
-                  const Date &end   = Date(DateUtils::date_max()));
+                  const Date &end   = Date(DateUtils::date_max()),
+                  const unsigned int &period = 1);
         Operation(const Operation &rhs);
         ~Operation();
 
@@ -68,10 +71,12 @@ namespace Compta{
         void set_amount(float &amount);
         //! sets the auto
         void set_automatic(bool &automatic);
+        //! sets the period
+        void set_period(unsigned int &period);
         //! sets everything
         void set_operation(const std::string &name, const float &amount,
                            const Date &start, const Date &end,
-                           const bool &automatic);
+                           const bool &automatic, const unsigned int &period);
 
         //!\return the name
         const std::string name() const;
@@ -83,6 +88,11 @@ namespace Compta{
         const Date ending_date() const;
         //!\return the automatic
         const bool automatic() const;
+        //!\return the period
+        const unsigned int period() const;
+
+        //!adds this to the vector if concerned
+        void expected_operations(const unsigned int &month, std::vector<Operation> &op) const;
 
         //!operator
         Operation &operator=(const Operation &rhs);
@@ -93,12 +103,14 @@ namespace Compta{
         Date  _start_date;
         Date  _end_date;
         bool  _automatic;
+        unsigned int _period;
   };
 
   inline
   Operation::Operation():
      _amount(0.),
-     _automatic(false)
+     _automatic(false),
+     _period(1)
   {
     return;
   }
@@ -106,12 +118,14 @@ namespace Compta{
   inline
   Operation::Operation(const std::string &name, const float &amount,
                        const bool &automatic,
-                       const Date &start, const Date &end):
+                       const Date &start, const Date &end,
+                       const unsigned int &period):
         _name(name),
         _amount(amount),
         _start_date(start),
         _end_date(end),
-        _automatic(automatic)
+        _automatic(automatic),
+        _period(period)
   {
     return;
   }
@@ -129,7 +143,8 @@ namespace Compta{
      {
        this->set_operation(rhs.name(),rhs.amount(),
                            rhs.starting_date(),rhs.ending_date(),
-                           rhs.automatic());
+                           rhs.automatic(),
+                           rhs.period());
      }
      return *this;
   }
@@ -143,13 +158,14 @@ namespace Compta{
   inline
   void Operation::set_operation(const std::string &name, const float &amount,
                                 const Date &start, const Date &end,
-                                const bool &automatic)
+                                const bool &automatic, const unsigned int &period)
   {
       _name = name;
       _amount = amount;
       _start_date = start;
       _end_date = end;
       _automatic = automatic;
+      _period = period;
   }
 
   inline
@@ -183,6 +199,12 @@ namespace Compta{
   }
 
   inline
+  void Operation::set_period(unsigned int &period)
+  {
+     _period = period;
+  }
+
+  inline
   const std::string Operation::name() const
   {
      return _name;
@@ -210,6 +232,21 @@ namespace Compta{
   const bool Operation::automatic() const
   {
      return _automatic;
+  }
+
+  inline
+  const unsigned int Operation::period() const
+  {
+     return _period;
+  }
+
+  inline
+  void Operation::expected_operations(const unsigned int &month, std::vector<Operation> &op) const
+  {
+    unsigned int a = std::floor(month/10000);
+    unsigned int m = std::floor((month - a * 10000)/100);
+    unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
+    if(distance%_period == 0)op.push_back(*this); 
   }
 
 }

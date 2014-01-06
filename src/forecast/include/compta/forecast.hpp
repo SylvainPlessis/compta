@@ -65,6 +65,9 @@ namespace Compta{
         //!operator
         Forecast &operator=(const Forecast &rhs);
 
+        //!adds the expected operations of the month
+        void expected_operation(const Date &date_month, std::vector<Operation> &op) const;
+
       private:
         ForecastContainer<ForecastCategory> _forecast;
         Currency::Currency _currency;
@@ -138,6 +141,12 @@ namespace Compta{
   const Currency::Currency Forecast::currency() const
   {
      return _currency;
+  }
+
+  inline
+  void Forecast::expected_operation(const Date &date_month, std::vector<Operation> &op) const
+  {
+     _forecast.expected_operations(date_month.count_date(),op);
   }
 
 }

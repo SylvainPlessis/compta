@@ -25,6 +25,7 @@
 #define COMPTA_FORECAST_CONTAINER_H
 
 //Compta
+#include "compta/operation.hpp"
 
 //C++
 #include <vector>
@@ -63,6 +64,9 @@ namespace Compta{
 
           //!\return writable operation
           Containee &operation(const std::string &name_operation);
+
+          //!add expected operations of on given month to the vector
+          void expected_operations(const unsigned int &month, std::vector<Operation> &op) const;
 
           //!sets the margin
           void set_margin(float margin);
@@ -214,6 +218,17 @@ namespace Compta{
        _amount += _operations_list[i].amount();
      }
   }
+
+  template <typename Containee>
+  inline
+  void ForecastContainer<Containee>::expected_operations(const unsigned int &month, std::vector<Operation> &op) const
+  {
+     for(unsigned int ic = 0; ic < _operations_list.size(); ic++)
+     {
+        _operations_list[ic].expected_operations(month,op);
+     }
+  }
+
 }
 
 #endif

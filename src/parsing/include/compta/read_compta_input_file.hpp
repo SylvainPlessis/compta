@@ -27,6 +27,10 @@ namespace Compta{
   void read_data(ComptaObj &compte,
                         const std::string &file);
 
+///////////////////////////////////
+/// inline functions
+///////////////////////////////////
+
   inline 
   void parse_input_file(ComptaObj & compte,
                         const std::string &forecast_file,
