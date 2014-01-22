@@ -44,30 +44,35 @@ int tester()
   std::string name_two("test again");
   float amount_one(120.25);
   float amount_two(10.0);
+  float margin_one(20.50);
+  float margin_two(1.0);
   bool auto_one(false);
   bool auto_two(true);
   unsigned int period_one(1);
   unsigned int period_two(3);
 
   Compta::Operation default_op;
-  Compta::Operation operation_one(name_one,amount_one,auto_one);
-  Compta::Operation operation_two(name_two,amount_two,auto_two,date_start_two,date_end_two,period_two);
+  Compta::Operation operation_one(name_one,amount_one,margin_one,auto_one);
+  Compta::Operation operation_two(name_two,amount_two,margin_two,auto_two,date_start_two,date_end_two,period_two);
   int return_flag(0);
   float eps(1e-3);
   return_flag = return_flag || check(default_op.name().empty(), "default name")
                             || check(default_op.amount() < eps, "default amount")
+                            || check(default_op.margin() < eps, "default margin")
                             || check(default_op.starting_date().count_date() == 0, "default starting date")
                             || check(default_op.ending_date().count_date() == 0, "default ending date")
                             || check(!(default_op.automatic()), "default automatic")
                             || check(default_op.period() == period_one, "default period (1)");
   return_flag = return_flag || check(operation_one.name() == name_one, "custom name one (test)")
                             || check(operation_one.amount() - amount_one < eps, "custom amount one (120.25)")
+                            || check(operation_one.margin() - margin_one < eps, "custom margin one (20.50)")
                             || check(operation_one.starting_date().count_date() == Compta::DateUtils::date_min(), "starting date one (default)")
                             || check(operation_one.ending_date().count_date() == Compta::DateUtils::date_max(), "ending date one (default)")
                             || check(operation_one.automatic() == auto_one, "custom automatic one (false)")
                             || check(operation_one.period() == period_one, "custom period one (1)");
   return_flag = return_flag || check(operation_two.name() == name_two, "custom name two (test again)")
                             || check(operation_two.amount() - amount_two < eps, "custom amount two (10.0)")
+                            || check(operation_two.margin() - margin_two < eps, "custom margin two (1.0)")
                             || check(operation_two.starting_date() == date_start_two, "custom starting date (01/05/2013)")
                             || check(operation_two.ending_date() == date_end_two, "custom ending date (31/12/2020)")
                             || check(operation_two.automatic() == auto_two, "custom automatic two (true)")

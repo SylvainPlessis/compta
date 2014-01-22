@@ -50,37 +50,35 @@ int check_cat(const Compta::ForecastContainer<Containee> &cat,
 
 int tester()
 {
-  Compta::Operation op11("1.1",12.00,false,20120502,20201231);
-  Compta::Operation op12("1.2",120.00,false,20120502,20201231);
+  Compta::Operation op11("1.1",12.00,1.0,false,20120502,20201231);
+  Compta::Operation op12("1.2",120.00,10.0,false,20120502,20201231);
   Compta::ForecastContainer<Compta::Operation> cat1;
   cat1.set_name("cat1");
-  cat1.add_operation(op11);//cat 1, amount = 12.00
-  cat1.set_margin(0.8 * cat1.amount()); //margin is 9.60
+  cat1.add_operation(op11);//cat 1, amount = 12.00, margin is 11.00
 
-  Compta::Operation op21("2.1",150.00,false,20120502,20201231);
-  Compta::Operation op22("2.2",950.00,false,20120502,20201231);
-  Compta::Operation op23("2.3",275.56,false,20120502,20201231);
+  Compta::Operation op21("2.1",150.00,1.00,false,20120502,20201231);
+  Compta::Operation op22("2.2",950.00,2.00,false,20120502,20201231);
+  Compta::Operation op23("2.3",275.56,3.00,false,20120502,20201231);
   Compta::ForecastContainer<Compta::Operation> cat2;
   cat2.set_name("cat2");
   cat2.add_operation(op21);
   cat2.add_operation(op22);
-  cat2.add_operation(op23);//cat 2, amount = 1375.56
-  cat2.set_margin(20.00); //margin is 20.00
+  cat2.add_operation(op23);//cat 2, amount = 1375.56, margin = 6.00
 
   Compta::Forecast forecast;
   forecast.add_forecast_category(cat1);
   forecast.add_forecast_category(cat2); 
-  forecast.add_operation("cat1",op12);//amount is 1507.56, margin is 29.60, cat1: amount is 132.00
+  forecast.add_operation("cat1",op12);//amount is 1507.56, margin is 17.00
   forecast.set_currency(Compta::Currency::EUR);
   Compta::Forecast copy_forecast(forecast);
   
   int return_flag(0);
 
-  return_flag = return_flag || check_cat(forecast.forecast().operations_list()[0],"cat1",132.00,9.60,2," in category 1")
-                            || check_cat(forecast.forecast().operations_list()[1],"cat2",1375.56,20.00,3," in category 2")
-                            || check_cat(forecast.forecast(),"forecast",1507.56,29.60,2," in forecast")
+  return_flag = return_flag || check_cat(forecast.forecast().operations_list()[0],"cat1",132.00,11.02,2," in category 1")
+                            || check_cat(forecast.forecast().operations_list()[1],"cat2",1375.56,6.00,3," in category 2")
+                            || check_cat(forecast.forecast(),"forecast",1507.56,17.00,2," in forecast")
                             || check((forecast.currency() == Compta::Currency::EUR),"forecast currency");
-  return_flag = return_flag || check_cat(copy_forecast.forecast(),"forecast",1507.56,29.60,2," in copy forecast")
+  return_flag = return_flag || check_cat(copy_forecast.forecast(),"forecast",1507.56,17.00,2," in copy forecast")
                             || check((copy_forecast.currency() == Compta::Currency::EUR),"copy forecast currency");
 
 

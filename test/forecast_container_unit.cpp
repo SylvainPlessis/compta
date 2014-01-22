@@ -50,23 +50,21 @@ int check_cat(const Compta::ForecastContainer<Containee> &cat,
 
 int tester()
 {
-  Compta::Operation op11("1.1",12.00,false,20120502,20201231);
-  Compta::Operation op12("1.2",120.00,false,20120502,20201231);//cat 1, amount = 132.00
+  Compta::Operation op11("1.1",12.00,1.00,false,20120502,20201231);
+  Compta::Operation op12("1.2",120.00,10.00,false,20120502,20201231);//cat 1, amount = 132.00
   Compta::ForecastContainer<Compta::Operation> cat1;
   cat1.set_name("cat1");
   cat1.add_operation(op11);
-  cat1.add_operation(op12);
-  cat1.set_margin(0.2 * cat1.amount()); //margin is suppodedly 26.40
+  cat1.add_operation(op12);//margin is suppodedly 11.00
 
-  Compta::Operation op21("2.1",150.00,false,20120502,20201231);
-  Compta::Operation op22("2.2",950.00,false,20120502,20201231);
-  Compta::Operation op23("2.3",275.56,false,20120502,20201231);//cat 2, amount = 1375.56
+  Compta::Operation op21("2.1",150.00,10.00,false,20120502,20201231);
+  Compta::Operation op22("2.2",950.00,100.00,false,20120502,20201231);
+  Compta::Operation op23("2.3",275.56,1.00,false,20120502,20201231);//cat 2, amount = 1375.56
   Compta::ForecastContainer<Compta::Operation> cat2;
   cat2.set_name("cat2");
   cat2.add_operation(op21);
   cat2.add_operation(op22);
-  cat2.add_operation(op23);
-  cat2.set_margin(20.00); //margin is 20.00
+  cat2.add_operation(op23);//margin is 111.00
 
   Compta::ForecastContainer<Compta::ForecastContainer<Compta::Operation> > forecast_container;
   forecast_container.set_name("container");
@@ -77,10 +75,10 @@ int tester()
   
   int return_flag(0);
 
-  return_flag = return_flag || check_cat(forecast_container.operations_list()[0],"cat1",132.00,26.40,2)
-                            || check_cat(forecast_container.operations_list()[1],"cat2",1375.56,20.00,3)
-                            || check_cat(forecast_container,"container",1507.56,0.00,2)
-                            || check_cat(copy_container,"container",1507.56,0.00,2);
+  return_flag = return_flag || check_cat(forecast_container.operations_list()[0],"cat1",132.00,11.00,2)
+                            || check_cat(forecast_container.operations_list()[1],"cat2",1375.56,111.00,3)
+                            || check_cat(forecast_container,"container",1507.56,122.00,2)
+                            || check_cat(copy_container,"container",1507.56,122.00,2);
 
 
   return return_flag;
