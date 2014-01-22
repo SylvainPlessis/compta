@@ -141,6 +141,7 @@ namespace Compta{
   {
      _operations_list.push_back(op);
      _amount += op.amount();
+     _margin += op.margin();
      _operations_map[op.name()] = _operations_list.size() - 1;
   }
 

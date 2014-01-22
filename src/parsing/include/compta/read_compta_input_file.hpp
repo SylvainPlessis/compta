@@ -15,6 +15,7 @@
 #include <fstream>
 #include <string>
 #include <map>
+#include <cmath>
 
 namespace Compta{
 
@@ -79,31 +80,31 @@ namespace Compta{
              continue;
           }
 
-// the line is  "Category" "Amount" "Margin" "subcat","automatic","start","end"
+// the line is  "Category" "Amount" "Margin" "subcat","automatic","start","end", "period"
 // start and end dates are optional
           std::string cat, desc;
           float amount, margin;
           data >> cat >> amount >> margin;
           getline(data,desc);
           std::vector<std::string> out;
-          int nstr = SplitString(desc,ForecastParsing::delimiter(),out,true);
+          SplitString(desc,ForecastParsing::delimiter(),out,true);
+          unsigned int nstr = out.size();
           if(nstr == 0)out.push_back(desc);
-          if(out.size() > 4)compta_reading_error("Error in forecast, this part is not well defined\n" + desc);
+          if(out.size() > 5)compta_reading_error("Error in forecast, this part is not well defined\n" + desc);
 
-          for(unsigned int i = 0; i < out.size(); i++)
-          {
-             shave_string(out[i]);
-          }
+          shave_string(out);
 
           std::string name_op = (out[0].empty())?cat:out[0];
           bool au  = (out[1] == ForecastParsing::automatic());
           Date date_start(DateUtils::date_min());
           Date date_end(DateUtils::date_max());
+          unsigned int period(1);
           if(out.size() > 2)date_start.set_date(out[2]);
           if(out.size() > 3)date_end.set_date(out[3]);
+          if(out.size() > 4)period = (unsigned int)(std::atof(out[4].c_str()));
 
           //building the operation now
-          Operation new_op(name_op,amount,au,date_start,date_end);
+          Operation new_op(name_op,amount,margin,au,date_start,date_end,period);
           //if we don't have the category, we build it
           if(!forecast.forecast().operations_map().count(cat)) //building
           {

@@ -53,7 +53,7 @@ namespace Compta{
   class Operation{
     public:
         Operation();
-        Operation(const std::string &name, const float &amount,
+        Operation(const std::string &name, const float &amount, const float &margin,
                   const bool &automatic,
                   const Date &start = Date(DateUtils::date_min()), 
                   const Date &end   = Date(DateUtils::date_max()),
@@ -69,6 +69,8 @@ namespace Compta{
         void set_name(const std::string &name);
         //! sets the amount
         void set_amount(float &amount);
+        //! sets the margin
+        void set_margin(float &margin);
         //! sets the auto
         void set_automatic(bool &automatic);
         //! sets the period
@@ -82,6 +84,8 @@ namespace Compta{
         const std::string name() const;
         //!\return the amount
         const float amount() const;
+        //!\return the margin
+        const float margin() const;
         //!\return the starting date
         const Date starting_date() const;
         //!\return the ending date
@@ -100,6 +104,7 @@ namespace Compta{
     private:
         std::string _name;
         float _amount;
+        float _margin;
         Date  _start_date;
         Date  _end_date;
         bool  _automatic;
@@ -109,6 +114,7 @@ namespace Compta{
   inline
   Operation::Operation():
      _amount(0.),
+     _margin(0.),
      _automatic(false),
      _period(1)
   {
@@ -116,12 +122,13 @@ namespace Compta{
   }
 
   inline
-  Operation::Operation(const std::string &name, const float &amount,
+  Operation::Operation(const std::string &name, const float &amount, const float &margin,
                        const bool &automatic,
                        const Date &start, const Date &end,
                        const unsigned int &period):
         _name(name),
         _amount(amount),
+        _margin(margin),
         _start_date(start),
         _end_date(end),
         _automatic(automatic),
@@ -193,6 +200,12 @@ namespace Compta{
   }
 
   inline
+  void Operation::set_margin(float &margin)
+  {
+     _margin = margin;
+  }
+
+  inline
   void Operation::set_automatic(bool &automatic)
   {
      _automatic = automatic;
@@ -214,6 +227,12 @@ namespace Compta{
   const float Operation::amount() const
   {
      return _amount;
+  }
+
+  inline
+  const float Operation::margin() const
+  {
+     return _margin;
   }
 
   inline

@@ -15,14 +15,14 @@ Prévoir les dépenses peut se faire en les classant et assignant
 un plafond à ne pas dépasser. La prédiction étant un art difficile,
 et surtout lorsqu'il s'agit du futur\footnote{\og Prediction is very
 difficult, especially about the futur.\fg\ \textsc{Niels Bohr}
-(1885--19620)}, ce plafond peut se nuancer d'une certaine marge
+(1885--1962)}, ce plafond peut se nuancer d'une certaine marge
 pour le rendre flottant.
 Ainsi chaque catégorie se caractérise par un nom, un plafond, mais
 aussi une marge de man\oe uvre.
 
 Il est possible (et même fortement probable) qu'il existe des
 opérations récurrentes tous les mois, typiquement des factures, 
-un loyer, un prêt, etc\dots\ Ainsi il faut pouvoir ajouter
+un loyer, un prêt, etc. Ainsi il faut pouvoir ajouter
 à certaines catégories des opérations qui, par hypothèse,
 se passeront à un moment ou un autre dans le mois.
 Donc il est possible d'ajouter des opérations dans chaque
@@ -35,11 +35,24 @@ provisions allouées à la catégorie. Une catégorie peut comprendre
 des opérations attendues, comme par exemple un prêt ou un loyer à 
 payer, ou n'importe quel prélèvement automatique.
 
-\begin{figure}[htp]
-\centering
-\includegraphics[width=\linewidth]{forecast}
-\caption{\label{forecast}Forecast}
-\end{figure}
+Une catégorie peut donc contenir donc des opérations, caractérisées
+par:
+\begin{itemize}
+\item un montant;
+\item une marge;
+\item une date de début effectif;
+\item une date de fin effective;
+\item une variable logique déterminant si cette sous-catégorie
+        caractérise une opération automatique;
+\item dans le cas d'une opération automatique, une période, en mois,
+        déterminant à quels mois cette opération est attendue.
+\end{itemize}
+
+%\begin{figure}[htp]
+%\centering
+%\includegraphics[width=\linewidth]{forecast}
+%\caption{\label{forecast}Forecast}
+%\end{figure}
 
 \subsection{Compte bancaire}
 \subsection{Compte épargne}

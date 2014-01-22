@@ -73,13 +73,13 @@ namespace Compta{
       //!\return the bank map
       const std::map<std::string,unsigned int> banque_map() const;
       //!\return the bank accounts
-      const std::vector<Bank> banque() const;
+      const std::vector<Bank> banque()                      const;
       //!\return the cash accounts
-      const std::vector<Cash> liquide() const;
+      const std::vector<Cash> liquide()                     const;
       //!\return the forecast
-      const Forecast previsionnel() const;
+      const Forecast previsionnel()                         const;
       //!\return the title
-      const std::string title() const;
+      const std::string title()                             const;
 
       //!adds a posting
       void add_posting(Posting &post, const char &identifier);

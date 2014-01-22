@@ -1,6 +1,6 @@
 \documentclass[french]{article}
 \usepackage{aeguill,aecompl,babel,tikz,geometry}
-\usetikzlibrary{arrows,backgrounds}
+\usetikzlibrary{arrows}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \pagestyle{empty}
@@ -18,25 +18,25 @@ subcat/.style={below=1cm,anchor=north west,draw=none,font=\em,align=left}
 }
 \newcommand{\cate}{%
 \quad\footnotesize%
-\textbullet Montant%
+\textendash\  Montant%
 }
 \newcommand{\opera}{%
 \quad\parbox[t]{2.9cm}{%
 \tiny
-\textbullet Montant\\
-\textbullet Date de mise en considération\\
-\textbullet Date de fin de considération\\
-\textbullet ?`Automatique?\\
+\textendash\ Montant\\
+\textendash\ Marge\\
+\textendash\ Date de mise en considération\\
+\textendash\ Date de fin de considération\\
+\textendash\ Période\\
+\textendash\ ?`Automatique?\\
 }
 }
 \pgfdeclarelayer{background}
 \pgfsetlayers{background,main}
 \begin{document}
 \centering
-\begin{tikzpicture}[framed,
-                        background rectangle/.style={rounded corners,fill=gray,opacity=0.5},
-                        every node/.append style={draw,fill=white},
-                        every path/.append style={-*}]
+\begin{tikzpicture}[every node/.append style={draw,fill=white},
+                    every path/.append style={-*}]
 \node[align=left] (cat10) at (0,0) {Catégorie 1\\\cate};
 \pgfmathparse{int(rnd*3 + 1)}\let\nsub\pgfmathresult
 \foreach \subcat in {1,...,\nsub}
