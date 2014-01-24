@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
 
  Compta::ComptaObj compte;
 
- parse_input_file(compte,argv[iforecast],argv[iaccounts],argv[idata]);
+ Compta::parse_input_file(compte,argv[iforecast],argv[iaccounts],argv[idata]);
 
  compte.report();
 
