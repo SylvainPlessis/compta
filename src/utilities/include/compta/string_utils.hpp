@@ -32,6 +32,20 @@
 
 namespace Compta
 {
+
+  inline
+  bool check_BOM(const char* p)
+  {
+    const unsigned char* pu = reinterpret_cast<const unsigned char*>(p);
+    if( *(pu+0) == 0xefU &&
+        *(pu+1) == 0xbbU && 
+        *(pu+2) == 0xbfU)//BOM found
+    {
+        return true;
+    }
+    return false;
+  }
+
   //!supress blanks around string
   inline
   void shave_string(std::string &customer)
@@ -41,6 +55,9 @@ namespace Compta
       while(customer[customer.size() - 1] == ' '  ||
             customer[customer.size() - 1] == '\r' ||
             customer[customer.size() - 1] == '\n')customer.erase(customer.size() - 1,1);
+
+        //suppress BOM, if any
+      if(check_BOM( &(customer[0]) ))customer.erase(0,3);
   }
 
 
