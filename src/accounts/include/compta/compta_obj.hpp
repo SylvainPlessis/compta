@@ -84,6 +84,9 @@ namespace Compta{
       //!adds a posting
       void add_posting(Posting &post, const char &identifier);
 
+      //!second pass on all operations, build the report objects
+      void make_compta();
+
       //!operator
       ComptaObj &operator=(const ComptaObj &rhs);
 

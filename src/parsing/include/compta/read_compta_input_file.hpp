@@ -49,6 +49,9 @@ namespace Compta{
 
 //Finally the data
       read_data(compte,data_file);
+
+//now second pass to sort it all
+      compte.make_compta();
   }
 
   inline
