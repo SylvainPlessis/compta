@@ -1,7 +1,12 @@
 \graphicspath{{./figs/}}
-
+\makeatletter
+%% meta function
+\def\make@object#1{\expandafter\gdef\csname#1\endcsname{\object{#1}}}
 \newcommand{\object}[1]{\texttt{#1}}
-\newcommand{\forecast}{\object{forecast}}
-\newcommand{\bank}{\object{bank}}
-\newcommand{\liquid}{\object{liquid}}
-\newcommand{\saving}{\object{saving}}
+\make@object{forecast}
+\make@object{bank}
+\make@object{liquid}
+\make@object{saving}
+\newcommand{\catForecast}[1]{\textsf{#1}}
+
+\makeatother
