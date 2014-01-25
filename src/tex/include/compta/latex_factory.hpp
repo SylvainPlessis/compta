@@ -72,28 +72,29 @@ namespace Compta{
   void latex_forecast(std::ofstream &out, const Forecast &prev)
   {
      out << "\\centering" << std::endl;
+     out << "\\renewcommand{\\arraystretch}{1.2}" << std::endl;
      out << "\\begin{tabular}{lccc}\\toprule" << std::endl;
      out << "Catégorie & Débit provisionnel & \\multicolumn{2}{c}{Fixe} \\\\\\cmidrule{3-4}" << std::endl;
      out << "          &                    &  Montant  & Date de début de prise en compte/\\\\" << std::endl
-         << "          &                    &           & fin de prise en compte/\\\\" << std::endl
+         << "          &                    & (marge)   & fin de prise en compte/\\\\" << std::endl
          << "          &                    &           & période en mois \\\\\\cmidrule{2-3}" << std::endl;
      out << "          & \\multicolumn{2}{c}{\\EUR}     &  \\\\" << std::endl;
      for(unsigned int ic = 0; ic < prev.forecast().n_objects(); ic++) //categories
      {
        out << std::fixed << std::setprecision(2) 
            << "\\midrule" << std::endl
-           << prev.forecast().operations_list()[ic].name() << " & " 
-           << "\\numprint{" << prev.forecast().operations_list()[ic].amount() << "} +/- \\numprint{" 
-                            << prev.forecast().operations_list()[ic].margin() << "} & "  
+           << "\\underline{" << prev.forecast().operations_list()[ic].name() << "} &\\bf\\small " 
+           << "\\numprint{"  << prev.forecast().operations_list()[ic].amount() << "} +/- \\numprint{" 
+                             << prev.forecast().operations_list()[ic].margin() << "} & "  
            <<  "\\\\" << std::endl;
          for(unsigned int isc = 0; isc < prev.forecast().operations_list()[ic].n_objects(); isc++)
          {
             out << std::fixed << std::setprecision(2)
                 << "\\multicolumn{2}{l}{\\hspace{12pt} " << prev.forecast().operations_list()[ic].operations_list()[isc].name() << "} & "
-                << "\\numprint{" << prev.forecast().operations_list()[ic].operations_list()[isc].amount() << "} +/- \\numprint{"
-                                 << prev.forecast().operations_list()[ic].operations_list()[isc].margin() << "} & "
-                << prev.forecast().operations_list()[ic].operations_list()[isc].starting_date().date_string() << ", "
-                << prev.forecast().operations_list()[ic].operations_list()[isc].ending_date().date_string() << ", "
+                << "\\numprint{" << prev.forecast().operations_list()[ic].operations_list()[isc].amount() << "}  (\\numprint{"
+                                 << prev.forecast().operations_list()[ic].operations_list()[isc].margin() << "}) & \\tt"
+                << prev.forecast().operations_list()[ic].operations_list()[isc].starting_date().date_string() << "\\rule[3pt]{12pt}{0.6pt}"
+                << prev.forecast().operations_list()[ic].operations_list()[isc].ending_date().date_string() << "\\hfill\\sf"
                 << prev.forecast().operations_list()[ic].operations_list()[isc].period() << " \\\\" << std::endl;
          }
      }

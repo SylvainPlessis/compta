@@ -76,7 +76,7 @@ namespace Compta{
         //! sets the period
         void set_period(unsigned int &period);
         //! sets everything
-        void set_operation(const std::string &name, const float &amount,
+        void set_operation(const std::string &name, const float &amount, const float &margin,
                            const Date &start, const Date &end,
                            const bool &automatic, const unsigned int &period);
 
@@ -148,7 +148,7 @@ namespace Compta{
   {
      if(this != &rhs)
      {
-       this->set_operation(rhs.name(),rhs.amount(),
+       this->set_operation(rhs.name(),rhs.amount(),rhs.margin(),
                            rhs.starting_date(),rhs.ending_date(),
                            rhs.automatic(),
                            rhs.period());
@@ -163,12 +163,13 @@ namespace Compta{
   }
 
   inline
-  void Operation::set_operation(const std::string &name, const float &amount,
+  void Operation::set_operation(const std::string &name, const float &amount, const float &margin,
                                 const Date &start, const Date &end,
                                 const bool &automatic, const unsigned int &period)
   {
       _name = name;
       _amount = amount;
+      _margin = margin;
       _start_date = start;
       _end_date = end;
       _automatic = automatic;
