@@ -34,6 +34,18 @@
 
 namespace Compta{
 
+  /*!\class ForecastConstainer
+
+      This templated class contains categories, which makes
+      it to be used at the two needed levels of the forecast,
+      one level containing a ForecastContainer, another containing
+      Operation.
+
+      This class needs to be able to cope with all the needed operations
+      of the forecast, categories and sub-categories. So it needs
+      to be able to send the amount and margin at each month, for each
+      category and each operation, depending on the level asked.
+   */
   template <typename Containee>
   class ForecastContainer{
         public:
@@ -52,9 +64,16 @@ namespace Compta{
           //!\return the name of the category
           const std::string name() const; 
           //!\return the amount
-          const float amount() const; 
+          float amount() const; 
           //!\return the margin
-          const float margin() const; 
+          float margin() const; 
+
+          //!\return the amount of the asked month
+          float amount_this_month(unsigned int &date) const;
+          //!\return the margin of the asked month
+          float margin_this_month(unsigned int &date) const;
+
+        
 
           //!\return the number of operations
           unsigned int n_objects() const;
@@ -66,7 +85,7 @@ namespace Compta{
           Containee &operation(const std::string &name_operation);
 
           //!add expected operations of on given month to the vector
-          void expected_operations(const unsigned int &month, std::vector<Operation> &op) const;
+          void expected_operations(unsigned int month, std::vector<Operation> &op) const;
 
           //!sets the margin
           void set_margin(float margin);
@@ -183,14 +202,38 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  const float ForecastContainer<Containee>::amount() const
+  float ForecastContainer<Containee>::amount() const
   {
      return _amount;
   }
 
   template <typename Containee>
   inline
-  const float ForecastContainer<Containee>::margin() const
+  float ForecastContainer<Containee>::amount_this_month(unsigned int &date) const
+  {
+     float this_month_amount(0.L);
+     for(unsigned int iop = 0; iop < _operations_list.size(); iop++)
+     {
+        this_month_amount += _operations_list[iop].amount_this_month(date);
+     }
+     return this_month_amount;
+  }
+
+  template <typename Containee>
+  inline
+  float ForecastContainer<Containee>::margin_this_month(unsigned int &date) const
+  {
+     float this_month_margin(0.L);
+     for(unsigned int iop = 0; iop < _operations_list.size(); iop++)
+     {
+        this_month_margin += _operations_list[iop].margin_this_month(date);
+     }
+     return this_month_margin;
+  }
+
+  template <typename Containee>
+  inline
+  float ForecastContainer<Containee>::margin() const
   {
      return _margin;
   }
@@ -222,7 +265,7 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  void ForecastContainer<Containee>::expected_operations(const unsigned int &month, std::vector<Operation> &op) const
+  void ForecastContainer<Containee>::expected_operations(unsigned int month, std::vector<Operation> &op) const
   {
      for(unsigned int ic = 0; ic < _operations_list.size(); ic++)
      {

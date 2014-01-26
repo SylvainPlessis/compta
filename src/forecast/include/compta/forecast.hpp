@@ -38,6 +38,13 @@ namespace Compta{
 
   typedef ForecastContainer<Operation> ForecastCategory;
 
+  /*!\class Forecast
+
+     This class contains the actual forecast: _forecast, which
+     is a ForecastConstainer<ForecastConstainer<Operation> >, to
+     obtain the right structure.
+     The money by default is Currency::EUR
+  */
   class Forecast{
       public:
         Forecast();

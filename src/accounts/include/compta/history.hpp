@@ -26,6 +26,7 @@
 
 //Compta
 #include "compta/posting.hpp"
+#include "compta/date_utils.hpp"
 
 //C++
 #include <iostream>
@@ -34,6 +35,14 @@
 
 namespace Compta{
 
+
+  /*!\class History
+
+       This class is basically a container for Posting.
+       It stores the history of an account, and can
+       give back any part of it between two dates, or
+       of one particular month.
+   */
   class History{
      public:
         History();
@@ -56,6 +65,11 @@ namespace Compta{
         const std::vector<Posting> history()    const;
         //! \return the expected posting
         const std::vector<Posting> in_waiting() const;
+
+        //!\return the history between two dates
+        void history_between_dates(const Date &start, const Date &end, std::vector<Posting> &out) const;
+        //!\return the history of a specific month
+        void history_of_month(const Date &month, std::vector<Posting> &out) const;
 
         //! \return the current state
         const float current_state() const;
@@ -186,6 +200,29 @@ namespace Compta{
        _expected_state = rhs.expected_state();
     }
     return *this;
+  }
+
+  inline
+  void History::history_between_dates(const Date &start, const Date &end, std::vector<Posting> &out) const
+  {
+//Posting are sorted by date
+     out.clear();
+     for(unsigned int ip = 0; ip < _history.size(); ip++)
+     {
+        if(_history[ip].date() < start)continue;
+        out.push_back(_history[ip]);
+        if(_history[ip].date() > end)break;
+     }
+     return;
+  }
+  
+  inline
+  void History::history_of_month(const Date &month, std::vector<Posting> &out) const
+  {
+     Date start(1,month.month(),month.year());
+     Date end(DateUtils::days_in_months(month.month(),month.year()),month.month(),month.year());
+     this->history_between_dates(start,end,out);
+     return;
   }
   
 }

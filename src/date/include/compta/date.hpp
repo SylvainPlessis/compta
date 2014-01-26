@@ -37,7 +37,16 @@
 
 namespace Compta{
 
- class Date{
+
+ /*!\class Date
+
+      This class deals with the different needed form
+      of a date: three integers, a string or one integer.
+      The three integers are year, month and day, the string
+      is of the european form dd/mm/yyyy and the integer
+      form is year * 10000 + month * 100 + day.
+  */
+ class Date{ 
   public:
     //! default constructor
     Date();

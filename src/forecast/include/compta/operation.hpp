@@ -46,6 +46,13 @@ namespace Compta{
   // if a corresponding operation is found while reading
   // the data.
   //
+  // An automated operation has a period and will therefore
+  // be expected or not depending on the month asked: the
+  // months where to expect an operation will be the
+  // months such as 
+  //
+  //
+  //
   // This class contains a name, an amount, a boolean for
   // the automatic state, and two dates, a starting date and
   // an ending date. In the case of an automated operation,
@@ -81,27 +88,42 @@ namespace Compta{
                            const bool &automatic, const unsigned int &period);
 
         //!\return the name
-        const std::string name() const;
+        const std::string name()   const;
         //!\return the amount
-        const float amount() const;
+        float amount()             const;
         //!\return the margin
-        const float margin() const;
+        float margin()             const;
         //!\return the starting date
         const Date starting_date() const;
         //!\return the ending date
-        const Date ending_date() const;
+        const Date ending_date()   const;
         //!\return the automatic
-        const bool automatic() const;
+        bool automatic()           const;
         //!\return the period
-        const unsigned int period() const;
+        unsigned int period()      const;
+
+        //!\return the amount if expected this month
+        float amount_this_month(unsigned int &date)  const;
+        //!\return the margin if expected this month
+        float margin_this_month(unsigned int &date)  const;
 
         //!adds this to the vector if concerned
-        void expected_operations(const unsigned int &month, std::vector<Operation> &op) const;
+        //
+        // The month is given in the form
+        // year * 10000 + month * 100
+        // as it is stripped down with std::floor operation
+        // (anything below 100 is ignored)
+        // the method unsigned int Date::count_date() const is
+        // usable.
+        void expected_operations(unsigned int &month, std::vector<Operation> &op) const;
 
         //!operator
         Operation &operator=(const Operation &rhs);
 
     private:
+
+        bool happening_this_month(unsigned int &month) const;
+
         std::string _name;
         float _amount;
         float _margin;
@@ -225,13 +247,13 @@ namespace Compta{
   }
 
   inline
-  const float Operation::amount() const
+  float Operation::amount() const
   {
      return _amount;
   }
 
   inline
-  const float Operation::margin() const
+  float Operation::margin() const
   {
      return _margin;
   }
@@ -249,24 +271,42 @@ namespace Compta{
   }
 
   inline
-  const bool Operation::automatic() const
+  bool Operation::automatic() const
   {
      return _automatic;
   }
 
   inline
-  const unsigned int Operation::period() const
+  unsigned int Operation::period() const
   {
      return _period;
   }
 
-  inline
-  void Operation::expected_operations(const unsigned int &month, std::vector<Operation> &op) const
+  inline 
+  bool Operation::happening_this_month(unsigned int &month) const
   {
     unsigned int a = std::floor(month/10000);
     unsigned int m = std::floor((month - a * 10000)/100);
     unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
-    if(distance%_period == 0)op.push_back(*this); 
+    return (distance%_period == 0);
+  }
+
+  inline
+  void Operation::expected_operations(unsigned int &month, std::vector<Operation> &op) const
+  {
+    if(this->happening_this_month(month))op.push_back(*this); 
+  }
+
+  inline
+  float Operation::amount_this_month(unsigned int &date)  const
+  {
+     return (this->happening_this_month(date))?_amount:0.L;
+  }
+  
+  inline
+  float Operation::margin_this_month(unsigned int &date)  const
+  {
+     return (this->happening_this_month(date))?_margin:0.L;
   }
 
 }
