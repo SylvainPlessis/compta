@@ -1,5 +1,5 @@
 \documentclass[a4paper,french]{report}
-\usepackage{aeguill,aecompl,geometry,babel,graphicx}
+\usepackage{geometry,babel,graphicx,lineno}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[color links=true,link color=black]{hyperref}
@@ -18,10 +18,19 @@
 \newpage
 
 \input{intro}
+
 \chapter{Fonctionnement}
 \label{chap:func}
 \section{Les objets}
 \input{object.tex}
 \label{sec:object}
+
+\chapter{Fichier d'entrée}
+\section{Exemple complet}
+\input{input_file}
+\section{Prévisionnel}
+\input{input_forecast}
+\section{Comptes}
+\section{Données}
 
 \end{document}
