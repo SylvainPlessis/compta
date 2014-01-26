@@ -84,8 +84,8 @@ namespace Compta{
        out << std::fixed << std::setprecision(2) 
            << "\\midrule" << std::endl
            << "\\underline{" << prev.forecast().operations_list()[ic].name() << "} &\\bf\\small " 
-           << "\\numprint{"  << prev.forecast().operations_list()[ic].amount() << "} +/- \\numprint{" 
-                             << prev.forecast().operations_list()[ic].margin() << "} & "  
+           << "\\numprint{"  << prev.forecast().operations_list()[ic].amount() << "} (\\numprint{" 
+                             << prev.forecast().operations_list()[ic].margin() << "}) & "  
            <<  "\\\\" << std::endl;
          for(unsigned int isc = 0; isc < prev.forecast().operations_list()[ic].n_objects(); isc++)
          {

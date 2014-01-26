@@ -481,6 +481,12 @@ namespace Compta{
       }
    }
 
+  inline
+  void ComptaObj::make_compta()
+  {
+    return;
+  }
+
 }
 
 #endif
