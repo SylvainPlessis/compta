@@ -72,9 +72,9 @@ namespace Compta{
         void history_of_month(const Date &month, std::vector<Posting> &out) const;
 
         //! \return the current state
-        const float current_state() const;
+        float current_state() const;
         //! \return the expected state
-        const float expected_state() const;
+        float expected_state() const;
 
         //!operator
         History &operator=(const History &rhs);
@@ -178,13 +178,13 @@ namespace Compta{
   }
         
   inline
-  const float History::current_state() const
+  float History::current_state() const
   {
      return _current_state;
   }
 
   inline
-  const float History::expected_state() const
+  float History::expected_state() const
   {
      return _expected_state;
   }

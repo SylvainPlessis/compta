@@ -260,8 +260,10 @@ namespace Compta{
  inline
  void Date::process_month()
  {
-  if(_month < 1)compta_date_error("Month is null or negative!");
-  if(_month > 12)compta_date_error("Month is greater than 12!");
+  if(_month < 1)
+    compta_date_error("Month is null or negative!");
+  if(_month > 12)
+    compta_date_error("Month is greater than 12!");
   return;
  }
 
