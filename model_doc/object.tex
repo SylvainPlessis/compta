@@ -30,10 +30,6 @@ pour le rendre flottant.
 Ainsi chaque catégorie se caractérise par un nom, un seuil, mais
 aussi une marge de man\oe uvre.
 
-Il est aussi possible de vouloir faire un classement en 
-sous-catégories, afin d'avoir un classement plus fin que
-seulement un niveau de catégorie.
-
 De plus, il est possible (et même fortement probable) qu'il existe des
 opérations récurrentes tous les mois, typiquement des factures, 
 un loyer, un prêt, etc. Ainsi il faut pouvoir ajouter
@@ -55,10 +51,8 @@ pour une opération.
 Au final, le prévisionnel est donc un ensemble de catégories, qui
 peuvent contenir des sous-catégories afin de classer plus finement. Par
 exemple on peut définir une catégorie \catForecast{Administratif}
-qui regrouperait les sous-catégories \catForecast{Transport},
-\catForecast{Nourriture}, etc. Il est aussi tout à fait possible
-de ne vouloir qu'un type de transaction dans une catégorie, et
-donc n'avoir aucune sous-catégorie.
+qui regrouperait des transactions pour la nourriture, le transport,
+etc. 
 
 \`A cela, nous pouvons ajouter des opérations automatiques, par
 exemple payer le loyer. Le loyer est payé tous les mois, il faut
@@ -68,21 +62,23 @@ début, une date de fin. De la même façon, la facture d'électricité doit
 être payée, mais des fois tous les deux mois. Au final, notre catégorie
 \catForecast{Administratif} peut se décrire ainsi:
 \begin{itemize}
-\item \catForecast{Transport};
-\item \catForecast{Nourriture};
+\item Transport, nourriture, etc;
 \item \catForecast{Loyer}, de montant fixe, prévu tous les mois, pendant la période
                            de location;
 \item \catForecast{Facture de gaz}, de montant prévu fixe, tous les deux mois,
                                     pendant la période dans un logement particulier.
 \end{itemize}
 
-\textit{In fine}, le prévisionnel est constitué de catégories, chacune contenant des sous-catégories
-et/ou des opérations attendues. Appelons \operation\ ces sous-catégories et/ou
+\textit{In fine}, le prévisionnel est constitué de catégories, chacune pouvant
+contenir des opérations attendues. Appelons \operation\ ces 
 opérations attendues. Nous pouvons donc décrire le prévisionnel comme un 
-ensemble de catégories contenant chacune un ensemble d'\operation s.
+ensemble de catégories contenant chacune un ensemble d'\operation s,
+si par défaut une catégorie contient une \operation\ qui consiste
+a attentre tout type de transaction dans ladîte catégorie, et possiblement
+d'autres \operation s automatiques ou non, à attendre durant le mois.
 La catégorie la plus petite est celle qui ne contient rien, ce qui
-est équivalent à dire qu'elle ne contient qu'une \operation: la
-sous-catégorie de même nom.
+est équivalent à dire qu'elle ne contient qu'une \operation: l'\operation\
+par défaut décrite plus haut.
 
 Le but d'un prévisionnel est de pouvoir fournir chaque mois le montant total
 et par catégorie, avec sa marge associée, à ne pas dépasser.
