@@ -167,6 +167,10 @@ namespace Compta{
   }
 
   inline
+  void latex_data(std::ofstream &out, const ComptaObj &compte)
+  {}
+
+  inline
   void latex_report(const ComptaObj &compte, std::string file)
   {
      if(file.find(".tex") == std::string::npos)file += ".tex";
