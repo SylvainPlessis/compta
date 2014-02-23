@@ -72,7 +72,7 @@ dnl Query configuration environment
 dnl Must be done *before* Doxygen to
 dnl get some happy variables defined.
 dnl---------------------------------
-AX_SUMMARIZE_ENV
+AX_SUMMARIZE_GIT_ENV
 
 dnl------------------------------------------
 dnl            Doxygen support
