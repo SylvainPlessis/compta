@@ -95,9 +95,9 @@ namespace Compta{
             out << std::fixed << std::setprecision(2)
                 << "\\multicolumn{2}{l}{\\hspace{12pt} " << prev.forecast().operations_list()[ic].operations_list()[isc].name() << "} & "
                 << "\\numprint{" << prev.forecast().operations_list()[ic].operations_list()[isc].amount() << "}  (\\numprint{"
-                                 << prev.forecast().operations_list()[ic].operations_list()[isc].margin() << "}) & \\tt"
-                << prev.forecast().operations_list()[ic].operations_list()[isc].starting_date().date_string() << "\\rule[3pt]{12pt}{0.6pt}"
-                << prev.forecast().operations_list()[ic].operations_list()[isc].ending_date().date_string() << "\\hfill\\sf"
+                                 << prev.forecast().operations_list()[ic].operations_list()[isc].margin() << "}) & \\tt "
+                << prev.forecast().operations_list()[ic].operations_list()[isc].starting_date().date_string() << "\\ \\textendash\\ "//rule[3pt]{12pt}{0.6pt}"
+                << prev.forecast().operations_list()[ic].operations_list()[isc].ending_date().date_string() << "\\hfill\\sf "
                 << prev.forecast().operations_list()[ic].operations_list()[isc].period() << " \\\\" << std::endl;
          }
      }
@@ -111,23 +111,23 @@ namespace Compta{
      if(bank.records().history().empty())return;
      Money money(bank.currency());
      Date cur_month = DateUtils::tomonth();
-     int offset_month(0);
-     int offset_year(0);
-     while(cur_month > bank.records().history().back().date())
+     while(cur_month > bank.records().history().back().date())//look for last date, find the last month
      {
-       offset_month--;
-       if(cur_month.month() + offset_month == 0)
+       unsigned int mon = cur_month.month() - 1;
+       unsigned int yea = cur_month.year();
+       if(cur_month.month() == 1)
        {
-          offset_year--;
-          offset_month = 12 - cur_month.month();
+          mon = 12;
+          yea--;
        }
-       cur_month.set_date(1, cur_month.month() + offset_month, cur_month.year() + offset_year);
+       cur_month.set_date(1, mon, yea);
      } 
 
+ std::cout << cur_month << " same month first day than " << bank.records().history().back().date() << std::endl;
      out << "\\chapter{" << bank.name() << "}" << std::endl;
      out << std::endl;
-     out << "\\begin{longtable}{p{8cm}>{\\tt}cc<{~" << money.tex_money() << "}}\\toprule" << std::endl;
-     out << "Description & Date & Montant \\\\\\midrule" << std::endl;
+     out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << money.tex_money() << "}}\\toprule" << std::endl;
+     out << "Description & Date & Montant \\\\\\midrule\\endhead" << std::endl;
      unsigned int ips(0);
      float start(0.L);
      while(cur_month > bank.records().history()[ips].date())
@@ -147,7 +147,7 @@ namespace Compta{
 
      if(!bank.records().in_waiting().empty())
      {
-       out << "\\midrule" << std::endl;
+       out << "\\midrule\\addlinespace[10pt]" << std::endl;
        out << "\\underline{Opération(s) en attente}\\\\[3pt]" << std::endl;
        for(unsigned int ip = 0; ip < bank.records().in_waiting().size(); ip++)
        {
@@ -198,12 +198,6 @@ namespace Compta{
      out << latex_report_foot() << std::endl;
 
      out.close();
-  }
-
-  inline
-  void latex_data(std::ofstream &out, const ComptaObj &compte)
-  {
-     return;
   }
 
 }

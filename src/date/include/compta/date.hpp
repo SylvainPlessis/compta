@@ -245,10 +245,18 @@ namespace Compta{
  const std::string Date::date_string() const
  {
    std::stringstream s;
-   s << std::setfill('0') << std::setw(2)
-     << _day << "/" << std::setfill('0') << std::setw(2)
-     << _month << "/"
-     << _year;
+   if(this->count_date() == DateUtils::date_min() ||
+      this->count_date() == DateUtils::date_max())
+   {
+    s << "."; 
+   }else
+   {
+    s << std::setfill('0') << std::setw(2)
+      << _day << "/" 
+      << std::setfill('0') << std::setw(2)
+      << _month << "/"
+      << _year;
+   }
    return s.str();
  }
 
