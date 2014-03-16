@@ -36,9 +36,9 @@ BUILD_DATE=`date +'%F %H:%M'`
 AC_PATH_PROG(gitquery,git)
 
 # check for .git folder
-if test -d .git  ; then
-   GIT_TAG="${gitquery} describe --abbrev=0 "
-   GIT_HASH="${gitquery} rev-parse --short HEAD"
+if test -d $srcdir/.git  ; then
+   GIT_TAG="$srcdir/${gitquery} describe --abbrev=0 "
+   GIT_HASH="$srcdir/${gitquery} rev-parse --short HEAD"
    GIT_CHECKOUT=true
    BUILD_DEVSTATUS="Development Build"
 else
@@ -57,7 +57,11 @@ AM_CONDITIONAL(GIT_CHECKOUT,test x${GIT_CHECKOUT} = xtrue )
 # Query current version.
 
 BUILD_VERSION=`${GIT_HASH}`
-BUILD_TAG=`${GIT_TAG}`
+if test "x${GIT_TAG}" = "xExternal Release" ; then
+   BUILD_TAG=${GIT_TAG}
+else
+   BUILD_TAG=`${GIT_TAG}`
+fi
 
 # Versioning info - check local developer version (if checked out)
 
