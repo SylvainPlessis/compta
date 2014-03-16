@@ -36,6 +36,9 @@ pkginclude_HEADERS += accounts/include/compta/cash.hpp
 pkginclude_HEADERS += accounts/include/compta/savings.hpp
 pkginclude_HEADERS += accounts/include/compta/bank.hpp
 pkginclude_HEADERS += accounts/include/compta/compta_obj.hpp
+# month reports
+pkginclude_HEADERS += report/include/compta/monthly_report.hpp
+pkginclude_HEADERS += report/include/compta/category_report.hpp
 #latex
 pkginclude_HEADERS += tex/include/compta/latex_factory.hpp
 

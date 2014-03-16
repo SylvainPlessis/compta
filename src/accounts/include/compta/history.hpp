@@ -31,7 +31,6 @@
 //C++
 #include <iostream>
 #include <vector>
-#include <ctime>
 
 namespace Compta{
 
@@ -93,18 +92,14 @@ namespace Compta{
     _current_state(0.),
     _expected_state(0.)
   {
-    time_t t = time(0);
-    struct tm *now = localtime(&t);
-    today.set_date(now->tm_mday, now->tm_mon + 1, 1900 + now->tm_year);
+    today = DateUtils::today();
   }
 
 
   inline
   History::History(const History &rhs)
   {
-     time_t t = time(0);
-     struct tm *now = localtime(&t);
-     today.set_date(now->tm_mday, now->tm_mon + 1, 1900 + now->tm_year);
+     today = DateUtils::today();
      *this = rhs;
      return;
   }

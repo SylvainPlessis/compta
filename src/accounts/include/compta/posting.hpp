@@ -28,6 +28,7 @@
 #include "compta/date.hpp"
 #include "compta/posting_enum.hpp"
 #include "compta/parsing_def.hpp"
+#include "compta/operation.hpp"
 
 //C++
 #include <map>
@@ -39,7 +40,7 @@ namespace Compta{
      public:
         Posting();
         Posting(const std::string &cat, const Date &date, const std::string &desc, 
-                const float amount, const bool acc=true, const PostingType::PostingType &id = PostingType::B);
+                const float amount, bool acc=true, const PostingType::PostingType &id = PostingType::B);
         Posting(const Posting &rhs);
         ~Posting();
 
@@ -50,9 +51,9 @@ namespace Compta{
         //!sets the description
         void set_description(const std::string &description);
         //!sets the amount
-        void set_amount(const float &amount);
+        void set_amount(float amount);
         //!sets the accounted state
-        void set_accounted(const bool &acc);
+        void set_accounted(bool acc);
         //!sets the identifiers
         void set_identifier(const PostingType::PostingType &identifier);
 
@@ -65,7 +66,7 @@ namespace Compta{
         //!\return the amount
         const float amount() const;
         //!\return the accounted state
-        const bool accounted() const;
+        bool accounted() const;
         //!\return the identifier
         const PostingType::PostingType identifier() const;
 
@@ -84,6 +85,9 @@ namespace Compta{
 
         //! operator
         Posting &operator=(const Posting &rhs);
+
+        //! comparison to a forecast Operation
+        bool operator==(const Operation &op) const;
 
 
      private:
@@ -127,7 +131,7 @@ namespace Compta{
 
   inline
   Posting::Posting(const std::string &cat, const Date &date, const std::string &desc, 
-                   const float amount, const bool acc, const PostingType::PostingType &id):
+                   const float amount, bool acc, const PostingType::PostingType &id):
         _category(cat),
         _date(date),
         _description(desc),
@@ -163,13 +167,13 @@ namespace Compta{
   }
 
   inline
-  void Posting::set_amount(const float &amount)
+  void Posting::set_amount(float amount)
   {
      _amount = amount;
   }
 
   inline
-  void Posting::set_accounted(const bool &acc)
+  void Posting::set_accounted(bool acc)
   {
      _accounted = acc;
   }
@@ -205,7 +209,7 @@ namespace Compta{
   }
 
   inline
-  const bool Posting::accounted() const
+  bool Posting::accounted() const
   {
      return _accounted;
   }
@@ -229,6 +233,13 @@ namespace Compta{
   Posting Posting::operator-() const
   {
      return Posting(this->category(), this->date(), this->description(), -this->amount(), this->accounted(), this->identifier());
+  }
+
+
+  inline
+  bool Posting::operator==(const Operation &op) const
+  {
+      return (_description.find(op.name()) != std::string::npos);
   }
 
 

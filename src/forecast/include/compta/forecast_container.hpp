@@ -69,9 +69,9 @@ namespace Compta{
           float margin() const; 
 
           //!\return the amount of the asked month
-          float amount_this_month(unsigned int &date) const;
+          float amount_this_month(unsigned int date) const;
           //!\return the margin of the asked month
-          float margin_this_month(unsigned int &date) const;
+          float margin_this_month(unsigned int date) const;
 
         
 
@@ -84,8 +84,11 @@ namespace Compta{
           //!\return writable operation
           Containee &operation(const std::string &name_operation);
 
-          //!add expected operations of on given month to the vector
-          void expected_operations(unsigned int month, std::vector<Operation> &op) const;
+          //!\return const ref to operation
+          const Containee &operation(const std::string &name_operation) const;
+
+          //!add expected operations of given month to the vector
+          void expected_operations(unsigned int month, std::vector<const Operation*> &op) const;
 
           //!sets the margin
           void set_margin(float margin);
@@ -171,6 +174,12 @@ namespace Compta{
      return _operations_list[_operations_map.at(name_operation)];
   }
 
+  template <typename Containee>
+  inline
+  const Containee &ForecastContainer<Containee>::operation(const std::string &name_operation) const
+  {
+     return _operations_list[_operations_map.at(name_operation)];
+  }
 
   template <typename Containee>
   inline
@@ -209,7 +218,7 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  float ForecastContainer<Containee>::amount_this_month(unsigned int &date) const
+  float ForecastContainer<Containee>::amount_this_month(unsigned int date) const
   {
      float this_month_amount(0.L);
      for(unsigned int iop = 0; iop < _operations_list.size(); iop++)
@@ -221,7 +230,7 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  float ForecastContainer<Containee>::margin_this_month(unsigned int &date) const
+  float ForecastContainer<Containee>::margin_this_month(unsigned int date) const
   {
      float this_month_margin(0.L);
      for(unsigned int iop = 0; iop < _operations_list.size(); iop++)
@@ -265,7 +274,7 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  void ForecastContainer<Containee>::expected_operations(unsigned int month, std::vector<Operation> &op) const
+  void ForecastContainer<Containee>::expected_operations(unsigned int month, std::vector<const Operation*> &op) const
   {
      for(unsigned int ic = 0; ic < _operations_list.size(); ic++)
      {

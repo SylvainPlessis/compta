@@ -110,6 +110,24 @@ namespace Compta
     MoneyError(const std::string& description) : std::runtime_error( "Error in money: " + description) {}
   };
 
+  /*!
+   * A class representing a forecast error
+   */
+  class ForecastError : public std::runtime_error
+  {
+  public:
+    ForecastError(const std::string& description) : std::runtime_error( "Error in forecast: " + description) {}
+  };
+
+  /*!
+   * A class representing a report error
+   */
+  class ReportError : public std::runtime_error
+  {
+  public:
+    ReportError(const std::string& description) : std::runtime_error( "Error in report: " + description) {}
+  };
+
 
 } // end namespace Compta
 

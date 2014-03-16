@@ -13,6 +13,7 @@ check_PROGRAMS += account_base_unit
 check_PROGRAMS += cash_unit
 check_PROGRAMS += savings_unit
 check_PROGRAMS += bank_unit
+check_PROGRAMS += category_report_unit
 
 
 AM_CPPFLAGS  = 
@@ -22,6 +23,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/forecast/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/money/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
+AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #antioch_version.h
 
@@ -36,6 +38,7 @@ account_base_unit_SOURCES = account_base_unit.cpp
 cash_unit_SOURCES = cash_unit.cpp
 savings_unit_SOURCES = savings_unit.cpp
 bank_unit_SOURCES = bank_unit.cpp
+category_report_unit_SOURCES = category_report_unit.cpp
 
 #Define tests to actually be run
 TESTS  =
@@ -49,6 +52,7 @@ TESTS += account_base_unit
 TESTS += cash_unit
 TESTS += savings_unit
 TESTS += bank_unit
+TESTS += category_report_unit
 
 CLEANFILES =
 if CODE_COVERAGE_ENABLED

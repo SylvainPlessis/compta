@@ -115,7 +115,7 @@ namespace Compta{
         // (anything below 100 is ignored)
         // the method unsigned int Date::count_date() const is
         // usable.
-        void expected_operations(unsigned int &month, std::vector<Operation> &op) const;
+        void expected_operations(unsigned int &month, std::vector<const Operation*> &op) const;
 
         //!operator
         Operation &operator=(const Operation &rhs);
@@ -292,9 +292,9 @@ namespace Compta{
   }
 
   inline
-  void Operation::expected_operations(unsigned int &month, std::vector<Operation> &op) const
+  void Operation::expected_operations(unsigned int &month, std::vector<const Operation*> &op) const
   {
-    if(this->happening_this_month(month))op.push_back(*this); 
+    if(this->happening_this_month(month))op.push_back(this); 
   }
 
   inline

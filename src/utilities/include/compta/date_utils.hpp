@@ -31,8 +31,7 @@ namespace Compta{
 
  namespace DateUtils{
 
-
-  //\return the number of days in february given the year
+  //!\return the number of days in february given the year
   unsigned int february_days(unsigned int an);
   //\return the number of days given a month
   unsigned int days_in_months(unsigned int mois, unsigned int an);
@@ -86,6 +85,7 @@ namespace Compta{
 
     return 28;
   }
+
 
  } //end namespace DateUtils
 } //end namespace Compta

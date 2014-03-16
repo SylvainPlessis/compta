@@ -31,7 +31,6 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
-#include <ctime>
 
 namespace Compta{
 
@@ -111,20 +110,18 @@ namespace Compta{
   {
      if(bank.records().history().empty())return;
      Money money(bank.currency());
-     time_t t = time(0);
-     struct tm *now = localtime(&t);
-     Date cur_month(1, now->tm_mon + 1, 1900 + now->tm_year);
+     Date cur_month = DateUtils::tomonth();
      int offset_month(0);
      int offset_year(0);
      while(cur_month > bank.records().history().back().date())
      {
        offset_month--;
-       if(now->tm_mon + 1 + offset_month == 0)
+       if(cur_month.month() + offset_month == 0)
        {
           offset_year--;
-          offset_month = 12 - now->tm_mon - 1;
+          offset_month = 12 - cur_month.month();
        }
-       cur_month.set_date(1, (now->tm_mon + 1) + offset_month, (1900 + now->tm_year) + offset_year);
+       cur_month.set_date(1, cur_month.month() + offset_month, cur_month.year() + offset_year);
      } 
 
      out << "\\chapter{" << bank.name() << "}" << std::endl;
@@ -201,6 +198,12 @@ namespace Compta{
      out << latex_report_foot() << std::endl;
 
      out.close();
+  }
+
+  inline
+  void latex_data(std::ofstream &out, const ComptaObj &compte)
+  {
+     return;
   }
 
 }

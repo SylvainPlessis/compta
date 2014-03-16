@@ -34,6 +34,7 @@
 #include <sstream>
 #include <cmath>
 #include <iomanip>
+#include <ctime>
 
 namespace Compta{
 
@@ -88,8 +89,10 @@ namespace Compta{
     //! Comparator
     bool older(const Date &rhs) const;
 
-    //! Comparator
+    //! Assignement operator
     Date &operator=(const Date &rhs);
+    //! Assignement operator
+    Date &operator=(unsigned int &date);
 
 
 /* fully expanded comparators
@@ -324,6 +327,13 @@ namespace Compta{
  }
 
  inline
+ Date &Date::operator=(unsigned int &date_int)
+ {
+  this->set_date(date_int);
+  return *this;
+ }
+
+ inline
  Date &Date::operator=(const Date &rhs)
  {
   if(this != &rhs)
@@ -426,6 +436,45 @@ namespace Compta{
     this->set_date(date_str);
  }
 
+/////////////////////////////////
+// last useful functions
+////////////////////////////////
+
+  namespace DateUtils
+  {
+     //!\return the current date dd/mm/yyyy
+     const Date today();
+        
+     //!\return the current date 01/mm/yyyy
+     const Date tomonth();
+
+     //!\return the current date 01/01/yyyy
+     const Date toyear();
+
+     inline
+     const Date today()
+     {
+       time_t t = time(0);
+       struct tm *now = localtime(&t);
+       return Date(now->tm_mday, now->tm_mon + 1, 1900 + now->tm_year);
+     }
+   
+     inline     
+     const Date tomonth()
+     {
+       time_t t = time(0);
+       struct tm *now = localtime(&t);
+       return Date(1, now->tm_mon + 1, 1900 + now->tm_year);
+     }
+
+     const Date toyear()
+     {
+       time_t t = time(0);
+       struct tm *now = localtime(&t);
+       return Date(1, 1, 1900 + now->tm_year);
+     }
+
+  }
 
 }
 #endif
