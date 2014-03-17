@@ -45,7 +45,7 @@ int tester()
   account.add_savings_account(epargne,namesav);
   account.set_name("an account");
   account.set_currency(Compta::Currency::EUR);
-  account.set_creation(std::string("01/09/2013"));
+  account.set_creation(std::string("01/09/2013"),0.);
   account.add_posting(operation,0);
   Compta::Bank copy_account(account);
   int return_flag(0);

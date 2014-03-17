@@ -50,13 +50,15 @@ namespace Compta{
       const Currency::Currency currency() const;
       //!\return the creation date
       const Date creation() const;
+      //!\return the creation amount
+      float creation_amount() const;
 
       //!sets the name
       void set_name(const std::string &name);
       //!sets the currency
       void set_currency(const Currency::Currency &currency);
       //!sets the date
-      void set_creation(const Date &creation);
+      void set_creation(const Date &creation, float amount);
 
       //!adds a line
       void add_posting(const Posting &post);
@@ -69,17 +71,21 @@ namespace Compta{
       std::string        _name;
       Currency::Currency _currency;
       Date               _creation;
+      float              _creation_amount;
   };
 
   inline
   AccountBase::AccountBase():
-      _currency(Currency::EUR)
+      _records(_creation_amount),
+      _currency(Currency::EUR),
+      _creation_amount(0.)
   {
      return;
   }
 
   inline
-  AccountBase::AccountBase(const AccountBase &rhs)
+  AccountBase::AccountBase(const AccountBase &rhs):
+      _records(rhs.creation_amount())
   {
      *this = rhs;
      return;
@@ -122,6 +128,12 @@ namespace Compta{
   }
 
   inline
+  float AccountBase::creation_amount() const
+  {
+     return _creation_amount;
+  }
+
+  inline
   void AccountBase::set_name(const std::string &name)
   {
      _name = name;
@@ -134,9 +146,10 @@ namespace Compta{
   }
 
   inline
-  void AccountBase::set_creation(const Date &creation)
+  void AccountBase::set_creation(const Date &creation, float amount)
   {
      _creation = creation;
+     _creation_amount = amount;
   }
 
   inline

@@ -44,7 +44,7 @@ namespace Compta{
    */
   class History{
      public:
-        History();
+        History(float creation_amount = 0);
         History(const History &rhs);
         ~History();
 
@@ -75,10 +75,10 @@ namespace Compta{
         void posting_between_dates(const Date &start, const Date &end, const std::vector<Posting> &storage, std::vector<Posting> &out) const;
 
         //!\return the first date (minus creation)
-        const Date & start_date() const;
+        const Date start_date() const;
 
         //!\return the last date
-        const Date & end_date() const;
+        const Date end_date() const;
 
         //! true if contains something more than creation
         bool empty() const;
@@ -88,6 +88,9 @@ namespace Compta{
         //! \return the expected state
         float expected_state() const;
 
+        //! \return the reference of the starting state
+        const float & starting_state() const;
+
         //!operator
         History &operator=(const History &rhs);
 
@@ -95,6 +98,7 @@ namespace Compta{
 
         std::vector<Posting> _history;
         std::vector<Posting> _in_waiting;
+        float _starting_state;
         float _current_state;
         float _expected_state;
         Date today;
@@ -102,7 +106,8 @@ namespace Compta{
   };
 
   inline
-  History::History():
+  History::History(float creation_amount):
+    _starting_state(creation_amount),
     _current_state(0.),
     _expected_state(0.)
   {
@@ -111,7 +116,8 @@ namespace Compta{
 
 
   inline
-  History::History(const History &rhs)
+  History::History(const History &rhs):
+    _starting_state(rhs.starting_state())
   {
      today = DateUtils::today();
      *this = rhs;
@@ -185,7 +191,13 @@ namespace Compta{
   {
      return _in_waiting;
   }
-        
+ 
+  inline       
+  const float & History::starting_state() const
+  {
+     return _starting_state;
+  }
+
   inline
   float History::current_state() const
   {
@@ -203,9 +215,10 @@ namespace Compta{
   {
     if(this != &rhs)
     {
-       _history = rhs.history();
-       _in_waiting = rhs.in_waiting();
-       _current_state = rhs.current_state();
+       _history        = rhs.history();
+       _in_waiting     = rhs.in_waiting();
+       _starting_state = rhs.starting_state();
+       _current_state  = rhs.current_state();
        _expected_state = rhs.expected_state();
     }
     return *this;
@@ -244,35 +257,46 @@ namespace Compta{
   }
 
   inline
-  const Date & History::start_date() const
+  const Date History::start_date() const
   {
      if(_history.empty())compta_error();
+
+     Date out_date;
+
      if(_history.size() > 1 && !_in_waiting.empty())
      {
-        return (_history[1].date() < _in_waiting[0].date())?_history[1].date():_in_waiting[0].date();
+        out_date = (_history[1].date() < _in_waiting[0].date())?_history[1].date():_in_waiting[0].date();
      }else if(_history.size() > 1)
      {
-        return _history[1].date();
+        out_date = _history[1].date();
      }else if(!_in_waiting.empty())
      {
-        return _in_waiting[0].date();
+        out_date = _in_waiting[0].date();
      }else //empty??
      {
-        return _history.front().date(); //creation
+        out_date = _history.front().date(); //creation
      }
+
+     return out_date;
   }
 
   inline
-  const Date & History::end_date() const
+  const Date History::end_date() const
   {
      if(_history.empty())compta_error();
+
+     Date out_date;
+
      if(_in_waiting.empty())
      {
-        return _history.back().date();
+        out_date =  _history.back().date();
      }else
      {
-        return (_history.back().date() >= _in_waiting.back().date())?_history.back().date():_in_waiting.back().date();
+        out_date = (_history.back().date() >= _in_waiting.back().date())?_history.back().date():_in_waiting.back().date();
      }
+
+     return out_date;
+
   }
 
   inline

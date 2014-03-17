@@ -41,7 +41,7 @@ int tester()
   Compta::Posting operation("category",std::string("12/11/2013"),"Some operation",15.25,true);
   account.set_name("an account");
   account.set_currency(Compta::Currency::EUR);
-  account.set_creation(std::string("01/09/2013"));
+  account.set_creation(std::string("01/09/2013"),0.);
   account.add_posting(operation);
   Compta::AccountBase copy_account(account);
   int return_flag(0);
