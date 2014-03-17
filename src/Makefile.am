@@ -61,6 +61,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/accounts/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/stock/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
+AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
 AM_CPPFLAGS +=  $(compta_optional_INCLUDES)
