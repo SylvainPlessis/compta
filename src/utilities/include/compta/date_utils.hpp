@@ -24,8 +24,12 @@
 #ifndef COMPTA_DATE_UTILS_H
 #define COMPTA_DATE_UTILS_H
 
+//compta
+#include "compta/compta_asserts.hpp"
+
 //C++
 #include <ctime>
+#include <string>
 
 namespace Compta{
 
@@ -35,6 +39,9 @@ namespace Compta{
   unsigned int february_days(unsigned int an);
   //\return the number of days given a month
   unsigned int days_in_months(unsigned int mois, unsigned int an);
+
+  //\return the month's name
+  std::string month_in_letter(unsigned int mois);
 
 
   //!No data before this date
@@ -84,6 +91,53 @@ namespace Compta{
     if((cur_year%4 == 0 && cur_year%100 != 0) || (cur_year%400 == 0))return 29;
 
     return 28;
+  }
+
+  inline
+  std::string month_in_letter(unsigned int mois)
+  {
+     switch(mois)
+     {
+      case 1:
+        return "Janvier";
+        break;
+      case 2:
+        return "Février";
+        break;
+      case 3:
+        return "Mars";
+        break;
+      case 4:
+        return "Avril";
+        break;
+      case 5:
+        return "Mai";
+        break;
+      case 6:
+        return "Juin";
+        break;
+      case 7:
+        return "Juillet";
+        break;
+      case 8:
+        return "Août";
+        break;
+      case 9:
+        return "Septembre";
+        break;
+      case 10:
+        return "Octobre";
+        break;
+      case 11:
+        return "Novembre";
+        break;
+      case 12:
+        return "Décembre";
+        break;
+      default:
+        compta_error();
+        break;
+     }
   }
 
 

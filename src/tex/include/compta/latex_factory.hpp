@@ -46,6 +46,8 @@ namespace Compta{
   void latex_bank(std::ofstream &out, const Bank &bank);
   //! details by month
   void latex_data(std::ofstream &out, const ComptaObj &compte);
+  //! details for a month
+  void latex_month(std::ofstream &out, const MonthlyReport &month_report);
 
   inline
   const std::string latex_report_head()
@@ -110,8 +112,8 @@ namespace Compta{
   {
      if(bank.records().history().empty())return;
      Money money(bank.currency());
-     Date cur_month = DateUtils::tomonth();
-     while(cur_month > bank.records().history().back().date())//look for last date, find the last month
+     Date cur_month = bank.records().history().back().date();
+/*     while(cur_month > bank.records().history().back().date())//look for last date, find the last month
      {
        unsigned int mon = cur_month.month() - 1;
        unsigned int yea = cur_month.year();
@@ -122,8 +124,8 @@ namespace Compta{
        }
        cur_month.set_date(1, mon, yea);
      } 
-
- std::cout << cur_month << " same month first day than " << bank.records().history().back().date() << std::endl;
+*/
+     cur_month.set_date(1, cur_month.month(), cur_month.year());
      out << "\\chapter{" << bank.name() << "}" << std::endl;
      out << std::endl;
      out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << money.tex_money() << "}}\\toprule" << std::endl;
@@ -135,15 +137,16 @@ namespace Compta{
         ips++;
         start += bank.records().history()[ips].amount();
      }
-     out << "\\'Etat initial & " << cur_month.date_string() << " & " << start << "\\\\[5pt]" << std::endl;
+     out << "\\'Etat initial & " << cur_month.date_string() << " & \\numprint{" << start << "}\\\\[5pt]" << std::endl;
      for(unsigned int ip = ips; ip < bank.records().history().size(); ip++)
      {
         out << bank.records().history()[ip].description() << " & " 
             << bank.records().history()[ip].date()        << " & "
-            << bank.records().history()[ip].amount()      << "\\\\" << std::endl;
+            << "\\numprint{" << 
+                bank.records().history()[ip].amount()      << "}\\\\" << std::endl;
      }
      out << "\\midrule" << std::endl;
-     out << "\\'Etat actuel & \\today & " << bank.records().current_state() << "\\\\" << std::endl;
+     out << "\\'Etat actuel & \\today & \\numprint{" << bank.records().current_state() << "}\\\\" << std::endl;
 
      if(!bank.records().in_waiting().empty())
      {
@@ -153,10 +156,11 @@ namespace Compta{
        {
         out << bank.records().in_waiting()[ip].description() << " & " 
             << bank.records().in_waiting()[ip].date()        << " & "
-            << bank.records().in_waiting()[ip].amount()      << "\\\\" << std::endl;
+            << "\\numprint{" << 
+                        bank.records().in_waiting()[ip].amount()    << "}\\\\" << std::endl;
        }
        out << "\\midrule" << std::endl;
-       out << "\\'Etat attendu & \\today & " << bank.records().expected_state() << "\\\\" << std::endl;
+       out << "\\'Etat attendu & \\today & \\numprint{" << bank.records().expected_state() << "}\\\\" << std::endl;
      }  
 
      out << "\\bottomrule" << std::endl;
@@ -165,7 +169,47 @@ namespace Compta{
 
   inline
   void latex_data(std::ofstream &out, const ComptaObj &compte)
-  {}
+  {
+       std::vector<MonthlyReport> report;
+       compte.report_compta(report);
+       for(unsigned int imo = 0; imo < report.size(); imo++)
+       {
+          out << "\\chapter{" << DateUtils::month_in_letter(report[imo].date().month()) << " " 
+                              << report[imo].date().year() << "}" << std::endl;
+
+          latex_month(out,report[imo]);
+       }
+  }
+
+  inline
+  void latex_month(std::ofstream &out, const MonthlyReport &month_report)
+  {
+     out << "\\begin{longtable}{p{6cm}cr}\\toprule" << std::endl;
+     out << "Operation & Date & Montant \\\\\\midrule" << std::endl;
+
+     for(unsigned int icat = 0; icat < month_report.report().size(); icat++)
+     {
+        const CategoryReport & cat = month_report.report()[icat];
+
+        out << "\\addlinespace\\multicolumn{2}{l}{\\hspace{-12pt}\\textbf{\\underline{" << cat.name() << "}}} & \\bf"
+            << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "}\\\\" << std::endl;
+        for(unsigned int ipo = 0; ipo < cat.done().size(); ipo++)
+        {
+           out << cat.done()[ipo].description() << " & " 
+               << cat.done()[ipo].date()        << " & " 
+               << "\\numprint{" << cat.done()[ipo].amount() << "}\\\\" << std::endl; 
+        }
+        for(unsigned int ipo = 0; ipo < cat.not_done().size(); ipo++)
+        {
+           out << cat.not_done()[ipo].name()   << " & - & " 
+               << "\\numprint{" << cat.not_done()[ipo].amount() << "} +/- \\numprint{" 
+               << cat.not_done()[ipo].margin() << "}\\\\" << std::endl; 
+        }
+     }
+
+     out << "\\end{longtable}" << std::endl;
+  }
+
 
   inline
   void latex_report(const ComptaObj &compte, std::string file)

@@ -32,6 +32,7 @@
 #include "compta/savings.hpp"
 #include "compta/parsing_def.hpp"
 #include "compta/money.hpp"
+#include "compta/monthly_report.hpp"
 
 //C++
 #include <vector>
@@ -84,8 +85,11 @@ namespace Compta{
       //!adds a posting
       void add_posting(Posting &post, const char &identifier);
 
-      //!second pass on all operations, build the report objects
-      void make_compta();
+      //!build the report objects
+      void report_compta(std::vector<MonthlyReport> &rep) const;
+
+      //!report a month, date is in the MonthlyReport object
+      void report_compta(MonthlyReport &rep) const;
 
       //!operator
       ComptaObj &operator=(const ComptaObj &rhs);
@@ -442,7 +446,7 @@ namespace Compta{
       for(unsigned int ib = 0; ib < _banque.size(); ib++)
       {
           bifton.set_money(_banque[ib].currency());
-          out << " * compte : " << _banque[ib].name() << std::endl
+          out << " * compte : "        << _banque[ib].name()                                                  << std::endl
               << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
               << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
           if(!_banque[ib].records().in_waiting().empty())
@@ -457,7 +461,7 @@ namespace Compta{
              out << std::endl;
              for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
              {
-                out << "\t** épargne " << _banque[ib].savings_list()[is] << std::endl
+                out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
                     << "\t\tétat de l'épargne : " << _banque[ib].savings()[is].current_state()  << " " << bifton.str_money() << std::endl
                     << "\t\tétat attendu : "      << _banque[ib].savings()[is].expected_state() << " " << bifton.str_money() << std::endl;
              }
@@ -482,10 +486,59 @@ namespace Compta{
    }
 
   inline
-  void ComptaObj::make_compta()
+  void ComptaObj::report_compta(std::vector<MonthlyReport> &rep) const
   {
-    
+    // no need for nothing in this case
+    if(_banque.empty() && _liquide.empty())return;
+
+    Date cur_date;
+    if(!_banque.empty() && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
+    if(!_liquide.empty() && !_liquide[0].records().empty())
+        if(_liquide[0].records().start_date() < cur_date)cur_date = _liquide[0].records().start_date();
+
+    Date end_date;
+    if(!_banque.empty() && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
+    if(!_liquide.empty() && !_liquide[0].records().empty())
+        if(_liquide[0].records().end_date() > end_date)end_date = _liquide[0].records().end_date();
+
+    while(cur_date < end_date)
+    {
+       MonthlyReport month_report(_previsionnel,cur_date);
+       this->report_compta(month_report);
+       rep.push_back(month_report);
+       unsigned int mon = cur_date.month() + 1;
+       unsigned int yea = cur_date.year();
+       if(mon > 12)
+       {
+          mon = 1;
+          yea++;
+       }
+       cur_date.set_date(1,mon,yea);
+    }
+
     return;
+  }
+
+  inline
+  void ComptaObj::report_compta(MonthlyReport &rep) const
+  {
+     std::vector<Posting> history,in_waiting;
+
+     if(!_banque.empty())
+     {
+       _banque[0].records().history_of_month(rep.date(),history); //adds bank history
+       _banque[0].records().in_waiting_of_month(rep.date(),in_waiting);//adds bank in waiting
+     }
+     if(!_liquide.empty())
+     {
+       _liquide[0].records().history_of_month(rep.date(),history);//adds cash history
+       _liquide[0].records().in_waiting_of_month(rep.date(),in_waiting);//adds cash in waiting
+     }
+
+std::cout << history.size() << " history and " << in_waiting.size() << std::endl;
+     rep.add_posting(history);
+     rep.add_posting(in_waiting);
+
   }
 
 }

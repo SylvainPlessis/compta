@@ -73,7 +73,7 @@ namespace Compta{
         Forecast &operator=(const Forecast &rhs);
 
         //!adds the expected operations of the month
-        void expected_operations(const Date &date_month, std::vector<const Operation*> &op) const;
+        void expected_operations(const Date &date_month, std::vector<Operation> &op) const;
 
       private:
         ForecastContainer<ForecastCategory> _forecast;
@@ -151,7 +151,7 @@ namespace Compta{
   }
 
   inline
-  void Forecast::expected_operations(const Date &date_month, std::vector<const Operation*> &op) const
+  void Forecast::expected_operations(const Date &date_month, std::vector<Operation> &op) const
   {
      _forecast.expected_operations(date_month.count_date(),op);
   }

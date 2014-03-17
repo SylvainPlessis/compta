@@ -65,10 +65,23 @@ namespace Compta{
         //! \return the expected posting
         const std::vector<Posting> in_waiting() const;
 
-        //!\return the history between two dates
-        void history_between_dates(const Date &start, const Date &end, std::vector<Posting> &out) const;
         //!\return the history of a specific month
         void history_of_month(const Date &month, std::vector<Posting> &out) const;
+
+        //!\return the non passed operation of a specific month
+        void in_waiting_of_month(const Date &month, std::vector<Posting> &out) const;
+
+        //!\return the sub vector of Posting between dates
+        void posting_between_dates(const Date &start, const Date &end, const std::vector<Posting> &storage, std::vector<Posting> &out) const;
+
+        //!\return the first date (minus creation)
+        const Date & start_date() const;
+
+        //!\return the last date
+        const Date & end_date() const;
+
+        //! true if contains something more than creation
+        bool empty() const;
 
         //! \return the current state
         float current_state() const;
@@ -79,6 +92,7 @@ namespace Compta{
         History &operator=(const History &rhs);
 
      private:
+
         std::vector<Posting> _history;
         std::vector<Posting> _in_waiting;
         float _current_state;
@@ -198,27 +212,75 @@ namespace Compta{
   }
 
   inline
-  void History::history_between_dates(const Date &start, const Date &end, std::vector<Posting> &out) const
+  void History::posting_between_dates(const Date &start, const Date &end, const std::vector<Posting> &storage, std::vector<Posting> &out) const
   {
 //Posting are sorted by date
      out.clear();
-     for(unsigned int ip = 0; ip < _history.size(); ip++)
+     for(unsigned int ip = 0; ip < storage.size(); ip++)
      {
-        if(_history[ip].date() < start)continue;
-        out.push_back(_history[ip]);
-        if(_history[ip].date() > end)break;
+        if(storage[ip].date() < start)continue;
+        out.push_back(storage[ip]);
+        if(storage[ip].date() > end)break;
      }
      return;
   }
-  
+
   inline
   void History::history_of_month(const Date &month, std::vector<Posting> &out) const
   {
      Date start(1,month.month(),month.year());
      Date end(DateUtils::days_in_months(month.month(),month.year()),month.month(),month.year());
-     this->history_between_dates(start,end,out);
+     this->posting_between_dates(start,end,_history,out);
      return;
   }
+
+  inline
+  void History::in_waiting_of_month(const Date &month, std::vector<Posting> &out) const
+  {
+     Date start(1,month.month(),month.year());
+     Date end(DateUtils::days_in_months(month.month(),month.year()),month.month(),month.year());
+     this->posting_between_dates(start,end,_in_waiting,out);
+     return;
+  }
+
+  inline
+  const Date & History::start_date() const
+  {
+     if(_history.empty())compta_error();
+     if(_history.size() > 1 && !_in_waiting.empty())
+     {
+        return (_history[1].date() < _in_waiting[0].date())?_history[1].date():_in_waiting[0].date();
+     }else if(_history.size() > 1)
+     {
+        return _history[1].date();
+     }else if(!_in_waiting.empty())
+     {
+        return _in_waiting[0].date();
+     }else //empty??
+     {
+        return _history.front().date(); //creation
+     }
+  }
+
+  inline
+  const Date & History::end_date() const
+  {
+     if(_history.empty())compta_error();
+     if(_in_waiting.empty())
+     {
+        return _history.back().date();
+     }else
+     {
+        return (_history.back().date() >= _in_waiting.back().date())?_history.back().date():_in_waiting.back().date();
+     }
+  }
+
+  inline
+  bool History::empty() const
+  {
+     return (_history.size() == 1 && _in_waiting.empty());
+  }
+
   
 }
 

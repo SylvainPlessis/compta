@@ -88,7 +88,7 @@ namespace Compta{
           const Containee &operation(const std::string &name_operation) const;
 
           //!add expected operations of given month to the vector
-          void expected_operations(unsigned int month, std::vector<const Operation*> &op) const;
+          void expected_operations(unsigned int month, std::vector<Operation> &op) const;
 
           //!sets the margin
           void set_margin(float margin);
@@ -274,7 +274,7 @@ namespace Compta{
 
   template <typename Containee>
   inline
-  void ForecastContainer<Containee>::expected_operations(unsigned int month, std::vector<const Operation*> &op) const
+  void ForecastContainer<Containee>::expected_operations(unsigned int month, std::vector<Operation> &op) const
   {
      for(unsigned int ic = 0; ic < _operations_list.size(); ic++)
      {

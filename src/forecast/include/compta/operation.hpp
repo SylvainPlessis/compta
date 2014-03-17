@@ -115,10 +115,20 @@ namespace Compta{
         // (anything below 100 is ignored)
         // the method unsigned int Date::count_date() const is
         // usable.
-        void expected_operations(unsigned int &month, std::vector<const Operation*> &op) const;
+        void expected_operations(unsigned int &month, std::vector<Operation> &op) const;
 
         //!operator
         Operation &operator=(const Operation &rhs);
+
+        //! prints the posting in human form
+        void print(std::ostream& out = std::cout) const;
+
+        //! Formatted print.
+        friend std::ostream& operator << (std::ostream& os, const Operation &line)
+        {
+          line.print(os);
+          return os;
+        }
 
     private:
 
@@ -288,13 +298,13 @@ namespace Compta{
     unsigned int a = std::floor(month/10000);
     unsigned int m = std::floor((month - a * 10000)/100);
     unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
-    return (distance%_period == 0);
+    return ((distance%_period == 0) && _automatic);
   }
 
   inline
-  void Operation::expected_operations(unsigned int &month, std::vector<const Operation*> &op) const
+  void Operation::expected_operations(unsigned int &month, std::vector<Operation> &op) const
   {
-    if(this->happening_this_month(month))op.push_back(this); 
+    if(this->happening_this_month(month))op.push_back(*this); 
   }
 
   inline
@@ -309,5 +319,14 @@ namespace Compta{
      return (this->happening_this_month(date))?_margin:0.L;
   }
 
+  inline
+  void Operation::print(std::ostream &out) const
+  {
+    out << _name       << ": " 
+        << _amount     << " +/- " << _margin << " "
+        << _start_date << " - "   << _end_date;
+    if(_automatic)out <<  ", automatique tous les " << _period << " mois" << std::endl;
+   out << "." << std::endl;
+  }
 }
 #endif
