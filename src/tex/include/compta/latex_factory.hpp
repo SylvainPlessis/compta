@@ -48,6 +48,8 @@ namespace Compta{
   void latex_data(std::ofstream &out, const ComptaObj &compte);
   //! details for a month
   void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money);
+  //!color
+  void add_color(float amount, float thres, float mar, std::ostream &out); 
 
   inline
   const std::string latex_report_head()
@@ -195,9 +197,9 @@ namespace Compta{
 
         out << "\\addlinespace\\raggedright\\textbf{\\underline{" << cat.name() << "}} & "
             << "\\sl{";
-        if(cat.amount() > cat.forecast_amount())out << "\\color{red}";
+        add_color(cat.amount(),cat.forecast_amount(),cat.forecast_margin(),out);
         out <<"\\numprint{" << cat.amount() << "}} ({";
-        if(cat.expected_amount() > cat.forecast_amount())out << "\\color{red}";
+        add_color(cat.expected_amount(), cat.forecast_amount(), cat.forecast_margin(),out);
         out << "\\numprint{" << cat.expected_amount() << "}}) "
                         << money.tex_money() << " & \\bf"
             << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "} "
@@ -241,14 +243,14 @@ namespace Compta{
      }
 
      out << "\\addlinespace Total   & {";
-     if(month_report.amount() > month_report.forecast_amount())out << "\\color{red}";
+     add_color(month_report.amount(),month_report.forecast_amount(),month_report.forecast_margin(),out);
      out << "\\numprint{" << month_report.amount() << "}} " << money.tex_money() << " & \\numprint{" 
          << month_report.forecast_amount() << "} +/- \\numprint{"
          << month_report.forecast_margin() << "} " << money.tex_money() << "\\\\\\bottomrule" 
          << std::endl;
 
      out << "Attendu & {";
-     if(month_report.expected_amount() > month_report.forecast_amount())out << "\\color{red}";
+     add_color(month_report.expected_amount(),month_report.forecast_amount(),month_report.forecast_margin(),out);
      out << "\\numprint{" << month_report.expected_amount() << "}} " << money.tex_money() << " & \\\\\\bottomrule" 
          << std::endl;
 
@@ -287,6 +289,19 @@ namespace Compta{
      out << latex_report_foot() << std::endl;
 
      out.close();
+  }
+
+  inline
+  void add_color(float amount, float thres, float mar, std::ostream &out)
+  {
+      if(amount > thres + mar)
+      {
+         out << "\\color{red}";
+      }else if(amount > thres)
+      {
+         out << "\\color{orange}";
+      }
+      return;
   }
 
 }
