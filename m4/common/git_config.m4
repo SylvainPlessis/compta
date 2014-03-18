@@ -37,8 +37,8 @@ AC_PATH_PROG(gitquery,git)
 
 # check for .git folder
 if test -d $srcdir/.git  ; then
-   GIT_TAG="$srcdir/${gitquery} describe --abbrev=0 "
-   GIT_HASH="$srcdir/${gitquery} rev-parse --short HEAD"
+   GIT_TAG="${gitquery} describe --abbrev=0 "
+   GIT_HASH="${gitquery} rev-parse --short HEAD"
    GIT_CHECKOUT=true
    BUILD_DEVSTATUS="Development Build"
 else
