@@ -522,23 +522,28 @@ namespace Compta{
   inline
   void ComptaObj::report_compta(MonthlyReport &rep) const
   {
-     std::vector<Posting> history,in_waiting;
+     std::vector<Posting> b_history,b_in_waiting;
 
      if(!_banque.empty())
      {
-       _banque[0].records().history_of_month(rep.date(),history); //adds bank history
-       _banque[0].records().in_waiting_of_month(rep.date(),in_waiting);//adds bank in waiting
+       _banque[0].records().history_of_month(rep.date(),b_history); //adds bank history
+       _banque[0].records().in_waiting_of_month(rep.date(),b_in_waiting);//adds bank in waiting
      }
+
+
+     std::vector<Posting> c_history,c_in_waiting;
      if(!_liquide.empty())
      {
-       _liquide[0].records().history_of_month(rep.date(),history);//adds cash history
-       _liquide[0].records().in_waiting_of_month(rep.date(),in_waiting);//adds cash in waiting
+       _liquide[0].records().history_of_month(rep.date(),c_history);//adds cash history
+       _liquide[0].records().in_waiting_of_month(rep.date(),c_in_waiting);//adds cash in waiting
      }
 
-std::cout << history.size() << " history and " << in_waiting.size() << std::endl;
-     rep.add_posting(history);
-     rep.add_posting(in_waiting);
+     rep.add_posting(b_history);
+     rep.add_posting(c_history);
+     rep.add_posting(b_in_waiting);
+     rep.add_posting(c_in_waiting);
 
+     return;
   }
 
 }

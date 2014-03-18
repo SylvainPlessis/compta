@@ -47,7 +47,7 @@ namespace Compta{
   //! details by month
   void latex_data(std::ofstream &out, const ComptaObj &compte);
   //! details for a month
-  void latex_month(std::ofstream &out, const MonthlyReport &month_report);
+  void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money);
 
   inline
   const std::string latex_report_head()
@@ -63,6 +63,8 @@ namespace Compta{
      head += "\\usepackage[autolanguage]{numprint}\n";
      head += "\\usepackage[linkcolor=black,colorlinks=true]{hyperref}\n";
      head += "\\begin{document}\n";
+     head += "\\renewcommand{\\chaptername}{}\n";
+     head += "\\renewcommand{\\thechapter}{}\n";
      return head;
   }
 
@@ -112,20 +114,10 @@ namespace Compta{
   {
      if(bank.records().history().empty())return;
      Money money(bank.currency());
-     Date cur_month = bank.records().history().back().date();
-/*     while(cur_month > bank.records().history().back().date())//look for last date, find the last month
-     {
-       unsigned int mon = cur_month.month() - 1;
-       unsigned int yea = cur_month.year();
-       if(cur_month.month() == 1)
-       {
-          mon = 12;
-          yea--;
-       }
-       cur_month.set_date(1, mon, yea);
-     } 
-*/
-     cur_month.set_date(1, cur_month.month(), cur_month.year());
+
+     Date cur_month = bank.records().history().back().date(); //last date
+     cur_month.set_date(1, cur_month.month(), cur_month.year()); //last month
+
      out << "\\chapter{" << bank.name() << "}" << std::endl;
      out << std::endl;
      out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << money.tex_money() << "}}\\toprule" << std::endl;
@@ -172,40 +164,85 @@ namespace Compta{
   {
        std::vector<MonthlyReport> report;
        compte.report_compta(report);
+       Money money;
+       if(!compte.banque().empty())
+       {
+          money.set_money(compte.banque().front().currency());
+       }
+       else if(!compte.liquide().empty())
+       {
+          money.set_money(compte.liquide().front().currency());
+       }
+
        for(unsigned int imo = 0; imo < report.size(); imo++)
        {
           out << "\\chapter{" << DateUtils::month_in_letter(report[imo].date().month()) << " " 
                               << report[imo].date().year() << "}" << std::endl;
 
-          latex_month(out,report[imo]);
+          latex_month(out,report[imo],money);
        }
   }
 
   inline
-  void latex_month(std::ofstream &out, const MonthlyReport &month_report)
+  void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money)
   {
      out << "\\begin{longtable}{p{6cm}cr}\\toprule" << std::endl;
-     out << "Operation & Date & Montant \\\\\\midrule" << std::endl;
+     out << "Operation & Date & Montant " << money.tex_money() << "\\\\\\midrule" << std::endl;
 
      for(unsigned int icat = 0; icat < month_report.report().size(); icat++)
      {
         const CategoryReport & cat = month_report.report()[icat];
 
-        out << "\\addlinespace\\multicolumn{2}{l}{\\hspace{-12pt}\\textbf{\\underline{" << cat.name() << "}}} & \\bf"
-            << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "}\\\\" << std::endl;
+        out << "\\addlinespace\\raggedright\\textbf{\\underline{" << cat.name() << "}} & "
+            << "\\sl\\numprint{" << cat.amount() << "} (\\numprint{" << cat.expected_amount() << "}) "
+                        << money.tex_money() << " & \\bf"
+            << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "} "
+                        << money.tex_money() << "\\\\*" << std::endl;
+//passed
+        if(!cat.done().empty())
+        {
+           out << "\\addlinespace[3pt]\\raggedleft\\small\\sf\\underline{Opération(s) passée(s)} & &\\\\*[3pt]" << std::endl; 
+        }
         for(unsigned int ipo = 0; ipo < cat.done().size(); ipo++)
         {
-           out << cat.done()[ipo].description() << " & " 
+           out << "\\hspace{12pt}"
+               << cat.done()[ipo].description() << " & " 
                << cat.done()[ipo].date()        << " & " 
                << "\\numprint{" << cat.done()[ipo].amount() << "}\\\\" << std::endl; 
         }
+//posting not passed
+        if(!cat.not_done().empty())
+        {
+           out << "\\addlinespace[3pt]\\raggedleft\\small\\sf\\underline{Opération(s) en attente} & &\\\\*[3pt]" << std::endl; 
+        }
         for(unsigned int ipo = 0; ipo < cat.not_done().size(); ipo++)
         {
-           out << cat.not_done()[ipo].name()   << " & - & " 
-               << "\\numprint{" << cat.not_done()[ipo].amount() << "} +/- \\numprint{" 
-               << cat.not_done()[ipo].margin() << "}\\\\" << std::endl; 
+           out << "\\hspace{12pt}\\it "
+               << cat.not_done()[ipo].description() << " &\\it " 
+               << cat.not_done()[ipo].date()        << " &\\it " 
+               << "\\numprint{" << cat.not_done()[ipo].amount() << "}\\\\" << std::endl; 
         }
+//operation not passed, sign convention is the other (because of forecast printing)
+        if(!cat.waiting().empty())
+        {
+           out << "\\addlinespace[3pt]\\raggedleft\\small\\sf\\underline{Opération(s) automatique(s) en attente} & &\\\\*[3pt]" << std::endl; 
+        }
+        for(unsigned int ipo = 0; ipo < cat.waiting().size(); ipo++)
+        {
+           out << "\\hspace{12pt}\\it " 
+               << cat.waiting()[ipo].name() << " & &\\it "
+               << "\\numprint{"         << - cat.waiting()[ipo].amount() << "}\\\\" << std::endl; 
+        }
+        out << "\\addlinespace\\cmidrule(r{2cm}l{5cm}){1-2}" << std::endl;
      }
+
+     out << "\\addlinespace Total   & \\numprint{" << month_report.amount() << "} " << money.tex_money() << " & \\numprint{" 
+                                  << month_report.forecast_amount() << "} +/- \\numprint{"
+                                  << month_report.forecast_margin() << "} " << money.tex_money() << "\\\\\\bottomrule" 
+         << std::endl;
+
+     out << "Attendu & \\numprint{" << month_report.expected_amount() << "} " << money.tex_money() << " & \\\\\\bottomrule" 
+         << std::endl;
 
      out << "\\end{longtable}" << std::endl;
   }

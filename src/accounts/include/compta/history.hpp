@@ -232,9 +232,10 @@ namespace Compta{
      for(unsigned int ip = 0; ip < storage.size(); ip++)
      {
         if(storage[ip].date() < start)continue;
-        out.push_back(storage[ip]);
         if(storage[ip].date() > end)break;
+        out.push_back(storage[ip]);
      }
+
      return;
   }
 
@@ -247,10 +248,11 @@ namespace Compta{
      return;
   }
 
+  //keep track of all waiting stuff
   inline
   void History::in_waiting_of_month(const Date &month, std::vector<Posting> &out) const
   {
-     Date start(1,month.month(),month.year());
+     Date start(this->start_date());
      Date end(DateUtils::days_in_months(month.month(),month.year()),month.month(),month.year());
      this->posting_between_dates(start,end,_in_waiting,out);
      return;

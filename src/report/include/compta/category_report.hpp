@@ -79,8 +79,10 @@ namespace Compta
 
         //!\return Posting s
         const std::vector<Posting>   done() const;
+        //!\return Posting s
+        const std::vector<Posting>   not_done() const;
         //!\return Operation s
-        const std::vector<Operation> not_done() const;
+        const std::vector<Operation> waiting() const;
 
         //!compares and report
         void report() const;
@@ -93,6 +95,7 @@ namespace Compta
         float _amount;
         float _expected_amount;
         std::vector<Posting>   _done_this_month;
+        std::vector<Posting>   _not_done_this_month;
         std::vector<Operation> _not_done_yet_this_month;
 
   };
@@ -136,6 +139,10 @@ namespace Compta
       _forecast_amount = forcat.amount_this_month(_date.count_date());
       _forecast_margin = forcat.margin_this_month(_date.count_date());
       forcat.expected_operations(date.count_date(),_not_done_yet_this_month);
+      for(unsigned int ind = 0; ind < _not_done_yet_this_month.size(); ind++)
+      {
+         _expected_amount += _not_done_yet_this_month[ind].amount();
+      }
   }
 
   inline
@@ -148,8 +155,10 @@ namespace Compta
          _forecast_amount         = rhs.forecast_amount();
          _forecast_margin         = rhs.forecast_margin();
          _amount                  = rhs.amount();
+         _expected_amount         = rhs.expected_amount() - rhs.amount();
          _done_this_month         = rhs.done();
-         _not_done_yet_this_month = rhs.not_done();
+         _not_done_this_month     = rhs.not_done();
+         _not_done_yet_this_month = rhs.waiting();
       }
 
       return *this;
@@ -188,7 +197,7 @@ namespace Compta
   inline
   float CategoryReport::expected_amount() const
   {
-     return _expected_amount;
+     return _expected_amount + _amount;
   }
 
   inline
@@ -198,7 +207,13 @@ namespace Compta
   }
 
   inline
-  const std::vector<Operation> CategoryReport::not_done() const
+  const std::vector<Posting> CategoryReport::not_done() const
+  {
+     return _not_done_this_month;
+  }
+
+  inline
+  const std::vector<Operation> CategoryReport::waiting() const
   {
      return _not_done_yet_this_month;
   }
@@ -206,16 +221,23 @@ namespace Compta
   inline
   void CategoryReport::add_posting(const Posting &post)
   {
-     _done_this_month.push_back(post);
-     _amount -= post.amount();
-     for(unsigned int o = 0; o < _not_done_yet_this_month.size(); o++)
+     if(post.accounted())
      {
-       if(post == _not_done_yet_this_month[o])
+       _done_this_month.push_back(post);
+       _amount -= post.amount();
+       for(unsigned int o = 0; o < _not_done_yet_this_month.size(); o++)
        {
-           _expected_amount -= post.amount();
-           _not_done_yet_this_month.erase(_not_done_yet_this_month.begin() + o);
-           return;
+         if(post == _not_done_yet_this_month[o])
+         {
+             _expected_amount += post.amount();
+             _not_done_yet_this_month.erase(_not_done_yet_this_month.begin() + o);
+             return;
+         }
        }
+     }else
+     {
+       _not_done_this_month.push_back(post);
+       _expected_amount -= post.amount();
      }
 
   }

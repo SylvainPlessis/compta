@@ -65,6 +65,11 @@ namespace Compta
 
         const std::vector<CategoryReport> & report() const;
 
+        float amount()          const;
+        float expected_amount() const;
+        float forecast_amount() const;
+        float forecast_margin() const;
+
      private:
 
         //!sets the caterories, using the Forecast reference
@@ -74,8 +79,6 @@ namespace Compta
         const Forecast *            _forecast; 
         Date                        _date;
 
-        float                       _amount;
-        float                       _expected_amount;
         float                       _forecast_amount;
         float                       _forecast_margin;
   };
@@ -96,8 +99,6 @@ namespace Compta
   MonthlyReport::MonthlyReport(const Forecast &forecast, const Date & date):
     _forecast(&forecast),
     _date(date),
-    _amount(0.),
-    _expected_amount(0.),
     _forecast_amount(0.),
     _forecast_margin(0.)
   {
@@ -109,12 +110,10 @@ namespace Compta
   MonthlyReport::MonthlyReport(const MonthlyReport &rhs):
     _forecast((&rhs.forecast())),
     _date(rhs.date()),
-    _amount(0.),
-    _expected_amount(0.),
-    _forecast_amount(0.),
-    _forecast_margin(0.)
+    _forecast_amount(rhs.forecast_amount()),
+    _forecast_margin(rhs.forecast_margin())
   {
-    this->set_categories();
+    _report = rhs.report();
     return;
   }
 
@@ -147,7 +146,6 @@ namespace Compta
   inline
   void MonthlyReport::add_posting(const Posting &post)
   {
-     if(post.category() == "creation")return;
      for(unsigned int ic= 0; ic < _report.size(); ic++)
      {
         if(post.category() == _report[ic].name())
@@ -166,6 +164,40 @@ namespace Compta
   const std::vector<CategoryReport> & MonthlyReport::report() const
   {
      return _report;
+  }
+
+  inline
+  float MonthlyReport::amount() const
+  {
+    float amount(0.);
+    for(unsigned int ic = 0; ic < _report.size(); ic++)
+    {
+        amount += _report[ic].amount();
+    }
+    return amount;
+  }
+
+  inline
+  float MonthlyReport::expected_amount() const
+  {
+    float amount(0.);
+    for(unsigned int ic = 0; ic < _report.size(); ic++)
+    {
+        amount += _report[ic].expected_amount();
+    }
+    return amount;
+  }
+
+  inline
+  float MonthlyReport::forecast_amount() const
+  {
+    return _forecast_amount;
+  }
+
+  inline
+  float MonthlyReport::forecast_margin() const
+  {
+    return _forecast_margin;
   }
 
 }

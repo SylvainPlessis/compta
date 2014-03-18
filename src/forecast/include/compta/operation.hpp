@@ -298,13 +298,13 @@ namespace Compta{
     unsigned int a = std::floor(month/10000);
     unsigned int m = std::floor((month - a * 10000)/100);
     unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
-    return ((distance%_period == 0) && _automatic);
+    return (distance%_period == 0);
   }
 
   inline
   void Operation::expected_operations(unsigned int &month, std::vector<Operation> &op) const
   {
-    if(this->happening_this_month(month))op.push_back(*this); 
+    if(this->happening_this_month(month) && _automatic)op.push_back(*this); 
   }
 
   inline
