@@ -194,7 +194,11 @@ namespace Compta{
         const CategoryReport & cat = month_report.report()[icat];
 
         out << "\\addlinespace\\raggedright\\textbf{\\underline{" << cat.name() << "}} & "
-            << "\\sl\\numprint{" << cat.amount() << "} (\\numprint{" << cat.expected_amount() << "}) "
+            << "\\sl{";
+        if(cat.amount() > cat.forecast_amount())out << "\\color{red}";
+        out <<"\\numprint{" << cat.amount() << "}} ({";
+        if(cat.expected_amount() > cat.forecast_amount())out << "\\color{red}";
+        out << "\\numprint{" << cat.expected_amount() << "}}) "
                         << money.tex_money() << " & \\bf"
             << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "} "
                         << money.tex_money() << "\\\\*" << std::endl;
@@ -236,12 +240,16 @@ namespace Compta{
         out << "\\addlinespace\\cmidrule(r{2cm}l{5cm}){1-2}" << std::endl;
      }
 
-     out << "\\addlinespace Total   & \\numprint{" << month_report.amount() << "} " << money.tex_money() << " & \\numprint{" 
-                                  << month_report.forecast_amount() << "} +/- \\numprint{"
-                                  << month_report.forecast_margin() << "} " << money.tex_money() << "\\\\\\bottomrule" 
+     out << "\\addlinespace Total   & {";
+     if(month_report.amount() > month_report.forecast_amount())out << "\\color{red}";
+     out << "\\numprint{" << month_report.amount() << "}} " << money.tex_money() << " & \\numprint{" 
+         << month_report.forecast_amount() << "} +/- \\numprint{"
+         << month_report.forecast_margin() << "} " << money.tex_money() << "\\\\\\bottomrule" 
          << std::endl;
 
-     out << "Attendu & \\numprint{" << month_report.expected_amount() << "} " << money.tex_money() << " & \\\\\\bottomrule" 
+     out << "Attendu & {";
+     if(month_report.expected_amount() > month_report.forecast_amount())out << "\\color{red}";
+     out << "\\numprint{" << month_report.expected_amount() << "}} " << money.tex_money() << " & \\\\\\bottomrule" 
          << std::endl;
 
      out << "\\end{longtable}" << std::endl;
