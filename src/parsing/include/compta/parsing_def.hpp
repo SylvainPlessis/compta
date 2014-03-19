@@ -80,7 +80,7 @@ namespace Compta{
 
      const std::string delimiter()
      {
-        return ",";
+        return "->";
      }
 
      std::map<char, PostingType::PostingType> _posting_type_map;
