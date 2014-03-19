@@ -259,13 +259,13 @@ namespace Compta{
   inline
   float Operation::amount() const
   {
-     return _amount;
+     return _amount/(float)_period;
   }
 
   inline
   float Operation::margin() const
   {
-     return _margin;
+     return _margin/(float)_period;
   }
 
   inline

@@ -105,6 +105,8 @@ namespace Compta{
       void add_posting(Posting &post, std::vector<Ac> &target, std::map<std::string,unsigned int> &map,
                        const std::string &decl, std::vector<std::string> &out);
 
+      void add_transfert(Posting &post, const std::vector<std::string> &out);
+
       Forecast _previsionnel;
       std::vector<Cash> _liquide;
       std::vector<Bank> _banque;
@@ -205,8 +207,8 @@ namespace Compta{
   void ComptaObj::add_savings_account(const Savings &epa, const std::string &sname, const std::string &ref)
   {
      if(!_banque_map.count(ref))
-                compta_savings_error("This savings account " + sname + " has not bank account reference,\n" + 
-                                      ref + " does not exist. See your input file, is the order ok?");
+                compta_savings_error(std::string("This savings account " + sname + " has not bank account reference,\n" + 
+                                      ref + " does not exist. See your input file, is the order ok?"));
      _banque[_banque_map[ref]].add_savings_account(epa,sname);
   }
   
@@ -230,7 +232,7 @@ namespace Compta{
       _title = title;
     }else
     {
-       if(_title != title)compta_reading_error("Different titles are given for the same comptability.");
+       if(_title != title)compta_reading_error(std::string("Different titles are given for the same comptability."));
     }
   }
 
@@ -238,12 +240,12 @@ namespace Compta{
   void ComptaObj::add_posting(Posting &post, const char &identifier)
   {
      if(!DataParsing::posting_type_map().count(identifier))
-                compta_reading_error("This identifier is not supported: " + identifier);
+                compta_reading_error(std::string("This identifier is not supported: " + identifier));
      post.set_identifier(DataParsing::posting_type_map().at(identifier));
 
      std::vector<std::string> out;
-     int nstr = SplitString(post.description(),DataParsing::delimiter(), out, false);
-     if(nstr == 0)out.push_back(post.description());
+     SplitString(post.description(),DataParsing::delimiter(), out, false);
+     if(out.empty())out.push_back(post.description());
      if(identifier == DataParsing::bank_str())
      {
          this->add_posting(post, this->_banque, this->_banque_map, "bank", out);
@@ -252,7 +254,17 @@ namespace Compta{
          this->add_posting(post, this->_liquide, this->_liquide_map, "cash", out);
      }else if(identifier == DataParsing::transfer_str())
      {
+     }else //end transfert
+     {
         shave_string(out);
+        this->add_transfert(post,out);
+        compta_error();
+     }
+  }
+
+  inline
+  void ComptaObject::add_transfert(Posting &post, const std::vector<std::string> &out)
+  {      
         int bansrc(-1),bantrgt(-1);
         int epasrc(-1);
         int cassrc(-1),castrgt(-1);
@@ -398,12 +410,7 @@ namespace Compta{
           {
              compta_error();
           }
-     }else //end transfert
-     {
-        compta_error();
-     }
   }
-      
 
   template<typename Ac>
   inline
@@ -418,13 +425,13 @@ namespace Compta{
            shave_string(out);
            if(!map.count(out[0]) &&
               !map.count(out[1]))
-                  compta_reading_error("I do not have this " + decl + " account:\n\t" + out[0] + "\nor\n\t" + out[1]);
+                  compta_reading_error(std::string("I do not have this " + decl + " account:\n\t" + out[0] + "\nor\n\t" + out[1]));
            unsigned int where = (map.count(out[0]))?0:1;
            post.set_description(out[1-where]);
            target[where].add_posting(post);
         }else
         {
-           compta_reading_error("I don't understand this posting description:\n" + post.description());
+           compta_reading_error(std::string("I don't understand this posting description:\n" + post.description()));
         }
    }
 

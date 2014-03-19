@@ -113,15 +113,6 @@ namespace Compta{
           }
           //now we add the operation
           forecast.add_operation(cat,new_op);
-          //the margin: if != 0.0, then we compare to current value,
-          //if different, there's a problem
-          if(margin != 0.0)
-          {
-            if(forecast.forecast().operation(cat).margin() != margin)
-                      compta_reading_error("Error in forecast, you gave two different margins for the same category");
-            if(forecast.forecast().operation(cat).margin() == 0.0)
-                              forecast.forecast().operation(cat).set_margin(margin);
-          }
        }
        data.close();
   }
