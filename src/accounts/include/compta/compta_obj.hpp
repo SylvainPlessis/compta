@@ -113,7 +113,7 @@ namespace Compta{
 
       const Posting convert_posting_currency(const Posting &source,unsigned int bansrc) const;
 
-      void add_posting();
+      void add_posting(unsigned int counter, const std::vector<std::vector<unsigned int> > & corres, const Posting &post);
 
       Forecast _previsionnel;
       std::vector<Cash> _liquide;
@@ -342,7 +342,8 @@ namespace Compta{
    return;
  }
 
- void add_posting(unsigned int counter, const std::vector<std::vector<unsigned int> > & corres, const Posting &post)
+ inline
+ void ComptaObject::add_posting(unsigned int counter, const std::vector<std::vector<unsigned int> > & corres, const Posting &post)
  {
      switch(counter)
      {
@@ -379,6 +380,7 @@ namespace Compta{
       }
       case 2: // counter = 2, explicit
       {
+
         if(out.size() > 2) //in case of change of currency, adapted amount is given here
         {
          std::vector<std::string> tmp;
