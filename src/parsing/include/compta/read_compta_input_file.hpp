@@ -255,7 +255,10 @@ namespace Compta{
           float amount = (cred > deb)?cred:-deb;
           bool accounted = !(id.size() == 2);
           Posting post(cat,date_post,descr,amount,accounted);
-          compte.add_posting(post, identifier);
+          if(!DataParsing::posting_type_map().count(identifier))
+                compta_reading_error(std::string("This identifier is not supported: " + identifier));
+          post.set_identifier(DataParsing::posting_type_map().at(identifier));
+          compte.add_posting(post);
       }
       data.close();
   }
