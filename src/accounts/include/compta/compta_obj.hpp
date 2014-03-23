@@ -281,10 +281,11 @@ namespace Compta{
          this->add_posting(post, this->_liquide, this->_liquide_map, "cash", out);
      }else if(post.identifier() == PostingType::V)
      {
-     }else //end transfert
-     {
         shave_string(out);
         this->add_transfert(post,out);
+     }else
+     {
+
         compta_error();
      }
   }
@@ -296,7 +297,7 @@ namespace Compta{
         std::vector< std::vector<int> > ends; //[src|trg][ban|epa|cas]
         ends.resize(2); //[src|trg]
         ends[0].resize(3,-1);//[src][ban|epa|cas]
-        ends[0].resize(3,-1);//[trg][ban|epa|cas]
+        ends[1].resize(3,-1);//[trg][ban|epa|cas]
 
         this->find_src_and_trg(n_end,ends,out);
 

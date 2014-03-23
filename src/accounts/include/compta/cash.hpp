@@ -29,8 +29,19 @@
 
 namespace Compta{
 
-//simply the base object
-  typedef AccountBase Cash;
+//simply the base object, defaulted for the constructor
+  class Cash:public AccountBase{
+     public:
+      Cash(const std::string &name = "Account", const Date & start_date = Date(1,1,1900), 
+                  float amount = 0., Currency::Currency  money = Currency::EUR);
+  };
+
+  inline
+  Cash::Cash(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
+        AccountBase(name,start_date,amount,money)
+  {
+     return;
+  }
 
 }
 

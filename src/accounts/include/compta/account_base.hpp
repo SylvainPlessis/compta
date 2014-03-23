@@ -38,7 +38,8 @@ namespace Compta{
 
   class AccountBase{
      public:
-      AccountBase();
+      AccountBase(const std::string &name, const Date & start_date, 
+                  float amount, Currency::Currency  money);
       AccountBase(const AccountBase &rhs);
       ~AccountBase();
 
@@ -67,18 +68,23 @@ namespace Compta{
       AccountBase &operator=(const AccountBase &rhs);
 
      protected:
+      Date               _creation;
+      float              _creation_amount;
       History            _records;
       std::string        _name;
       Currency::Currency _currency;
-      Date               _creation;
-      float              _creation_amount;
+
+     private:
+      AccountBase();
   };
 
   inline
-  AccountBase::AccountBase():
+  AccountBase::AccountBase(const std::string &name, const Date & start_date, float amount, Currency::Currency mon):
+      _creation(start_date),
+      _creation_amount(0.),
       _records(_creation_amount),
-      _currency(Currency::EUR),
-      _creation_amount(0.)
+      _name(name),
+      _currency(mon)
   {
      return;
   }

@@ -178,18 +178,14 @@ namespace Compta{
 
           if(first_word == AccountsParsing::bank())
           {
-             Bank bank;
-             bank.set_name(name);
-             bank.set_creation(start_date,amount);
+             Bank bank(name,start_date,amount);
              (currency.empty())?bank.set_currency(default_currency):
                                 bank.set_currency(current_money.money());
              compte.add_bank_account(bank,(dependance == AccountsParsing::chooser()));
                 
           }else if(first_word == AccountsParsing::cash())
           {
-             Cash cash;
-             cash.set_name(name);
-             cash.set_creation(start_date,amount);
+             Cash cash(name,start_date,amount);
              (currency.empty())?cash.set_currency(default_currency):
                                 cash.set_currency(current_money.money());
              compte.add_cash_account(cash,(dependance == AccountsParsing::chooser()));

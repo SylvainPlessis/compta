@@ -38,7 +38,8 @@ namespace Compta{
 
   class Bank:public AccountBase{
      public:
-      Bank();
+      Bank(const std::string &name = "Account", const Date & start_date = Date(1,1,1900), 
+                  float amount = 0., Currency::Currency  money = Currency::EUR);
       Bank(const Bank &rhs);
       ~Bank();
 
@@ -68,13 +69,15 @@ namespace Compta{
   };
 
   inline
-  Bank::Bank()
+  Bank::Bank(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
+        AccountBase(name,start_date,amount,money)
   {
      return;
   }
 
   inline
-  Bank::Bank(const Bank &rhs)
+  Bank::Bank(const Bank &rhs):
+      AccountBase(*(static_cast<const AccountBase*>(&rhs)))
   {
      *this = rhs;
      return;
@@ -123,7 +126,6 @@ namespace Compta{
   {
       if(this != &rhs)
       {
-       *(static_cast<AccountBase*>(this)) = *(static_cast<const AccountBase*>(&rhs));
         _savings = rhs.savings();
         _savings_map = rhs.savings_map();
         _savings_list = rhs.savings_list();

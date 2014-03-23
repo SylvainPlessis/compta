@@ -108,7 +108,7 @@ namespace Compta{
   inline
   History::History(float creation_amount):
     _starting_state(creation_amount),
-    _current_state(0.),
+    _current_state(creation_amount),
     _expected_state(0.)
   {
     today = DateUtils::today();
