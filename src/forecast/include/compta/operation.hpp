@@ -89,9 +89,9 @@ namespace Compta{
 
         //!\return the name
         const std::string name()   const;
-        //!\return the amount
+        //!\return the amount per month
         float amount()             const;
-        //!\return the margin
+        //!\return the margin per month
         float margin()             const;
         //!\return the starting date
         const Date starting_date() const;
@@ -101,6 +101,10 @@ namespace Compta{
         bool automatic()           const;
         //!\return the period
         unsigned int period()      const;
+        //!\return the raw amount
+        float raw_amount()         const;
+        //!\return the raw margin
+        float raw_margin()         const;
 
         //!\return the amount if expected this month
         float amount_this_month(unsigned int &date)  const;
@@ -180,7 +184,7 @@ namespace Compta{
   {
      if(this != &rhs)
      {
-       this->set_operation(rhs.name(),rhs.amount(),rhs.margin(),
+       this->set_operation(rhs.name(),rhs.amount() * (float)rhs.period(),rhs.margin() * (float)rhs.period(),
                            rhs.starting_date(),rhs.ending_date(),
                            rhs.automatic(),
                            rhs.period());
@@ -290,6 +294,18 @@ namespace Compta{
   unsigned int Operation::period() const
   {
      return _period;
+  }
+
+  inline
+  float Operation::raw_amount() const
+  {
+     return _amount;
+  }
+  
+  inline
+  float Operation::raw_margin() const
+  {
+     return _margin;
   }
 
   inline 

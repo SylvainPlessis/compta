@@ -266,9 +266,11 @@ namespace Compta{
   void ForecastContainer<Containee>::update_amount()
   {
      _amount = 0.;
+     _margin = 0.;
      for(unsigned int i = 0; i < _operations_list.size(); i++)
      {
        _amount += _operations_list[i].amount();
+       _margin += _operations_list[i].margin();
      }
   }
 
