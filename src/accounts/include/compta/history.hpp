@@ -261,22 +261,19 @@ namespace Compta{
   inline
   const Date History::start_date() const
   {
-     if(_history.empty())compta_error();
+ //    if(_history.empty())compta_error();
 
-     Date out_date;
+     Date out_date(DateUtils::date_min());
 
-     if(_history.size() > 1 && !_in_waiting.empty())
+     if(!_history.empty() && !_in_waiting.empty())
      {
-        out_date = (_history[1].date() < _in_waiting[0].date())?_history[1].date():_in_waiting[0].date();
-     }else if(_history.size() > 1)
+        out_date = (_history.front().date() < _in_waiting.front().date())?_history.front().date():_in_waiting.front().date();
+     }else if(!_history.empty())
      {
-        out_date = _history[1].date();
+        out_date = _history.front().date();
      }else if(!_in_waiting.empty())
      {
-        out_date = _in_waiting[0].date();
-     }else //empty??
-     {
-        out_date = _history.front().date(); //creation
+        out_date = _in_waiting.front().date();
      }
 
      return out_date;
@@ -285,16 +282,19 @@ namespace Compta{
   inline
   const Date History::end_date() const
   {
-     if(_history.empty())compta_error();
+//     if(_history.empty())compta_error();
 
-     Date out_date;
+     Date out_date(DateUtils::date_min());
 
-     if(_in_waiting.empty())
+     if(!_history.empty() && !_in_waiting.empty())
      {
-        out_date =  _history.back().date();
-     }else
+        out_date = (_history.back().date() > _in_waiting.back().date())?_history.back().date():_in_waiting.back().date();
+     }else if(!_history.empty())
      {
-        out_date = (_history.back().date() >= _in_waiting.back().date())?_history.back().date():_in_waiting.back().date();
+        out_date = _history.back().date();
+     }else if(!_in_waiting.empty())
+     {
+        out_date = _in_waiting.back().date();
      }
 
      return out_date;
@@ -304,7 +304,7 @@ namespace Compta{
   inline
   bool History::empty() const
   {
-     return (_history.size() == 1 && _in_waiting.empty());
+     return (_history.empty() && _in_waiting.empty());
   }
 
   
