@@ -227,6 +227,8 @@ namespace Compta{
           << _date        << ", "
           << _description << ", une somme de "
           << _amount;
+      if(!_accounted)out << " non";
+      out << " prise en compte.";
   }
 
   inline

@@ -29,6 +29,7 @@
 #include "compta/history.hpp"
 #include "compta/money_enum.hpp"
 #include "compta/date.hpp"
+#include "compta/money.hpp"
 
 //C++
 #include <string>
@@ -58,8 +59,6 @@ namespace Compta{
       void set_name(const std::string &name);
       //!sets the currency
       void set_currency(const Currency::Currency &currency);
-      //!sets the date
-      void set_creation(const Date &creation, float amount);
 
       //!adds a line
       void add_posting(const Posting &post);
@@ -67,9 +66,19 @@ namespace Compta{
       //! Operator
       AccountBase &operator=(const AccountBase &rhs);
 
+      //! prints the history + creation
+      void print(std::ostream& out = std::cout) const;
+
+      //! Formatted print.
+      friend std::ostream& operator << (std::ostream& os, const AccountBase &histoire)
+      {
+        histoire.print(os);
+        return os;
+      }
+
      protected:
-      Date               _creation;
-      float              _creation_amount;
+      const Date         _creation;
+      const float        _creation_amount;
       History            _records;
       std::string        _name;
       Currency::Currency _currency;
@@ -91,7 +100,9 @@ namespace Compta{
 
   inline
   AccountBase::AccountBase(const AccountBase &rhs):
-      _records(rhs.creation_amount())
+      _creation(rhs.creation()),
+      _creation_amount(rhs.creation_amount()),
+      _records(_creation_amount)
   {
      *this = rhs;
      return;
@@ -152,13 +163,6 @@ namespace Compta{
   }
 
   inline
-  void AccountBase::set_creation(const Date &creation, float amount)
-  {
-     _creation = creation;
-     _creation_amount = amount;
-  }
-
-  inline
   AccountBase &AccountBase::operator=(const AccountBase &rhs)
   {
      if(this != &rhs)
@@ -166,9 +170,16 @@ namespace Compta{
        _records = rhs.records();
        _name = rhs.name();
        _currency = rhs.currency();
-       _creation = rhs.creation();
      }
      return *this;
+  }
+
+  inline
+  void AccountBase::print(std::ostream& out) const
+  {
+      Money cur(_currency);
+      out << "Creation, le " << _creation << " avec " << _creation_amount << " " << cur.str_money() << std::endl;
+      out << _records;
   }
 
 }
