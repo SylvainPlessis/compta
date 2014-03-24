@@ -80,7 +80,7 @@ namespace Compta{
         //!\return the last date
         const Date end_date() const;
 
-        //! true if contains something more than creation
+        //! false if contains something more than creation
         bool empty() const;
 
         //! \return the current state

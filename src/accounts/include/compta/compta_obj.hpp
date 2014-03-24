@@ -467,7 +467,7 @@ namespace Compta{
   inline
   const Posting ComptaObj::convert_posting_currency(const Posting &source,const Currency::Currency &trg) const
   {
-    Posting post(source);
+    Posting post(-source);
     Money money_trgt(trg);
 
     std::vector<std::string> tmp;
@@ -574,16 +574,16 @@ namespace Compta{
     if(_banque.empty() && _liquide.empty())return;
 
     Date cur_date;
-    if(!_banque.empty() && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
+    if(!_banque.empty()  && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
         if(_liquide[0].records().start_date() < cur_date)cur_date = _liquide[0].records().start_date();
 
     Date end_date;
-    if(!_banque.empty() && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
+    if(!_banque.empty()  && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
         if(_liquide[0].records().end_date() > end_date)end_date = _liquide[0].records().end_date();
 
-    while(cur_date < end_date)
+    while(cur_date <= end_date)
     {
        MonthlyReport month_report(_previsionnel,cur_date);
        this->report_compta(month_report);

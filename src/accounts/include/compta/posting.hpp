@@ -80,7 +80,7 @@ namespace Compta{
           return os;
         }
 
-        //! Comparator
+        //! Minus
         Posting operator-() const;
 
         //! operator

@@ -81,7 +81,7 @@ namespace Compta{
   inline
   AccountBase::AccountBase(const std::string &name, const Date & start_date, float amount, Currency::Currency mon):
       _creation(start_date),
-      _creation_amount(0.),
+      _creation_amount(amount),
       _records(_creation_amount),
       _name(name),
       _currency(mon)
