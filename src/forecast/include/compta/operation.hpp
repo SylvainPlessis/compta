@@ -309,12 +309,14 @@ namespace Compta{
   }
 
   inline 
-  bool Operation::happening_this_month(unsigned int &month) const
+  bool Operation::happening_this_month(unsigned int &date) const
   {
-    unsigned int a = std::floor(month/10000);
-    unsigned int m = std::floor((month - a * 10000)/100);
+    unsigned int a = std::floor(date/10000);
+    unsigned int m = std::floor((date - a * 10000)/100);
     unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
-    return (distance%_period == 0);
+    return (distance%_period == 0) && 
+           (date >= _start_date.count_date())   &&
+           (date <= _end_date.count_date());
   }
 
   inline

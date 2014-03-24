@@ -43,7 +43,7 @@ namespace Compta{
   //! forecast
   void latex_forecast(std::ofstream &out, const Forecast &prev);
   //! bank account
-  void latex_bank(std::ofstream &out, const Bank &bank);
+  void latex_account(std::ofstream &out, const History &acc, const std::string & name, const Currency::Currency &money);
   //! details by month
   void latex_data(std::ofstream &out, const ComptaObj &compte);
   //! details for a month
@@ -100,61 +100,77 @@ namespace Compta{
          {
             out << std::fixed << std::setprecision(2)
                 << "\\multicolumn{2}{l}{\\hspace{12pt} " << prev.forecast().operations_list()[ic].operations_list()[isc].name() << "} & "
-                << "\\numprint{" << prev.forecast().operations_list()[ic].operations_list()[isc].amount() << "}  (\\numprint{"
-                                 << prev.forecast().operations_list()[ic].operations_list()[isc].margin() << "}) & \\tt "
+                << "\\numprint{" << prev.forecast().operations_list()[ic].operations_list()[isc].raw_amount() << "}  (\\numprint{"
+                                 << prev.forecast().operations_list()[ic].operations_list()[isc].raw_margin() << "}) & \\tt "
                 << prev.forecast().operations_list()[ic].operations_list()[isc].starting_date().date_string() << "\\ \\textendash\\ "//rule[3pt]{12pt}{0.6pt}"
                 << prev.forecast().operations_list()[ic].operations_list()[isc].ending_date().date_string() << "\\hfill\\sf "
                 << prev.forecast().operations_list()[ic].operations_list()[isc].period() << " \\\\" << std::endl;
          }
      }
-     out << "\\bottomrule" << std::endl;
+     out << "\\bottomrule\\addlinespace" << std::endl;
+     out << "\\bf\\large Total & \\large\\bf";
+     if(prev.forecast().amount() < 0.)
+     {
+       out << "\\color{green!60!black}\\numprint{" << - prev.forecast().amount();
+     }else
+     {
+       out << "\\color{red}\\numprint{" << prev.forecast().amount();
+     }
+     out << "} +/- \\numprint{" << prev.forecast().margin()
+         << "} " << money.tex_money() << "\\\\\\bottomrule" << std::endl;
      out << "\\end{longtable}" << std::endl;
   }
 
   inline
-  void latex_bank(std::ofstream &out, const Bank &bank)
+  void latex_account(std::ofstream &out, const History &acc, const std::string & name, const Currency::Currency &money)
   {
-     if(bank.records().history().empty())return;
-     Money money(bank.currency());
+     if(acc.empty())return;
 
-     Date cur_month = bank.records().history().back().date(); //last date
+     Money cur(money);
+     const std::string currency(cur.tex_money());
+
+     Date cur_month = acc.start_date(); //last date
      cur_month.set_date(1, cur_month.month(), cur_month.year()); //last month
 
-     out << "\\chapter{" << bank.name() << "}" << std::endl;
+     out << "\\chapter{" << name << "}" << std::endl;
      out << std::endl;
-     out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << money.tex_money() << "}}\\toprule" << std::endl;
-     out << "Description & Date & Montant \\\\\\midrule\\endhead" << std::endl;
+     out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << currency << "}r<{~" << currency << "}}\\toprule" << std::endl;
+     out << "Description & Date & Montant & Bilan \\\\\\midrule\\endhead" << std::endl;
      unsigned int ips(0);
-     float start(0.L);
-     while(cur_month > bank.records().history()[ips].date())
+     float courant(0.L);
+     while(cur_month > acc.history()[ips].date())
      {
+        courant += acc.history()[ips].amount();
         ips++;
-        start += bank.records().history()[ips].amount();
      }
-     out << "\\'Etat initial & " << cur_month.date_string() << " & \\numprint{" << start << "}\\\\[5pt]" << std::endl;
-     for(unsigned int ip = ips; ip < bank.records().history().size(); ip++)
+     out << "\\'Etat initial & " << cur_month.date_string() << " & & \\numprint{" << courant << "}\\\\[5pt]" << std::endl;
+     for(unsigned int ip = ips; ip < acc.history().size(); ip++)
      {
-        out << bank.records().history()[ip].description() << " & " 
-            << bank.records().history()[ip].date()        << " & "
+        courant += acc.history()[ip].amount();
+        out << acc.history()[ip].description() << " & " 
+            << acc.history()[ip].date()        << " & "
             << "\\numprint{" << 
-                bank.records().history()[ip].amount()      << "}\\\\" << std::endl;
+                acc.history()[ip].amount()     << "} & "
+            << "\\numprint{" << courant                  << "}\\\\" << std::endl;
      }
      out << "\\midrule" << std::endl;
-     out << "\\'Etat actuel & \\today & \\numprint{" << bank.records().current_state() << "}\\\\" << std::endl;
+     out << "\\'Etat actuel & \\today & & \\numprint{" << acc.current_state() << "}\\\\" << std::endl;
 
-     if(!bank.records().in_waiting().empty())
+     if(!acc.in_waiting().empty())
      {
        out << "\\midrule\\addlinespace[10pt]" << std::endl;
        out << "\\underline{Opération(s) en attente}\\\\[3pt]" << std::endl;
-       for(unsigned int ip = 0; ip < bank.records().in_waiting().size(); ip++)
+       for(unsigned int ip = 0; ip < acc.in_waiting().size(); ip++)
        {
-        out << bank.records().in_waiting()[ip].description() << " & " 
-            << bank.records().in_waiting()[ip].date()        << " & "
+        courant += acc.in_waiting()[ip].amount();
+        out << acc.in_waiting()[ip].description() << " & " 
+            << acc.in_waiting()[ip].date()        << " & "
             << "\\numprint{" << 
-                        bank.records().in_waiting()[ip].amount()    << "}\\\\" << std::endl;
+                acc.in_waiting()[ip].amount()     << "} & "
+            << "\\numprint{" <<  courant                    << "}\\\\" << std::endl;
        }
        out << "\\midrule" << std::endl;
-       out << "\\'Etat attendu & \\today & \\numprint{" << bank.records().expected_state() << "}\\\\" << std::endl;
+       out << "\\'Etat attendu & \\today & & \\numprint{" << acc.expected_state() << "}\\\\" << std::endl;
      }  
 
      out << "\\bottomrule" << std::endl;
@@ -189,7 +205,8 @@ namespace Compta{
   void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money)
   {
      out << "\\begin{longtable}{p{6cm}cr}\\toprule" << std::endl;
-     out << "Operation & Date & Montant " << money.tex_money() << "\\\\\\midrule" << std::endl;
+     out << "\\textbf{\\underline{Catégorie}} & \\sl Montant dépensé & \\bf Prévisionnel \\\\" << std::endl;
+     out << "\\hspace{12pt}Operation & Date & Montant \\\\\\midrule\\endhead" << std::endl;
 
      for(unsigned int icat = 0; icat < month_report.report().size(); icat++)
      {
@@ -198,10 +215,14 @@ namespace Compta{
         out << "\\addlinespace\\raggedright\\textbf{\\underline{" << cat.name() << "}} & "
             << "\\sl{";
         add_color(cat.amount(),cat.forecast_amount(),cat.forecast_margin(),out);
-        out <<"\\numprint{" << cat.amount() << "}} ({";
-        add_color(cat.expected_amount(), cat.forecast_amount(), cat.forecast_margin(),out);
-        out << "\\numprint{" << cat.expected_amount() << "}}) "
-                        << money.tex_money() << " & \\bf"
+        out <<"\\numprint{" << cat.amount() << "}} ";
+        if(std::abs(cat.expected_amount() - cat.amount()) >= 0.01)
+        {
+          out << " ({";
+          add_color(cat.expected_amount(), cat.forecast_amount(), cat.forecast_margin(),out);
+          out << "\\numprint{" << cat.expected_amount() << "}}) ";
+        }
+        out << money.tex_money() << " & \\bf"
             << "\\numprint{" << cat.forecast_amount() << "} +/- \\numprint{" << cat.forecast_margin() <<   "} "
                         << money.tex_money() << "\\\\*" << std::endl;
 //passed
@@ -214,7 +235,7 @@ namespace Compta{
            out << "\\hspace{12pt}"
                << cat.done()[ipo].description() << " & " 
                << cat.done()[ipo].date()        << " & " 
-               << "\\numprint{" << cat.done()[ipo].amount() << "}\\\\" << std::endl; 
+               << "\\numprint{" << cat.done()[ipo].amount() << "} " << money.tex_money() << "\\\\" << std::endl; 
         }
 //posting not passed
         if(!cat.not_done().empty())
@@ -226,7 +247,7 @@ namespace Compta{
            out << "\\hspace{12pt}\\it "
                << cat.not_done()[ipo].description() << " &\\it " 
                << cat.not_done()[ipo].date()        << " &\\it " 
-               << "\\numprint{" << cat.not_done()[ipo].amount() << "}\\\\" << std::endl; 
+               << "\\numprint{" << cat.not_done()[ipo].amount() << "} " << money.tex_money() << "\\\\" << std::endl; 
         }
 //operation not passed, sign convention is the other (because of forecast printing)
         if(!cat.waiting().empty())
@@ -237,7 +258,7 @@ namespace Compta{
         {
            out << "\\hspace{12pt}\\it " 
                << cat.waiting()[ipo].name() << " & &\\it "
-               << "\\numprint{"         << - cat.waiting()[ipo].amount() << "}\\\\" << std::endl; 
+               << "\\numprint{"  << - cat.waiting()[ipo].amount() << "} " << money.tex_money() << "\\\\" << std::endl; 
         }
         out << "\\addlinespace\\cmidrule(r{2cm}l{5cm}){1-2}" << std::endl;
      }
@@ -279,7 +300,16 @@ namespace Compta{
   
      for(unsigned int ib = 0; ib < compte.banque().size(); ib++)
      {
-       latex_bank(out,compte.banque()[ib]);
+       latex_account(out,compte.banque()[ib].records(),compte.banque()[ib].name(),compte.banque()[ib].currency());
+        for(unsigned int s = 0; s < compte.banque()[ib].savings().size(); s++)
+        {
+         latex_account(out,compte.banque()[ib].savings()[s],compte.banque()[ib].savings_list()[s],compte.banque()[ib].currency());
+        }
+     }
+
+     for(unsigned int ic = 0; ic < compte.liquide().size(); ic++)
+     {
+       latex_account(out, compte.liquide()[ic].records(), compte.liquide()[ic].name(),compte.liquide()[ic].currency());
      }
 
      out << "\\part{Détail}" << std::endl;

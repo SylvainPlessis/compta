@@ -518,9 +518,9 @@ namespace Compta{
        out << "\n\nRapport de la comptabilité << " << _title << " >>\n" <<  std::endl;
 
        out << "Forecast" << std::endl
-           << "  le forecast contient "  << _previsionnel.forecast().n_objects() << " catégories," << std::endl
-           << "  la limite globale est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
-                << "plus ou moins "         << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
+           << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
+           << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
+           << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
 
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
@@ -564,6 +564,13 @@ namespace Compta{
               << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
               << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
           out << std::endl;
+          if(!_liquide[ic].records().in_waiting().empty())
+          {
+             for(unsigned int ie = 0; ie < _liquide[ic].records().in_waiting().size(); ie++)
+             {
+                 out << "\t  +++ " << _liquide[ic].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
+             }
+          }
       }
    }
 

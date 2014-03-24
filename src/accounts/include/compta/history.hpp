@@ -98,7 +98,7 @@ namespace Compta{
 
         std::vector<Posting> _history;
         std::vector<Posting> _in_waiting;
-        float _starting_state;
+        const float _starting_state;
         float _current_state;
         float _expected_state;
         Date today;
@@ -109,7 +109,7 @@ namespace Compta{
   History::History(float creation_amount):
     _starting_state(creation_amount),
     _current_state(creation_amount),
-    _expected_state(0.)
+    _expected_state(creation_amount)
   {
     today = DateUtils::today();
   }
@@ -164,6 +164,7 @@ namespace Compta{
   inline
   void History::print(std::ostream &out) const
   {
+
      for(unsigned int i = 0; i < _history.size(); i++)
      {
         out << _history[i] << std::endl;
@@ -217,7 +218,6 @@ namespace Compta{
     {
        _history        = rhs.history();
        _in_waiting     = rhs.in_waiting();
-       _starting_state = rhs.starting_state();
        _current_state  = rhs.current_state();
        _expected_state = rhs.expected_state();
     }

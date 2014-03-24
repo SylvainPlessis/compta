@@ -78,11 +78,11 @@ namespace Compta
         float expected_amount()   const;
 
         //!\return Posting s
-        const std::vector<Posting>   done() const;
+        const std::vector<Posting> &   done() const;
         //!\return Posting s
-        const std::vector<Posting>   not_done() const;
+        const std::vector<Posting> &   not_done() const;
         //!\return Operation s
-        const std::vector<Operation> waiting() const;
+        const std::vector<Operation> & waiting() const;
 
         //!compares and report
         void report() const;
@@ -201,19 +201,19 @@ namespace Compta
   }
 
   inline
-  const std::vector<Posting> CategoryReport::done() const
+  const std::vector<Posting> & CategoryReport::done() const
   {
      return _done_this_month;
   }
 
   inline
-  const std::vector<Posting> CategoryReport::not_done() const
+  const std::vector<Posting> & CategoryReport::not_done() const
   {
      return _not_done_this_month;
   }
 
   inline
-  const std::vector<Operation> CategoryReport::waiting() const
+  const std::vector<Operation> & CategoryReport::waiting() const
   {
      return _not_done_yet_this_month;
   }
@@ -231,7 +231,7 @@ namespace Compta
          {
              _expected_amount += post.amount();
              _not_done_yet_this_month.erase(_not_done_yet_this_month.begin() + o);
-             return;
+             break;
          }
        }
      }else
@@ -239,6 +239,8 @@ namespace Compta
        _not_done_this_month.push_back(post);
        _expected_amount -= post.amount();
      }
+
+     return;
 
   }
 
