@@ -29,6 +29,7 @@
 // C++
 #include <string>
 #include <vector>
+#include <algorithm>
 
 namespace Compta
 {
@@ -48,16 +49,17 @@ namespace Compta
 
   //!supress blanks around string
   inline
-  void shave_string(std::string &customer)
+  void shave_string(std::string &str)
   {
-      if(customer.empty())return;
-      while(customer[0] == ' ')customer.erase(0,1);
-      while(customer[customer.size() - 1] == ' '  ||
-            customer[customer.size() - 1] == '\r' ||
-            customer[customer.size() - 1] == '\n')customer.erase(customer.size() - 1,1);
+    //suppress BOM, if any
+    if(check_BOM( &(str[0]) ))str.erase(0,3);
 
-        //suppress BOM, if any
-      if(check_BOM( &(customer[0]) ))customer.erase(0,3);
+    // Trim from the left
+    str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+
+    // Trim from the right
+    str.erase(std::find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
+
   }
 
 
