@@ -37,15 +37,12 @@ int check(bool test, const std::string &words)
 
 int tester()
 {
-  Compta::Bank account;
+  Compta::Bank account("an account",Compta::Date("01/09/2013"),0.,Compta::Currency::EUR);
   Compta::Posting operation("category",std::string("12/11/2013"),"Some operation",15.25,true);
   Compta::Savings epargne;
   std::string namesav("savings");
 
   account.add_savings_account(epargne,namesav);
-  account.set_name("an account");
-  account.set_currency(Compta::Currency::EUR);
-  account.set_creation(std::string("01/09/2013"),0.);
   account.add_posting(operation,0);
   Compta::Bank copy_account(account);
   int return_flag(0);
