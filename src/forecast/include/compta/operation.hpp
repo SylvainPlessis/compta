@@ -313,10 +313,14 @@ namespace Compta{
   {
     unsigned int a = std::floor(date/10000);
     unsigned int m = std::floor((date - a * 10000)/100);
-    unsigned int distance = 12 * (a - _start_date.year()) + m - _start_date.month();
-    return (distance%_period == 0) && 
-           (date >= _start_date.count_date())   &&
-           (date <= _end_date.count_date());
+    unsigned int distance = (_start_date.count_date() > date)?12 * (_start_date.year() - a) - m + _start_date.month():
+                                                              12 * (a - _start_date.year()) + m - _start_date.month();
+    unsigned int date_month_end   = a * 10000 + m * 100 + DateUtils::days_in_months(m,a);
+    unsigned int date_month_start = a * 10000 + m * 100 + 1;
+
+    return (distance%_period == 0)                        && 
+           (date_month_end   >= _start_date.count_date()) &&
+           (date_month_start <= _end_date.count_date());
   }
 
   inline
@@ -343,8 +347,7 @@ namespace Compta{
     out << _name       << ": " 
         << _amount     << " +/- " << _margin << " "
         << _start_date << " - "   << _end_date;
-    if(_automatic)out <<  ", automatique tous les " << _period << " mois" << std::endl;
-   out << "." << std::endl;
+    if(_automatic)out <<  ", automatique tous les " << _period << " mois";
   }
 }
 #endif
