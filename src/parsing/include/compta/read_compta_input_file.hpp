@@ -73,11 +73,10 @@ namespace Compta{
           shave_string(line);
           std::stringstream datass(line);
           datass >> first_word;
-          std::streampos  fwp= datass.tellg();
+          std::streampos  fwp = datass.tellg();
           if(first_word != ForecastParsing::forecast())continue; // not forecast
 
           line.erase(0,first_word.size());
-          shave_string(line);
 // the line is  "Category" "Amount" "Margin" "subcat","automatic","start","end", "period"
 // from subcat all is optional: "cat", "not automatic", "date_min", "date_max", "1"
 
