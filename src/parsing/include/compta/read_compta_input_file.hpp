@@ -66,26 +66,29 @@ namespace Compta{
 
       while(!data.eof())
       {
+          getline(data,line);
+          if(line.empty())continue;
+          if(line[0] == '#')continue;
           std::string first_word;
-          data >> first_word;
-          if(first_word.length() == 0)continue; //empty line
-          if(first_word[0] == '#')
-          {
-             getline(data,line);
-             continue;
-          }
-          if(first_word != ForecastParsing::forecast()) // not forecast
-          {
-             getline(data,line);
-             continue;
-          }
+          shave_string(line);
+          std::stringstream datass(line);
+          datass >> first_word;
+          std::streampos  fwp= datass.tellg();
+          if(first_word != ForecastParsing::forecast())continue; // not forecast
 
+          line.erase(0,first_word.size());
+          shave_string(line);
 // the line is  "Category" "Amount" "Margin" "subcat","automatic","start","end", "period"
-// start and end dates are optional
+// from subcat all is optional: "cat", "not automatic", "date_min", "date_max", "1"
+
           std::string cat, desc;
           float amount, margin;
-          data >> cat >> amount >> margin;
-          getline(data,desc);
+          datass >> cat >> amount >> margin;
+          line.erase(0,datass.tellg() - fwp);
+
+          shave_string(line);
+          desc = line;
+          if(desc.empty())desc = cat;
           std::vector<std::string> out;
           SplitString(desc,ForecastParsing::delimiter(),out,true);
           unsigned int nstr = out.size();
@@ -93,12 +96,12 @@ namespace Compta{
           if(out.size() > 5)compta_reading_error("Error in forecast, this part is not well defined\n" + desc);
 
           shave_string(out);
-
-          std::string name_op = (out[0].empty())?cat:out[0];
-          bool au  = (out[1] == ForecastParsing::automatic());
+          std::string name_op = out[0];
+          bool au(false);   
           Date date_start(DateUtils::date_min());
           Date date_end(DateUtils::date_max());
           unsigned int period(1);
+          if(out.size() > 1)au = (out[1] == ForecastParsing::automatic());
           if(out.size() > 2)date_start.set_date(out[2]);
           if(out.size() > 3)date_end.set_date(out[3]);
           if(out.size() > 4)period = (unsigned int)(std::atof(out[4].c_str()));
@@ -115,6 +118,7 @@ namespace Compta{
           forecast.add_operation(cat,new_op);
        }
        data.close();
+
   }
 
   inline

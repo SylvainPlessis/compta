@@ -3,7 +3,7 @@ EUR
 #Date           Category        Amount  Margin   sub cat, automatic, date start, date end
 forecast        Prêt            627.71  0.00   Prêt taux 1, PA, 15/01/2012
 forecast        Prêt            151.61  10.00   Prêt taux 2, PA, 15/01/2012
-forecast        Assurance       300.00  150.00              , PNA
+forecast        Assurance       300.00  150.00  
 forecast        Téléphonie      2.00    0.00   Free Mobile, PA, 10/01/2012, 10/01/2015, 2
 forecast        Téléphonie      4.77    0.00   OVH,         PA, 01/01/2012
 forecast        Cadeaux         5.00    0.00   MSF,                PA, 01/01/2012
@@ -17,7 +17,7 @@ forecast        Administratif   2.40    0.00   Cotisation CNV Equipage Facile, P
 forecast        Administratif   5.40    0.00   Cotisation CNV Equipage 2,      PA, 01/01/2012
 forecast        Administratif   3.62    0.00   Cotisation CNV Co-Equipage 2,   PA, 01/01/2012
 forecast        Administratif   30.00   0.00   Assurance vie Sylvain,          PA, 01/01/2012
-forecast        Administratif   500.00  150.00   , PNA
+forecast        Administratif   500.00  150.00 
 # Account       dependance         amount  start_date   name            , currency (if different)
 bank            main               918.57  01/01/2012   BPVF
 savings         BPVF                 0.00  01/01/2012   livret A enfants

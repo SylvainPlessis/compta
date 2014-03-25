@@ -55,6 +55,12 @@ namespace Compta
     if(check_BOM( &(str[0]) ))str.erase(0,3);
 
     // Trim from the left
+    str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::iscntrl))));
+
+    // Trim from the right
+    str.erase(std::find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::iscntrl))).base(), str.end());
+
+    // Trim from the left
     str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 
     // Trim from the right
