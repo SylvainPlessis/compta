@@ -195,8 +195,7 @@ namespace Compta{
 
           }else if(first_word == AccountsParsing::savings())
           {
-             Savings saving;
-             saving.add_posting(Posting("creation",start_date,"creation",amount,true));
+             Savings saving(amount);
              compte.add_savings_account(saving,name,dependance);
           }
       }

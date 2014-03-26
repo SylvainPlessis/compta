@@ -137,7 +137,7 @@ namespace Compta{
      out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << currency << "}r<{~" << currency << "}}\\toprule" << std::endl;
      out << "Description & Date & Montant & Bilan \\\\\\midrule\\endhead" << std::endl;
      unsigned int ips(0);
-     float courant(0.L);
+     float courant(acc.starting_state());
      while(cur_month > acc.history()[ips].date())
      {
         courant += acc.history()[ips].amount();
