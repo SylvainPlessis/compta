@@ -21,46 +21,31 @@
 //
 //-----------------------------------------------------------------------el-
 
-#include "compta/compta_obj.hpp"
+#include "compta/compta_options.hpp"
 #include "compta/read_compta_input_file.hpp"
-#include "compta/latex_factory.hpp"
 
 int main(int argc, char ** argv)
 {
- unsigned int iforecast(1);
- unsigned int iaccounts(1);
- unsigned int idata(1);
- unsigned int itex(1);
+ Compta::ComptaOptions options(argc,argv);
 
- if(argc != 2 && argc != 3 && argc != 5)
+ if(!options.valid())
  {
     std::cerr << "\n\n***********************************************" << std::endl;
     std::cerr << "Program usage:" << std::endl
-              << "compta forecast_file accounts_file data_file latex_file" << std::endl
+              << "compta [options] forecast_file accounts_file data_file latex_file" << std::endl
               << " or " << std::endl
-              << "compta global_file latex_file" << std::endl
+              << "compta [options] global_file latex_file" << std::endl
               << " or " << std::endl
-              << "compta global_file" << std::endl;
+              << "compta [options] global_file" << std::endl;
     std::cerr << "***********************************************\n\n" << std::endl;
     compta_error();
- }
- if(argc == 5)
- {
-   iaccounts = 2;
-   idata = 3;
-   itex = 4;
- }else if(argc == 3)
- {
-   itex = 2;
  }
 
  Compta::ComptaObj compte;
 
- Compta::parse_input_file(compte,argv[iforecast],argv[iaccounts],argv[idata]);
+ Compta::parse_input_file(compte,options.forecast_file(),options.accounts_file(),options.data_file());
 
- compte.report();
-
- Compta::latex_report(compte,std::string(argv[itex]));
+ options.report(compta);
 
  return 0;
 }
