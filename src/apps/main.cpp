@@ -30,15 +30,7 @@ int main(int argc, char ** argv)
 
  if(!options.valid())
  {
-    std::cerr << "\n\n***********************************************" << std::endl;
-    std::cerr << "Program usage:" << std::endl
-              << "compta [options] forecast_file accounts_file data_file latex_file" << std::endl
-              << " or " << std::endl
-              << "compta [options] global_file latex_file" << std::endl
-              << " or " << std::endl
-              << "compta [options] global_file" << std::endl;
-    std::cerr << "***********************************************\n\n" << std::endl;
-    compta_error();
+    options.unvalid_invocation(std::cerr,std::string(argv[0]));
  }
 
  Compta::ComptaObj compte;
