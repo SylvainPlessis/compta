@@ -50,6 +50,7 @@
 #define compta_reading_error(description)  do { compta_here(); COMPTA_THROW(Compta::ReadError(description)); }     while(0)
 #define compta_forecast_error(description) do { compta_here(); COMPTA_THROW(Compta::ForecastError(description)); } while(0)
 #define compta_report_error(description)   do { compta_here(); COMPTA_THROW(Compta::ReportError(description)); }   while(0)
+#define compta_option_error(description)   do { compta_here(); COMPTA_THROW(Compta::OptionError(description)); }   while(0)
 // The compta_deprecated macro warns that you are using obsoleted code,
 // savagely copy/pasted from libmesh
 #define compta_deprecated() \

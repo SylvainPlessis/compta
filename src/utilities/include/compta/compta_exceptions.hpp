@@ -128,6 +128,14 @@ namespace Compta
     ReportError(const std::string& description) : std::runtime_error( "Error in report: " + description) {}
   };
 
+  /*!
+   * A class representing an option error
+   */
+  class OptionError : public std::runtime_error
+  {
+  public:
+    OptionError(const std::string& description) : std::runtime_error( "Unknown option \"" + description + "\"") {}
+  };
 
 } // end namespace Compta
 
