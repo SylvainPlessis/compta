@@ -92,7 +92,8 @@ DX_INIT_DOXYGEN(compta, doxygen/compta.dox, docs/doxygen)
 dnl-----------------------------------------------
 dnl Generate files for unit and regression testing
 dnl-----------------------------------------------
-#AC_CONFIG_FILES(test/kinetics_unit_air_5sp.sh,           [chmod +x test/kinetics_unit_air_5sp.sh])
+AC_CONFIG_FILES(test/compta_options.sh, [chmod +x test/compta_options.sh])
+AC_CONFIG_FILES(test/compta_fail.sh,    [chmod +x test/compta_fail.sh])
 
 dnl-----------------------------------------------
 dnl Generate header files
