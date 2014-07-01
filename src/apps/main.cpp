@@ -33,11 +33,14 @@ int main(int argc, char ** argv)
     options.unvalid_invocation(std::cerr,std::string(argv[0]));
  }
 
- Compta::ComptaObj compte;
+ if(options.more())
+ {
+   Compta::ComptaObj compte;
 
- Compta::parse_input_file(compte,options.forecast_file(),options.accounts_file(),options.data_file());
+   Compta::parse_input_file(compte,options.forecast_file(),options.accounts_file(),options.data_file());
 
- options.report(compta);
+   options.report(compte);
+ }
 
  return 0;
 }
