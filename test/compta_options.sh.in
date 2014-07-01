@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PROG="@top_builddir@/src/compta"
+
+OPTIONS="--help"
+
+$PROG $OPTIONS

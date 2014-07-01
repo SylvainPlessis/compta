@@ -25,7 +25,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
-AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #antioch_version.h
+AM_CPPFLAGS += -I$(top_srcdir)/src/options/include
+AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
 
 # Sources for these tests
 date_unit_SOURCES = date_unit.cpp
@@ -42,6 +43,7 @@ category_report_unit_SOURCES = category_report_unit.cpp
 
 #Define tests to actually be run
 TESTS  =
+XFAIL_TESTS  =
 TESTS += date_unit
 TESTS += operation_unit
 TESTS += forecast_container_unit
@@ -53,6 +55,9 @@ TESTS += cash_unit
 TESTS += savings_unit
 TESTS += bank_unit
 TESTS += category_report_unit
+TESTS += compta_options.sh
+TESTS += compta_fail.sh
+XFAIL_TESTS += compta_fail.sh
 
 CLEANFILES =
 if CODE_COVERAGE_ENABLED
@@ -66,5 +71,3 @@ endif
 
 CLEANFILES += .license.stamp
 
-# Required for AX_AM_MACROS
-###@INC_AMINCLUDE@
