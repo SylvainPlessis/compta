@@ -1,0 +1,15 @@
+Makefile.in
+aclocal.m4
+compta_config.h.tmp.in
+compta_config.h.tmp.in~
+autom4te.cache
+build-aux
+configure
+doxygen/Makefile.in
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+src/Makefile.in
+test/Makefile.in

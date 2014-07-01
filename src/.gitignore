@@ -1,0 +1,11 @@
+*.log
+*.sh
+*.trs
+*.o
+*.lo
+*.la
+.*.swp
+.gitignore
+Makefile
+Makefile.in
+utilities/include/compta/compta_version.h
