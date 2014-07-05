@@ -28,14 +28,14 @@
 #include "compta/compta_asserts.hpp"
 #include "compta/compta_version.hpp"
 #include "compta/options_enum.hpp"
+#include "compta/compta_obj.hpp"
+#include "compta/latex_factory.hpp"
 
 //C++
 #include <iostream>
 #include <map>
 
 namespace Compta{
-
-class ComptaObj;
 
   class ComptaOptions
   {
@@ -139,8 +139,6 @@ class ComptaObj;
       _options_map["--data"]         = DATA_FILE;
       _options_map["--latex"]        = LATEX_FILE;
 
-      _options_value_map[VERSION]       = false;
-      _options_value_map[HELP]          = false;
       _options_value_map[GENERATE_TEX]  = true;
       _options_value_map[COMPILE_TEX]   = true;
   }
@@ -250,7 +248,23 @@ class ComptaObj;
 
   void ComptaOptions::report(ComptaObj & compte) const
   {
-     
+//on screen report
+     std::cout << compte << std::endl;
+
+//LaTeX report
+     if(_options_value_map.at(GENERATE_TEX))
+     {
+        latex_report(compte,_latex_file);
+     }
+     if(_options_value_map.at(COMPILE_TEX))
+     {
+        const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
+        if(system(commands.c_str()))compta_LaTeX_error(commands); 
+        if(system(commands.c_str()))compta_LaTeX_error(commands); 
+        if(system(commands.c_str()))compta_LaTeX_error(commands); 
+        if(system(commands.c_str()))compta_LaTeX_error(commands); 
+     }
+
   }
 
   void ComptaOptions::unvalid_invocation(std::ostream & out, const std::string & prog) const

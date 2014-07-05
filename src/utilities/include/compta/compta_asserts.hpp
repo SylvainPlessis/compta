@@ -40,17 +40,18 @@
 // The compta_assert() macro acts like C's assert(), but throws a
 // compta_error() (including stack trace, etc) instead of just exiting
 
-#define compta_error()                     do { compta_here(); COMPTA_THROW(Compta::LogicError()); }               while(0)
-#define compta_not_implemented()           do { compta_here(); COMPTA_THROW(Compta::NotImplemented()); }           while(0)
-#define compta_file_error(filename)        do { compta_here(); COMPTA_THROW(Compta::FileError(filename)); }        while(0)
-#define compta_date_error(description)     do { compta_here(); COMPTA_THROW(Compta::DateError(description)); }     while(0)
-#define compta_bank_error(description)     do { compta_here(); COMPTA_THROW(Compta::BankError(description)); }     while(0)
-#define compta_savings_error(description)  do { compta_here(); COMPTA_THROW(Compta::SavingsError(description)); }  while(0)
-#define compta_money_error(description)    do { compta_here(); COMPTA_THROW(Compta::MoneyError(description)); }    while(0)
-#define compta_reading_error(description)  do { compta_here(); COMPTA_THROW(Compta::ReadError(description)); }     while(0)
-#define compta_forecast_error(description) do { compta_here(); COMPTA_THROW(Compta::ForecastError(description)); } while(0)
-#define compta_report_error(description)   do { compta_here(); COMPTA_THROW(Compta::ReportError(description)); }   while(0)
-#define compta_option_error(description)   do { compta_here(); COMPTA_THROW(Compta::OptionError(description)); }   while(0)
+#define compta_error()                     do { compta_here(); COMPTA_THROW(Compta::LogicError()); }                   while(0)
+#define compta_not_implemented()           do { compta_here(); COMPTA_THROW(Compta::NotImplemented()); }               while(0)
+#define compta_file_error(filename)        do { compta_here(); COMPTA_THROW(Compta::FileError(filename)); }            while(0)
+#define compta_date_error(description)     do { compta_here(); COMPTA_THROW(Compta::DateError(description)); }         while(0)
+#define compta_bank_error(description)     do { compta_here(); COMPTA_THROW(Compta::BankError(description)); }         while(0)
+#define compta_savings_error(description)  do { compta_here(); COMPTA_THROW(Compta::SavingsError(description)); }      while(0)
+#define compta_money_error(description)    do { compta_here(); COMPTA_THROW(Compta::MoneyError(description)); }        while(0)
+#define compta_reading_error(description)  do { compta_here(); COMPTA_THROW(Compta::ReadError(description)); }         while(0)
+#define compta_forecast_error(description) do { compta_here(); COMPTA_THROW(Compta::ForecastError(description)); }     while(0)
+#define compta_report_error(description)   do { compta_here(); COMPTA_THROW(Compta::ReportError(description)); }       while(0)
+#define compta_option_error(description)   do { compta_here(); COMPTA_THROW(Compta::OptionError(description)); }       while(0)
+#define compta_LaTeX_error(description)    do { compta_here(); COMPTA_THROW(Compta::CompileLaTeXError(description)); } while(0)
 // The compta_deprecated macro warns that you are using obsoleted code,
 // savagely copy/pasted from libmesh
 #define compta_deprecated() \
