@@ -94,6 +94,7 @@ dnl Generate files for unit and regression testing
 dnl-----------------------------------------------
 AC_CONFIG_FILES(test/compta_options.sh, [chmod +x test/compta_options.sh])
 AC_CONFIG_FILES(test/compta_fail.sh,    [chmod +x test/compta_fail.sh])
+AC_CONFIG_FILES(test/compta_files.sh,   [chmod +x test/compta_files.sh])
 
 dnl-----------------------------------------------
 dnl Generate header files

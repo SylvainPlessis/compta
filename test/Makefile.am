@@ -14,6 +14,7 @@ check_PROGRAMS += cash_unit
 check_PROGRAMS += savings_unit
 check_PROGRAMS += bank_unit
 check_PROGRAMS += category_report_unit
+check_PROGRAMS += files_name
 
 
 AM_CPPFLAGS  = 
@@ -40,6 +41,7 @@ cash_unit_SOURCES = cash_unit.cpp
 savings_unit_SOURCES = savings_unit.cpp
 bank_unit_SOURCES = bank_unit.cpp
 category_report_unit_SOURCES = category_report_unit.cpp
+files_name_SOURCES = files_name.cpp
 
 #Define tests to actually be run
 TESTS  =
@@ -57,6 +59,7 @@ TESTS += bank_unit
 TESTS += category_report_unit
 TESTS += compta_options.sh
 TESTS += compta_fail.sh
+TESTS += files_name.sh
 XFAIL_TESTS += compta_fail.sh
 
 CLEANFILES =

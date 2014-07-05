@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PROG="@top_srcdir@/test/files_name"
+
+INPUT="forecast"
+
+$PROG $INPUT
