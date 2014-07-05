@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG="@top_srcdir@/test/files_name"
+PROG="@top_builddir@/test/files_name"
 
 INPUT="forecast"
 
