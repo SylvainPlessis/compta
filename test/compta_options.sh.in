@@ -2,6 +2,6 @@
 
 PROG="@top_builddir@/src/compta"
 
-OPTIONS="--help"
+OPTIONS="--generate-latex=false --compile-latex=false @top_srcdir@/example/Longjumeau_data"
 
 $PROG $OPTIONS
