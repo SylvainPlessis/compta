@@ -31,7 +31,7 @@
 #include <iostream>
 #include <iomanip>
 
-#define compta_here()     do { std::cerr << __FILE__ << ", line " << __LINE__ << ", compiled " << __DATE__ << " at " << __TIME__ << std::endl; } while (0)
+#define compta_here()     do { std::cerr << "\ntrace is:\n\t" << __FILE__ << ", line " << __LINE__ << ", compiled " << __DATE__ << " at " << __TIME__ << std::endl; } while (0)
 
 //!\file compta_asserts.hpp
 //

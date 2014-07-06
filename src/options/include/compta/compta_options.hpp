@@ -113,7 +113,11 @@ namespace Compta{
           }
       }
 
-      if(_forecast_file.empty() && _more)_valid = false;
+      if(_forecast_file.empty() && _more)
+      {
+         std::cerr << "\nPlease provide at least one file name" << std::endl;
+         _valid = false;
+      }
 
       if(_accounts_file.empty())_accounts_file = _forecast_file;
 
@@ -126,18 +130,18 @@ namespace Compta{
 
   void ComptaOptions::build_map()
   {
-      _options_map["--version"]      = VERSION;
-      _options_map["-v"]             = VERSION;
-      _options_map["--help"]         = HELP;
-      _options_map["-h"]             = HELP;
-      _options_map["--generate_tex"] = GENERATE_TEX;
-      _options_map["-g"]             = GENERATE_TEX;
-      _options_map["--compile_tex"]  = COMPILE_TEX;
-      _options_map["-c"]             = COMPILE_TEX;
-      _options_map["--forecast"]     = FORECAST_FILE;
-      _options_map["--accounts"]     = ACCOUNTS_FILE;
-      _options_map["--data"]         = DATA_FILE;
-      _options_map["--latex"]        = LATEX_FILE;
+      _options_map["--version"]        = VERSION;
+      _options_map["-v"]               = VERSION;
+      _options_map["--help"]           = HELP;
+      _options_map["-h"]               = HELP;
+      _options_map["--generate-latex"] = GENERATE_TEX;
+      _options_map["-g"]               = GENERATE_TEX;
+      _options_map["--compile-latex"]  = COMPILE_TEX;
+      _options_map["-c"]               = COMPILE_TEX;
+      _options_map["--forecast"]       = FORECAST_FILE;
+      _options_map["--accounts"]       = ACCOUNTS_FILE;
+      _options_map["--data"]           = DATA_FILE;
+      _options_map["--latex"]          = LATEX_FILE;
 
       _options_value_map[GENERATE_TEX]  = true;
       _options_value_map[COMPILE_TEX]   = true;
@@ -172,6 +176,11 @@ namespace Compta{
   {
       std::string keyword(opts[pos]);
       std::string value;
+      if(keyword.find('=') != std::string::npos)
+      {
+        value = keyword.substr(keyword.find('=') + 1, std::string::npos);
+        keyword = keyword.substr(0,keyword.find('='));
+      }
       if(!_options_map.count(keyword))compta_option_error(keyword);
 
       if((_options_map.count(keyword) != VERSION) && // value if not help nor version
@@ -255,23 +264,29 @@ namespace Compta{
      if(_options_value_map.at(GENERATE_TEX))
      {
         latex_report(compte,_latex_file);
-     }
-     if(_options_value_map.at(COMPILE_TEX))
-     {
-        const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
-        if(system(commands.c_str()))compta_LaTeX_error(commands); 
-        if(system(commands.c_str()))compta_LaTeX_error(commands); 
-        if(system(commands.c_str()))compta_LaTeX_error(commands); 
-        if(system(commands.c_str()))compta_LaTeX_error(commands); 
+       if(_options_value_map.at(COMPILE_TEX))
+       {
+          const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
+          if(!system(NULL))compta_LaTeX_error("Failed to find preprocessor"); 
+          if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          if(system(commands.c_str()))compta_LaTeX_error(commands); 
+       }
      }
 
   }
 
   void ComptaOptions::unvalid_invocation(std::ostream & out, const std::string & prog) const
   {
+    for(unsigned int i=0;i<50;i++)out << "*";
+    out << std::endl << std::endl;
     out << "Invalid invocation" << std::endl;
-    out << "For help: " << prog << " --help" << std::endl 
-                                             << std::endl;
+    out << "Minimum invocation is:\n\t" << prog << " *file_name*" << std::endl << std::endl;
+    out << "For help: " << prog << " --help" << std::endl;
+    out << std::endl;
+    for(unsigned int i=0;i<50;i++)out << "*";
+    out << std::endl;
     compta_error();
   }
 
