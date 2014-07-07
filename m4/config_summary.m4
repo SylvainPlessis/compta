@@ -29,7 +29,6 @@ echo Build host.................... : $BUILD_HOST
 echo Configure date................ : $BUILD_DATE
 echo Build architecture............ : $BUILD_ARCH
 echo Source git hash .............. : $BUILD_VERSION
-echo Source git tag  .............. : $BUILD_TAG
 echo
 echo '-------------------------------------------------------------------------------'
 
