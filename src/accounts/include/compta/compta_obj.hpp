@@ -49,8 +49,17 @@ namespace Compta{
       ComptaObj(const ComptaObj &rhs);
       ~ComptaObj();
 
-      //!print
+      //!print all
       void report(std::ostream &out = std::cout) const;
+
+      //!print forecast
+      void report_forecast(std::ostream &out = std::cout) const;
+
+      //!print bank accounts
+      void report_bank(std::ostream &out = std::cout) const;
+
+      //!print cash
+      void report_cash(std::ostream &out = std::cout) const;
 
       //!print also
       friend std::ostream &operator<< (std::ostream &out, const ComptaObj &obj)
@@ -513,6 +522,19 @@ namespace Compta{
    inline
    void ComptaObj::report(std::ostream &out) const
    {
+
+     this->report_forecast(out);
+
+     this->report_bank(out);
+
+     this->report_cash(out);
+   }
+
+   
+   inline
+   void ComptaObj::report_forecast(std::ostream &out) const
+   {
+
        out << std::setprecision(2) << std::fixed;
        Money bifton(_previsionnel.currency());
        out << "\n\nRapport de la comptabilité << " << _title << " >>\n" <<  std::endl;
@@ -521,6 +543,13 @@ namespace Compta{
            << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
            << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
            << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
+
+   }
+
+
+   inline
+   void ComptaObj::report_bank(std::ostream &out) const
+   {
 
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
@@ -553,6 +582,12 @@ namespace Compta{
           }
           out << std::endl;
       }
+
+   }
+
+   inline
+   void ComptaObj::report_cash(std::ostream &out) const
+   {
 
       out << "Liquide"; 
       if(_liquide.size() > 1)out << "s";

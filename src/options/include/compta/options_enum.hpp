@@ -34,12 +34,20 @@
 namespace Compta{
 
   enum Options{//
+/* helpers, boolean values */
                VERSION = 0,
                HELP,
+/* files */
                FORECAST_FILE,
                ACCOUNTS_FILE,
                DATA_FILE,
                LATEX_FILE,
+/* print options, boolean values*/
+               PRINT_ALL,
+               PRINT_FORECAST,
+               PRINT_BANK,
+               PRINT_CASH,
+/* output file*/
                GENERATE_TEX,
                COMPILE_TEX
               };
@@ -65,6 +73,10 @@ namespace Compta{
                << "--data:                   data file (default = same as forecast)\n"
                << "--accounts:               accounts file (default = same as forecast)\n"
                << "--latex:                  LaTeX file (default = same as forecast)\n"
+               << "--print-all:              print all on screen (default)\n"
+               << "--print-forecast:         print forecast info on screen\n"
+               << "--print-bank:             print bank info on screen\n"
+               << "--print-cash:             print cash info on screen\n"
                << std::endl;
                
   }
