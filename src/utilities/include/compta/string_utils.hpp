@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 namespace Compta
 {
@@ -169,7 +170,7 @@ namespace Compta
         - Mac         \r
    */
   inline
-  int ascii_getline(std::ifstream & buf, std::string & line)
+  int ascii_getline(std::istream & buf, std::string & line)
   {
      char c('a');
      line.clear();
