@@ -160,6 +160,36 @@ namespace Compta
     return numFound;
   }
 
+  /*! taken from Antioch string_utils
+      adapted getline, never believe ascii file for the
+      formatting of end-of-line.
+      end-of-line triggered by \n or \r
+        - Windows     \n\r
+        - Unix/Linux  \n
+        - Mac         \r
+   */
+  inline
+  int ascii_getline(std::ifstream & buf, std::string & line)
+  {
+     char c('a');
+     line.clear();
+     while(!buf.eof())
+     {
+        c = buf.get();
+        if(c == '\n' || c == '\r')break;
+        line += c;
+     }
+     char n = buf.peek();
+
+     /* never trust ascii files, they may come from
+        Windows, suppodedly \n\r, but let's not
+        underestimate Windows's viciousness
+      */
+     if((c == '\n' && n == '\r') ||
+        (n == '\n' && c == '\r'))c = buf.get();
+
+     return buf.good();
+  }
 
 } // end namespace Compta
 

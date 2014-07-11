@@ -58,15 +58,15 @@ namespace Compta{
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!getline(data,line))compta_error();
-      if(!getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
       shave_string(line);
       Money money(line);
       forecast.set_currency(money.money());
 
       while(!data.eof())
       {
-          getline(data,line);
+          ascii_getline(data,line);
           if(line.empty())continue;
           if(line[0] == '#')continue;
           std::string first_word;
@@ -127,10 +127,10 @@ namespace Compta{
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
       shave_string(line);
       compte.set_title(line);
-      if(!getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
       shave_string(line);
       Money money(line);
       Currency::Currency default_currency(money.money());
@@ -142,7 +142,7 @@ namespace Compta{
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             getline(data,line);
+             ascii_getline(data,line);
              continue;
           }
 
@@ -150,7 +150,7 @@ namespace Compta{
              first_word != AccountsParsing::cash() &&
              first_word != AccountsParsing::savings())
           {
-             getline(data,line);
+             ascii_getline(data,line);
              continue;
           }
 
@@ -161,7 +161,7 @@ namespace Compta{
           float amount;
 
           data >> dependance >> amount >> start_date;
-          getline(data,name);
+          ascii_getline(data,name);
           shave_string(name);
           std::vector<std::string> out;
           int nstr = SplitString(name,AccountsParsing::delimiter(),out,false);
@@ -209,10 +209,10 @@ namespace Compta{
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
       shave_string(line);
       compte.set_title(line);
-      if(!getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_error();
       while(!data.eof())
       {
           std::string first_word;
@@ -220,12 +220,12 @@ namespace Compta{
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             getline(data,line);
+             ascii_getline(data,line);
              continue; // comment
           }
           if(first_word.find("/") == std::string::npos)
           {
-             getline(data,line);
+             ascii_getline(data,line);
              continue;
           }
 
@@ -233,7 +233,7 @@ namespace Compta{
           std::string cat,id,descr;
           float deb,cred;
           data >> cat >> deb >> cred >> id;
-          getline(data,descr);
+          ascii_getline(data,descr);
           shave_string(descr);
 //formatting tests
           if(cred != 0. && deb != 0.) //one operation at a time
