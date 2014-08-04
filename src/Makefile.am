@@ -1,5 +1,3 @@
-BUILT_SOURCES   = .license.stamp
-
 #----------------------------------------
 # Programs and libraries we want to build
 #----------------------------------------
@@ -25,6 +23,7 @@ pkginclude_HEADERS += forecast/include/compta/forecast.hpp
 # utilities
 pkginclude_HEADERS += utilities/include/compta/compta_exceptions.hpp
 pkginclude_HEADERS += utilities/include/compta/compta_asserts.hpp
+pkginclude_HEADERS += utilities/include/compta/static_error_variables.hpp
 pkginclude_HEADERS += utilities/include/compta/date_utils.hpp
 pkginclude_HEADERS += utilities/include/compta/string_utils.hpp
 # accounts
@@ -64,9 +63,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
-AM_CPPFLAGS +=  $(compta_optional_INCLUDES)
 
-CLEANFILES =
+CLEANFILES = 
 
 #--------------
 # Code coverage
@@ -74,17 +72,6 @@ CLEANFILES =
 if CODE_COVERAGE_ENABLED
   CLEANFILES += *.gcda *.gcno
 endif
-
-#---------------------------------
-# Embedded license header support
-#---------------------------------
-STAMPED_FILES = $(pkginclude_HEADERS) $(compta_version_SOURCES) $(compta_SOURCES)
-
-.license.stamp: $(top_srcdir)/LICENSE
-	$(top_srcdir)/src/common/lic_utils/update_license.pl -S=$(top_srcdir)/src $(top_srcdir)/LICENSE $(STAMPED_FILES) 
-	echo 'updated source license headers' >$@
-
-CLEANFILES += .license.stamp
 
 EXTRA_DIST = common
 
