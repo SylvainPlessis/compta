@@ -177,25 +177,37 @@ namespace Compta{
  }
 
  inline
- Date::Date(unsigned int jour, unsigned int mois, unsigned int an)
+ Date::Date(unsigned int jour, unsigned int mois, unsigned int an):
+     _day(0),
+     _month(0),
+     _year(0)
  {
   this->set_date(jour,mois,an);
  }
 
  inline
- Date::Date(unsigned int date_int)
+ Date::Date(unsigned int date_int):
+     _day(0),
+     _month(0),
+     _year(0)
  {
   this->set_date(date_int);
  }
 
  inline
- Date::Date(const std::string &date_str)
+ Date::Date(const std::string &date_str):
+     _day(0),
+     _month(0),
+     _year(0)
  {
   this->set_date(date_str);
  }
 
  inline
- Date::Date(const Date &rhs)
+ Date::Date(const Date &rhs):
+     _day(0),
+     _month(0),
+     _year(0)
  {
    *this = rhs;
  }
