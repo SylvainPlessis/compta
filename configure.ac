@@ -2,7 +2,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([compta], [1.0.0], [sylvain.plessis@gmail.com], [compta])
+AC_INIT([compta], [1.0.2], [sylvain.plessis@gmail.com], [compta])
 PACKAGE_DESCRIPTION="personnal terminal-based program for comptability"
 AC_SUBST([PACKAGE_DESCRIPTION])
 PACKAGE_URL="https://code.google.com/p/comptabilite/"
