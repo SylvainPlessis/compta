@@ -8,6 +8,7 @@
 //Compta
 #include "compta/compta_obj.hpp"
 #include "compta/parsing_def.hpp"
+#include "compta/static_error_variables.hpp"
 #include "compta/string_utils.hpp"
 
 //C++

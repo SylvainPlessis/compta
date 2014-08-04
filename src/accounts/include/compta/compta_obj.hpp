@@ -263,7 +263,7 @@ namespace Compta{
       _title = title;
     }else
     {
-       if(_title != title)compta_reading_error(std::string("Different titles are given for the same comptability."));
+       if(_title != title)compta_reading_error(std::string("Different titles are given for the same comptability.\n" + FilesParsing::error_message));
     }
   }
 
@@ -500,13 +500,13 @@ namespace Compta{
            shave_string(out);
            if(!map.count(out[0]) &&
               !map.count(out[1]))
-                  compta_reading_error(std::string("I do not have this " + decl + " account:\n\"" + out[0] + "\" or \"" + out[1] + "\""));
+                  compta_reading_error(std::string("I do not have this " + decl + " account:\n\"" + out[0] + "\" or \"" + out[1] + "\"" + "\n" + FilesParsing::error_message));
            unsigned int where = (map.count(out[0]))?0:1;
            post.set_description(out[1-where]);
            target[where].add_posting(post);
         }else
         {
-           compta_reading_error(std::string("I don't understand this posting description:\n" + post.description()));
+           compta_reading_error(std::string("I don't understand this posting description:\n" + post.description() + "\n" + FilesParsing::error_message));
         }
    }
 

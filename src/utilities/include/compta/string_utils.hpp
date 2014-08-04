@@ -25,7 +25,7 @@
 #define COMPTA_STRING_UTILS_H
 
 // Compta
-#include "compta/parsing_def.hpp"
+#include "compta/static_error_variables.hpp"
 
 // C++
 #include <string>

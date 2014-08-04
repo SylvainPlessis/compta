@@ -25,7 +25,6 @@
 #define COMPTA_EXCEPTIONS_H
 
 //Compta
-#include "compta/parsing_def.hpp"
 
 // C++
 #include <stdexcept>
@@ -101,8 +100,7 @@ namespace Compta
   class ReadError : public std::runtime_error
   {
   public:
-    ReadError(const std::string& description) : std::runtime_error( "Error while processing an input file: " + description + "\n" 
-                                                                   + FilesParsing::error_message) {}
+    ReadError(const std::string& description) : std::runtime_error( "Error while processing an input file: " + description) {}
   };
 
   /*!
