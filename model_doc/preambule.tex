@@ -10,4 +10,16 @@
 \make@object{operation}
 \newcommand{\catForecast}[1]{\textsf{#1}}
 
+%%% versions
+\newcommand{\version}[3]{%
+\setcounter{vmajor}{#1}
+\setcounter{vmedium}{#2}
+\setcounter{vminor}{#3}
+}
+\newcounter{vmajor}
+\newcounter{vmedium}
+\newcounter{vminor}
+\newcommand{\theversion}{\thevmajor.\thevmedium.\thevminor}
+
+\version{1}{0}{2}
 \makeatother
