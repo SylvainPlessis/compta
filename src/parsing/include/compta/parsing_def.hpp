@@ -10,8 +10,15 @@
 
 //C++
 #include <map>
+#include <string>
 
 namespace Compta{
+
+ namespace FilesParsing{
+   static unsigned int current_line(0);
+   static std::string  raw_line;
+   static std::string  error_message;
+ }
 
  namespace ForecastParsing{
      const std::string forecast()

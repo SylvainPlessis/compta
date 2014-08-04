@@ -500,7 +500,7 @@ namespace Compta{
            shave_string(out);
            if(!map.count(out[0]) &&
               !map.count(out[1]))
-                  compta_reading_error(std::string("I do not have this " + decl + " account:\n\t" + out[0] + "\nor\n\t" + out[1]));
+                  compta_reading_error(std::string("I do not have this " + decl + " account:\n\"" + out[0] + "\" or \"" + out[1] + "\""));
            unsigned int where = (map.count(out[0]))?0:1;
            post.set_description(out[1-where]);
            target[where].add_posting(post);

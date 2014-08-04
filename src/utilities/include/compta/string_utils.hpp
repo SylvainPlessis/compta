@@ -25,16 +25,17 @@
 #define COMPTA_STRING_UTILS_H
 
 // Compta
+#include "compta/parsing_def.hpp"
 
 // C++
 #include <string>
+#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <iostream>
 
 namespace Compta
 {
-
   inline
   bool check_BOM(const char* p)
   {
@@ -188,6 +189,14 @@ namespace Compta
       */
      if((c == '\n' && n == '\r') ||
         (n == '\n' && c == '\r'))c = buf.get();
+
+     ++FilesParsing::current_line;
+     FilesParsing::raw_line = line;
+     std::stringstream error_stream;
+     error_stream << "line  #" << FilesParsing::current_line
+                  << ":\n"     << FilesParsing::raw_line;
+     FilesParsing::error_message = error_stream.str();
+    
 
      return buf.good();
   }

@@ -41,13 +41,16 @@ namespace Compta{
 
 //The first category to be parsed is the forecast
       Forecast forecast;
+      FilesParsing::current_line = 0;
       read_forecast(forecast,forecast_file);
       compte.set_forecast(forecast);
 
 //Then the accounts description
+      FilesParsing::current_line = 0;
       read_accounts(compte,accounts_file);
 
 //Finally the data
+      FilesParsing::current_line = 0;
       read_data(compte,data_file);
   }
 
@@ -234,6 +237,9 @@ namespace Compta{
           float deb,cred;
           data >> cat >> deb >> cred >> id;
           ascii_getline(data,descr);
+          std::stringstream ss;
+          ss << first_word << "\t" << cat << "\t" << deb << "\t" << cred << "\t" << id;
+          FilesParsing::error_message.insert(FilesParsing::error_message.find('\n') + 1,ss.str());
           shave_string(descr);
 //formatting tests
           if(cred != 0. && deb != 0.) //one operation at a time
