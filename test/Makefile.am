@@ -25,7 +25,9 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
-AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #antioch_version.h
+AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
+
+AM_LDFLAGS = $(LIBCOMPTA_LIB)
 
 # Sources for these tests
 date_unit_SOURCES = date_unit.cpp

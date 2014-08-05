@@ -21,48 +21,50 @@
 //
 //-----------------------------------------------------------------------el-
 
-#ifndef COMPTA_DATE_UTILS_H
-#define COMPTA_DATE_UTILS_H
+// Compta
+#include "compta/static_error_variables.hpp"
 
-//compta
-#include "compta/compta_asserts.hpp"
-#include "compta/date.hpp"
+// C++
+#include <sstream>
 
-//C++
-#include <ctime>
-#include <string>
+namespace Compta
+{
+ namespace FilesParsing{
+   static unsigned int _current_line(0);
+   static std::string  _raw_line;
 
-namespace Compta{
+   unsigned int current_line()
+   {
+     return _current_line;
+   }
 
- namespace DateUtils{
+   void set_current_line(unsigned int nline)
+   {
+     _current_line = nline;
+   }
 
-  //!\return the number of days in february given the year
-  unsigned int february_days(unsigned int an);
+   void add_current_line(unsigned int nline)
+   {
+     _current_line += nline;
+   }
 
-  //\return the number of days given a month
-  unsigned int days_in_months(unsigned int mois, unsigned int an);
+   std::string  raw_line()
+   {
+      return _raw_line;
+   }
 
-  //\return the month's name
-  std::string month_in_letter(unsigned int mois);
+   void set_raw_line(const std::string &line)
+   {
+      _raw_line = line;
+   }
 
-  //!\return the current date dd/mm/yyyy
-  const Date today();
-        
-  //!\return the current date 01/mm/yyyy
-  const Date tomonth();
+   std::string  error_message()
+   {
+      std::stringstream oss;
+      oss << "Line #" << current_line() << "\n"
+          << raw_line() << std::endl;
+      return oss.str();
+   }
+ }
+}
 
-  //!\return the current date 01/01/yyyy
-  const Date toyear();
-
-  //!No data before this date
-  // 01/01/1900
-  unsigned int date_min();
-
-  //!No data after this date
-  // 31/12/3000
-  unsigned int date_max();
-
- } //end namespace DateUtils
-} //end namespace Compta
-
-#endif

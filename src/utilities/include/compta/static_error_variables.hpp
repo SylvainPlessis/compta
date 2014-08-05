@@ -33,9 +33,23 @@ namespace Compta
 {
 
  namespace FilesParsing{
-   static unsigned int current_line(0);
-   static std::string  raw_line;
-   static std::string  error_message;
+   //! current line while reading input file
+   unsigned int current_line();
+
+   //! set line while reading input file
+   void set_current_line(unsigned int nline);
+
+   //! add to line while reading input file
+   void add_current_line(unsigned int nline = 1);
+
+   //!current line from read input file
+   std::string  raw_line();
+
+   //! set line while reading input file
+   void set_raw_line(const std::string &line);
+
+   //!error message giving line number and line
+   std::string  error_message();
  }
 
 }
