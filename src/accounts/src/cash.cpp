@@ -21,48 +21,16 @@
 //
 //-----------------------------------------------------------------------el-
 
-#ifndef COMPTA_DATE_UTILS_H
-#define COMPTA_DATE_UTILS_H
+#include "compta/cash.hpp"
 
-//compta
-#include "compta/compta_asserts.hpp"
-#include "compta/date.hpp"
+namespace Compta
+{
 
-//C++
-#include <ctime>
-#include <string>
+  
+  Cash::Cash(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
+        AccountBase(name,start_date,amount,money)
+  {
+     return;
+  }
 
-namespace Compta{
-
- namespace DateUtils{
-
-  //!\return the number of days in february given the year
-  unsigned int february_days(unsigned int an);
-
-  //\return the number of days given a month
-  unsigned int days_in_months(unsigned int mois, unsigned int an);
-
-  //\return the month's name
-  std::string month_in_letter(unsigned int mois);
-
-  //!\return the current date dd/mm/yyyy
-  const Date today();
-        
-  //!\return the current date 01/mm/yyyy
-  const Date tomonth();
-
-  //!\return the current date 01/01/yyyy
-  const Date toyear();
-
-  //!No data before this date
-  // 01/01/1900
-  unsigned int date_min();
-
-  //!No data after this date
-  // 31/12/3000
-  unsigned int date_max();
-
- } //end namespace DateUtils
-} //end namespace Compta
-
-#endif
+}

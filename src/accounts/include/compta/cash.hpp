@@ -36,13 +36,6 @@ namespace Compta{
                   float amount = 0., Currency::Currency  money = Currency::EUR);
   };
 
-  inline
-  Cash::Cash(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
-        AccountBase(name,start_date,amount,money)
-  {
-     return;
-  }
-
 }
 
 #endif

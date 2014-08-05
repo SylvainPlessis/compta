@@ -18,7 +18,9 @@ AC_CANONICAL_TARGET()
 AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define color-tests parallel-tests])
 AM_SILENT_RULES(yes)  # use silent rules where available - automake 1.11
 
-LT_PREREQ([2.5.2])
+LIBCOMPTA_LIB='$(top_builddir)/src/libcompta.la'
+AC_SUBST([LIBCOMPTA_LIB])
+
 LT_INIT
 
 dnl Release versioning
