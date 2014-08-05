@@ -18,6 +18,7 @@ AC_CANONICAL_TARGET()
 AM_INIT_AUTOMAKE([dist-bzip2 tar-ustar 1.11 no-define color-tests parallel-tests])
 AM_SILENT_RULES(yes)  # use silent rules where available - automake 1.11
 
+LT_PREREQ([2.5.2])
 LT_INIT
 
 dnl Release versioning
@@ -45,7 +46,6 @@ AC_SUBST(GENERIC_MICRO_VERSION)
 AC_DEFINE_UNQUOTED([MAJOR_VERSION],$GENERIC_MAJOR_VERSION,[Major version])
 AC_DEFINE_UNQUOTED([MINOR_VERSION],$GENERIC_MINOR_VERSION,[Minor version])
 AC_DEFINE_UNQUOTED([MICRO_VERSION],$GENERIC_MICRO_VERSION,[Micro version])
-
 
 
 dnl------------------------------

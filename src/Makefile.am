@@ -2,9 +2,18 @@
 # Programs and libraries we want to build
 #----------------------------------------
 
+lib_LTLIBRARIES = libcompta.la
+
 bin_PROGRAMS    = compta 
 bin_PROGRAMS   += compta_version
 
+#----------------------------
+# SOURCES we want distributed
+#----------------------------
+libcompta_la_SOURCES = 
+
+#accounts
+libcompta_la_SOURCES += accounts/src/account_base.cpp
 
 #----------------------------
 # INCLUDES we want distributed
@@ -47,7 +56,10 @@ pkginclude_HEADERS += $(top_builddir)/src/utilities/include/compta/compta_versio
 
 # Prog app
 compta_version_SOURCES = apps/version.cpp
+compta_version_LDADD = libcompta.la
+
 compta_SOURCES = apps/main.cpp
+compta_LDADD = libcompta.la
 
 #--------------------------------------
 #Local Directories to include for build
