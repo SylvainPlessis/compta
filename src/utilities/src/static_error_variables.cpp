@@ -32,6 +32,7 @@ namespace Compta
  namespace FilesParsing{
    static unsigned int _current_line(0);
    static std::string  _raw_line;
+   static std::string  _error_message;
 
    unsigned int current_line()
    {
@@ -58,12 +59,27 @@ namespace Compta
       _raw_line = line;
    }
 
-   std::string  error_message()
+   std::string raw_error_message()
    {
       std::stringstream oss;
       oss << "Line #" << current_line() << "\n"
           << raw_line() << std::endl;
       return oss.str();
+   }
+
+   std::string error_message()
+   {
+      return (_error_message.empty())?raw_error_message():_error_message;
+   }
+
+   void set_error_message(const std::string & err)
+   {
+      _error_message = err;
+   }
+
+   void clear_error_message()
+   {
+      _error_message.clear();
    }
  }
 }

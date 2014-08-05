@@ -222,6 +222,7 @@ namespace Compta
       if(!ascii_getline(data,line))compta_error();
       while(!data.eof())
       {
+          FilesParsing::clear_error_message();
           std::string first_word;
           data >> first_word;
           if(first_word.length() == 0)continue; //empty line
@@ -243,7 +244,7 @@ namespace Compta
           ascii_getline(data,descr);
           std::stringstream ss;
           ss << first_word << "\t" << cat << "\t" << deb << "\t" << cred << "\t" << id;
-          FilesParsing::error_message().insert(FilesParsing::error_message().find('\n') + 1,ss.str());
+          FilesParsing::set_error_message(FilesParsing::raw_error_message().insert(FilesParsing::raw_error_message().find('\n') + 1,ss.str()));
           shave_string(descr);
 //formatting tests
           if(cred != 0. && deb != 0.) //one operation at a time

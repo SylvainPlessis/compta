@@ -49,7 +49,16 @@ namespace Compta
    void set_raw_line(const std::string &line);
 
    //!error message giving line number and line
-   std::string  error_message();
+   std::string error_message();
+
+   //!error message giving line number and line
+   std::string raw_error_message();
+
+   //!set error message giving line number and line
+   void set_error_message(const std::string & err);
+
+   //!clear error message giving line number and line
+   void clear_error_message();
  }
 
 }
