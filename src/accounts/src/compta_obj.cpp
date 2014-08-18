@@ -402,7 +402,6 @@ namespace Compta
    
    void ComptaObj::report_forecast(std::ostream &out) const
    {
-
        out << std::setprecision(2) << std::fixed;
        Money bifton(_previsionnel.currency());
        out << "\n\nRapport de la comptabilité << " << _title << " >>\n" <<  std::endl;
@@ -412,12 +411,14 @@ namespace Compta
            << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
            << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
 
+       return;
+
    }
 
 
    void ComptaObj::report_bank(std::ostream &out) const
    {
-
+      Money bifton;
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
       out << std::endl;
@@ -449,12 +450,12 @@ namespace Compta
           }
           out << std::endl;
       }
-
+      return;
    }
 
    void ComptaObj::report_cash(std::ostream &out) const
    {
-
+      Money bifton;
       out << "Liquide"; 
       if(_liquide.size() > 1)out << "s";
       out << std::endl;
@@ -473,6 +474,7 @@ namespace Compta
              }
           }
       }
+      return;
    }
 
   
