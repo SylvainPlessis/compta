@@ -1,6 +1,6 @@
 BUILT_SOURCES   = .license.stamp
 
-EXTRA_DIST = input_files
+EXTRA_DIST = input
 
 check_PROGRAMS  =
 check_PROGRAMS += date_unit
@@ -28,6 +28,8 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/options/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
+
+AM_LDFLAGS = $(LIBCOMPTA_LIB)
 
 # Sources for these tests
 date_unit_SOURCES = date_unit.cpp

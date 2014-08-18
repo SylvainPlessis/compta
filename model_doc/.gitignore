@@ -4,5 +4,6 @@
 *.toc
 *.lof
 *.bbl
-*.pdf
+compta.pdf
 *.out
+*.swp

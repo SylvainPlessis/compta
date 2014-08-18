@@ -3,7 +3,7 @@
 //
 // Compta - A simple terminal based comptability software
 //
-// Copyright (C) 2013 Sylvain Plessis
+// Copyright (C) 2013, 2014 Sylvain Plessis
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -67,77 +67,6 @@ namespace Compta{
       std::map<std::string,unsigned int> _savings_map;
       
   };
-
-  inline
-  Bank::Bank(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
-        AccountBase(name,start_date,amount,money)
-  {
-     return;
-  }
-
-  inline
-  Bank::Bank(const Bank &rhs):
-      AccountBase(*(static_cast<const AccountBase*>(&rhs)))
-  {
-     *this = rhs;
-     return;
-  }
-
-  inline
-  Bank::~Bank()
-  {
-     return;
-  }
-
-  inline
-  void Bank::add_posting(const Posting &post, const unsigned int &sav)
-  {
-     _records.add_posting(post);
-     if((int)sav != -1)
-     {
-        if(sav >= _savings.size())
-                        compta_bank_error("Savings account requested does not exist");
-        _savings[sav].add_posting(-post);
-     }
-  }
-
-  inline
-  void Bank::add_savings_account(const Savings &saving, const std::string &sname)
-  {
-     _savings.push_back(saving);
-     _savings_list.push_back(sname);
-     _savings_map[sname] = _savings.size() - 1;
-  }
-
-  inline
-  const std::vector<Savings> Bank::savings() const
-  {
-      return _savings;
-  }
-
-  inline
-  const std::map<std::string,unsigned int> Bank::savings_map() const
-  {
-      return _savings_map;
-  }
-
-  inline
-  Bank &Bank::operator=(const Bank &rhs)
-  {
-      if(this != &rhs)
-      {
-        _savings = rhs.savings();
-        _savings_map = rhs.savings_map();
-        _savings_list = rhs.savings_list();
-      }
-      return *this;
-  }
-
-  inline
-  const std::vector<std::string> Bank::savings_list() const
-  {
-     return _savings_list;
-  }
 
 }
 

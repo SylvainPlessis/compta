@@ -1,3 +1,5 @@
+BUILT_SOURCES   = .license.stamp
+
 # Doxygen support
 include $(top_srcdir)/doxygen/aminclude.am
 
@@ -64,7 +66,7 @@ install-data-hook:
 	fi
 
 # Install config file
-BUILT_SOURCES = compta_config.h
+BUILT_SOURCES  += compta_config.h
 include_HEADERS	= compta_config.h
 
 # Additional files to be deleted by 'make distclean'
@@ -96,6 +98,24 @@ MAINTAINERCLEANFILES += m4/ltoptions.m4
 MAINTAINERCLEANFILES += m4/ltsugar.m4
 MAINTAINERCLEANFILES += m4/ltversion.m4
 MAINTAINERCLEANFILES += m4/lt~obsolete.m4
+
+#---------------------------------
+# Embedded license header support
+#---------------------------------
+# PB: I'm leaving this here commented out in case the AC_SUBST solution
+#     dies at some point. The below requires GNU make and causes a
+#     an Automake warning (that can be suppressed with -Wno-portability)
+#     so I went for the more general solution instead, but the below
+#     works.
+# brutally copy/pasted from Antioch
+#STAMPED_FILES = $(pkginclude_HEADERS) $(compta_version_SOURCES) $(compta_SOURCES)
+
+.license.stamp: $(top_srcdir)/LICENSE
+	$(top_srcdir)/src/common/lic_utils/update_license.pl $(top_srcdir)/LICENSE $(COMPTA_STAMPED_FILES) 
+	echo 'updated source license headers' >$@
+
+CLEANFILES = .license.stamp
+
 
 # -------------------------------------------
 # Optional support for code coverage analysis

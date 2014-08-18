@@ -1,5 +1,5 @@
 \documentclass[a4paper,french]{report}
-\usepackage{geometry,babel,graphicx,lineno}
+\usepackage{geometry,babel,graphicx,lineno,pdfpages}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[color links=true,link color=black]{hyperref}
@@ -7,8 +7,8 @@
 \begin{document}
 
 \author{Sylvain}
-\date{\today}
-\title{Compta 2.0}
+\date{Compilé le \today}
+\title{Compta \theversion}
 
 \pagenumbering{alph}
 \maketitle
@@ -28,9 +28,18 @@
 \chapter{Fichier d'entrée}
 \section{Exemple complet}
 \input{input_file}
+
 \section{Prévisionnel}
 \input{input_forecast}
+
 \section{Comptes}
+\input{input_accounts}
+
 \section{Données}
+\input{input_data}
+
+\appendix
+\chapter{Sortie pdf de l'exemple}
+\includepdf[pages=-]{./figs/Longjumeau_data}
 
 \end{document}

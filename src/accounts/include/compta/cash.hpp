@@ -3,7 +3,7 @@
 //
 // Compta - A simple terminal based comptability software
 //
-// Copyright (C) 2013 Sylvain Plessis
+// Copyright (C) 2013, 2014 Sylvain Plessis
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -35,13 +35,6 @@ namespace Compta{
       Cash(const std::string &name = "Account", const Date & start_date = Date(1,1,1900), 
                   float amount = 0., Currency::Currency  money = Currency::EUR);
   };
-
-  inline
-  Cash::Cash(const std::string &name, const Date & start_date, float amount, Currency::Currency money):
-        AccountBase(name,start_date,amount,money)
-  {
-     return;
-  }
 
 }
 

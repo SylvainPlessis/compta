@@ -3,7 +3,7 @@
 //
 // Compta - A simple terminal based comptability software
 //
-// Copyright (C) 2013 Sylvain Plessis
+// Copyright (C) 2013, 2014 Sylvain Plessis
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -23,6 +23,8 @@
 
 #ifndef COMPTA_EXCEPTIONS_H
 #define COMPTA_EXCEPTIONS_H
+
+//Compta
 
 // C++
 #include <stdexcept>
