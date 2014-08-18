@@ -33,6 +33,7 @@
 #include "compta/parsing_def.hpp"
 #include "compta/money.hpp"
 #include "compta/monthly_report.hpp"
+#include "compta/options_enum.hpp"
 
 //C++
 #include <vector>
@@ -49,22 +50,13 @@ namespace Compta{
       ComptaObj(const ComptaObj &rhs);
       ~ComptaObj();
 
+      //!print fork
+      void report(PrintOptions opt, std::ostream &out = std::cout) const;
+
       //!print all
-      void report(std::ostream &out = std::cout) const;
-
-      //!print forecast
-      void report_forecast(std::ostream &out = std::cout) const;
-
-      //!print bank accounts
-      void report_bank(std::ostream &out = std::cout) const;
-
-      //!print cash
-      void report_cash(std::ostream &out = std::cout) const;
-
-      //!print also
       friend std::ostream &operator<< (std::ostream &out, const ComptaObj &obj)
       {
-          obj.report(out);
+          obj.report_all(out);
           return out;
       }
 
@@ -146,6 +138,18 @@ namespace Compta{
       //! actually adds the posting to source and target
       template<typename AccountTypeSrc, typename AccountTypeTrg>
       void posting_account_to_account(AccountTypeSrc &src, AccountTypeTrg &trg, Posting &post);
+
+      //!print all
+      void report_all(std::ostream &out = std::cout) const;
+
+      //!print forecast
+      void report_forecast(std::ostream &out = std::cout) const;
+
+      //!print bank accounts
+      void report_bank(std::ostream &out = std::cout) const;
+
+      //!print cash
+      void report_cash(std::ostream &out = std::cout) const;
 
       Forecast _previsionnel;
       std::vector<Cash> _liquide;

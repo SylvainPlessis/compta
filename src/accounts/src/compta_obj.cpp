@@ -389,7 +389,35 @@ namespace Compta
    }
 
    
-   void ComptaObj::report(std::ostream &out) const
+   void ComptaObj::report(PrintOptions opt, std::ostream &out) const
+   {
+      switch(opt)
+      {
+         case ALL:
+         {
+            this->report_all(out);
+            break;
+         }
+         case FORECAST:
+         {
+            this->report_forecast(out);
+            break;
+         }
+         case BANK:
+         {
+            this->report_bank(out);
+            break;
+         }
+         case CASH:
+         {
+            this->report_cash(out);
+            break;
+         }
+      }
+      return;
+   }
+
+   void ComptaObj::report_all(std::ostream &out) const
    {
 
      this->report_forecast(out);
@@ -409,7 +437,10 @@ namespace Compta
        out << "Forecast" << std::endl
            << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
            << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
-           << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
+           << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() 
+           << std::endl 
+           << _previsionnel.forecast()
+           << std::endl;
 
        return;
 

@@ -26,6 +26,8 @@ libcompta_la_SOURCES += forecast/src/operation.cpp
 libcompta_la_SOURCES += utilities/src/date_utils.cpp
 libcompta_la_SOURCES += utilities/src/string_utils.cpp
 libcompta_la_SOURCES += utilities/src/static_error_variables.cpp
+libcompta_la_SOURCES += utilities/src/compta_help.cpp
+libcompta_la_SOURCES += utilities/src/compta_version.cpp
 
 # accounts
 libcompta_la_SOURCES += accounts/src/account_base.cpp
@@ -72,6 +74,7 @@ pkginclude_HEADERS += utilities/include/compta/compta_asserts.hpp
 pkginclude_HEADERS += utilities/include/compta/static_error_variables.hpp
 pkginclude_HEADERS += utilities/include/compta/date_utils.hpp
 pkginclude_HEADERS += utilities/include/compta/string_utils.hpp
+pkginclude_HEADERS += utilities/include/compta/compta_help.hpp
 
 # accounts
 pkginclude_HEADERS += accounts/include/compta/posting.hpp

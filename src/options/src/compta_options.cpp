@@ -26,6 +26,7 @@
 #include "compta/compta_version.hpp"
 #include "compta/latex_factory.hpp"
 #include "compta/compta_options.hpp"
+#include "compta/compta_help.hpp"
 
 //C++
 
@@ -38,10 +39,11 @@ namespace Compta
   }
 
   ComptaOptions::ComptaOptions(int argc, char **argv):
+     _print_choice(ALL),
      _valid(true),
      _more(true)
   {
-      this->build_map();
+      this->build_maps();
       for(int i = 1; i < argc; i++)
       {
           std::string argument(argv[i]);
@@ -81,7 +83,7 @@ namespace Compta
       return;
   }
 
-  void ComptaOptions::build_map()
+  void ComptaOptions::build_maps()
   {
       _options_map["--version"]        = VERSION;
       _options_map["-v"]               = VERSION;
@@ -95,9 +97,23 @@ namespace Compta
       _options_map["--accounts"]       = ACCOUNTS_FILE;
       _options_map["--data"]           = DATA_FILE;
       _options_map["--latex"]          = LATEX_FILE;
+      _options_map["--print-all"]      = PRINT_ALL;
+      _options_map["--print-forecast"] = PRINT_FORECAST;
+      _options_map["--print-bank"]     = PRINT_BANK;
+      _options_map["--print-cash"]     = PRINT_CASH;
 
       _options_value_map[GENERATE_TEX]  = true;
       _options_value_map[COMPILE_TEX]   = true;
+
+      _options_files_map[FORECAST_FILE] = &_forecast_file;
+      _options_files_map[DATA_FILE]     = &_data_file;
+      _options_files_map[LATEX_FILE]    = &_latex_file;
+      _options_files_map[ACCOUNTS_FILE] = &_accounts_file;
+
+      _options_print_map[PRINT_ALL]      = ALL;
+      _options_print_map[PRINT_FORECAST] = FORECAST;
+      _options_print_map[PRINT_BANK]     = BANK;
+      _options_print_map[PRINT_CASH]     = CASH;
   }
 
   bool ComptaOptions::valid() const
@@ -158,27 +174,15 @@ namespace Compta
   {
      switch(opt)
      {
+// file options
         case FORECAST_FILE:
-        {
-           _forecast_file = value;
-           break;
-        }
         case ACCOUNTS_FILE:
-        {
-           _accounts_file = value;
-           break;
-        }
         case DATA_FILE:
-        {
-           _data_file = value;
-           break;
-        }
         case LATEX_FILE:
         {
-           _latex_file = value;
-           if(_latex_file.find(".tex") != std::string::npos)_latex_file += ".tex";
-           break;
+          this->manage_file(opt,value);
         }
+// LaTeX related options
         case GENERATE_TEX:
         {
            bool gtex = (value == "yes");
@@ -191,6 +195,16 @@ namespace Compta
            _options_value_map[COMPILE_TEX]   = ctex;
            break;
         }
+// print options
+        case PRINT_ALL:
+        case PRINT_FORECAST:
+        case PRINT_BANK:
+        case PRINT_CASH:
+        {
+           this->manage_print(opt);
+           break;
+        }
+// help and version
         case HELP:
         {
            compta_help_stdout();
@@ -211,7 +225,7 @@ namespace Compta
   void ComptaOptions::report(ComptaObj & compte) const
   {
 //on screen report
-     std::cout << compte << std::endl;
+     compte.report(_print_choice);
 
 //LaTeX report
      if(_options_value_map.at(GENERATE_TEX))
@@ -221,13 +235,31 @@ namespace Compta
        {
           const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
           if(!system(NULL))compta_LaTeX_error("Failed to find preprocessor"); 
+          std::cout << "Compiling using pdflatex, please wait" << std::endl;
           if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          std::cout << "Compiling using pdflatex, please wait" << std::endl;
           if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          std::cout << "Compiling using pdflatex, please wait" << std::endl;
           if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          std::cout << "Compiling using pdflatex, please wait" << std::endl;
           if(system(commands.c_str()))compta_LaTeX_error(commands); 
+          std::cout << "Compilation ended" << std::endl;
        }
      }
 
+  }
+
+  void ComptaOptions::manage_file(Options opt, const std::string& value)
+  {
+     *(_options_files_map.at(opt)) = value;
+     if(!_latex_file.empty() && _latex_file.find(".tex") != std::string::npos)_latex_file += ".tex";
+     return;
+  }
+
+  void ComptaOptions::manage_print(Options opt)
+  {
+     _print_choice = _options_print_map.at(opt);
+     return;
   }
 
   void ComptaOptions::unvalid_invocation(std::ostream & out, const std::string & prog) const

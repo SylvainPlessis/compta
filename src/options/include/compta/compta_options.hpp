@@ -25,8 +25,8 @@
 #define COMPTA_OPTIONS_H
 
 //Compta
-#include "compta/options_enum.hpp"
 #include "compta/compta_obj.hpp"
+#include "compta/options_enum.hpp"
 
 //C++
 #include <iostream>
@@ -58,22 +58,31 @@ namespace Compta{
       private:
         ComptaOptions();
 
-        std::string _forecast_file;
-        std::string _accounts_file;
-        std::string _data_file;
-        std::string _latex_file;
+        std::string  _forecast_file;
+        std::string  _accounts_file;
+        std::string  _data_file;
+        std::string  _latex_file;
+        PrintOptions _print_choice;
 
         bool _valid;
         bool _more;
 
-        std::map<std::string,Options> _options_map;
-        std::map<Options,bool>        _options_value_map;
+        std::map<std::string,Options>   _options_map;
+        std::map<Options,bool>          _options_value_map;
+        std::map<Options,std::string*>  _options_files_map;
+        std::map<Options,PrintOptions>  _options_print_map;
 
-        void build_map();
+        void build_maps();
 
         int pass_options(int pos, char **opts);
 
-        void process_option(Options opt ,const std::string & value);
+        //! Highest level processing options method
+        void process_option(Options opt, const std::string & value);
+
+        //! Low-level printing options method
+        void manage_print(Options opt);
+        //! Low-level file options method
+        void manage_file( Options opt, const std::string & value);
 
   };
 
