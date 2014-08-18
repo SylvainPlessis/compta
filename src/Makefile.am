@@ -46,6 +46,9 @@ libcompta_la_SOURCES += tex/src/latex_factory.cpp
 libcompta_la_SOURCES += parsing/src/parsing_def.cpp
 libcompta_la_SOURCES += parsing/src/read_compta_input_file.cpp
 
+# options
+libcompta_la_SOURCES += options/src/compta_options.cpp
+
 #----------------------------
 # INCLUDES we want distributed
 #----------------------------
