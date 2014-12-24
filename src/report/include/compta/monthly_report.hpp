@@ -72,7 +72,7 @@ namespace Compta
 
      private:
 
-        //!sets the caterories, using the Forecast reference
+        //!sets the categories, using the Forecast reference
         void set_categories();
 
         std::vector<CategoryReport> _report;
