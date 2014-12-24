@@ -455,33 +455,38 @@ namespace Compta
       out << std::endl;
       for(unsigned int ib = 0; ib < _banque.size(); ib++)
       {
-          bifton.set_money(_banque[ib].currency());
-          out << " * compte : "        << _banque[ib].name()                                                  << std::endl
-              << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
-              << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
-          if(!_banque[ib].records().in_waiting().empty())
-          {
-             for(unsigned int ie = 0; ie < _banque[ib].records().in_waiting().size(); ie++)
-             {
-                 out << "\t  +++ " << _banque[ib].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
-             }
-          }
-          if(!_banque[ib].savings().empty())
-          {
-             out << std::endl;
-             for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
-             {
-                out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
-                    << "\t\tétat de l'épargne : " << _banque[ib].savings()[is].current_state()  << " " << bifton.str_money() << std::endl
-                    << "\t\tétat attendu : "      << _banque[ib].savings()[is].expected_state() << " " << bifton.str_money() << std::endl;
-             }
-          }else
-          {
-             out << "Il n'y a pas d'épargne associée à ce compte." << std::endl;
-          }
-          out << std::endl;
+          this->report_a_bank(out,ib);
       }
       return;
+   }
+
+   void ComptaObj::report_a_bank(std::ostream &out,unsigned int ib) const
+   {
+     bifton.set_money(_banque[ib].currency());
+     out << " * compte : "        << _banque[ib].name()                                                  << std::endl
+         << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
+         << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
+     if(!_banque[ib].records().in_waiting().empty())
+     {
+       for(unsigned int ie = 0; ie < _banque[ib].records().in_waiting().size(); ie++)
+       {
+         out << "\t  +++ " << _banque[ib].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
+       }
+     }
+     if(!_banque[ib].savings().empty())
+     {
+       out << std::endl;
+       for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
+       {
+         out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
+             << "\t\tétat de l'épargne : " << _banque[ib].savings()[is].current_state()  << " " << bifton.str_money() << std::endl
+             << "\t\tétat attendu : "      << _banque[ib].savings()[is].expected_state() << " " << bifton.str_money() << std::endl;
+       }
+     }else
+     {
+       out << "Il n'y a pas d'épargne associée à ce compte." << std::endl;
+     }
+     out << std::endl;
    }
 
    void ComptaObj::report_cash(std::ostream &out) const
@@ -492,21 +497,27 @@ namespace Compta
       out << std::endl;
       for(unsigned int ic = 0; ic < _liquide.size(); ic++)
       {
-          bifton.set_money(_liquide[ic].currency());
-          out << " * liquide : " << _liquide[ic].name() << std::endl
-              << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
-              << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
-          out << std::endl;
-          if(!_liquide[ic].records().in_waiting().empty())
-          {
-             for(unsigned int ie = 0; ie < _liquide[ic].records().in_waiting().size(); ie++)
-             {
-                 out << "\t  +++ " << _liquide[ic].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
-             }
-          }
+
+        this->report_a_cash(out,ic);
       }
       return;
    }
+
+   void ComptaObj::report_a_cash(std::ostream &out, unsigned int ic) const
+   {
+     bifton.set_money(_liquide[ic].currency());
+     out << " * liquide : " << _liquide[ic].name() << std::endl
+         << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
+         << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
+     out << std::endl;
+     if(!_liquide[ic].records().in_waiting().empty())
+     {
+       for(unsigned int ie = 0; ie < _liquide[ic].records().in_waiting().size(); ie++)
+       {
+         out << "\t  +++ " << _liquide[ic].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
+       }
+     }
+  }
 
   
   void ComptaObj::report_compta(std::vector<MonthlyReport> &rep) const

@@ -151,6 +151,12 @@ namespace Compta{
       //!print cash
       void report_cash(std::ostream &out = std::cout) const;
 
+      //!print one bank
+      void report_a_bank(std::ostream &out,unsigned int ib) const;
+
+      //!print one cash
+      void report_a_cash(std::ostream &out,unsigned int ic) const;
+
       Forecast _previsionnel;
       std::vector<Cash> _liquide;
       std::vector<Bank> _banque;
