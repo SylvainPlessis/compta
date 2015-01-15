@@ -24,34 +24,59 @@
 #ifndef OPTIONS_ENUM_H
 #define OPTIONS_ENUM_H
 
+#include <string>
+
 namespace Compta{
 
-  enum Options{//
-/* helpers, boolean values */
-               VERSION = 0,
-               HELP,
-/* files */
-               FORECAST_FILE,
-               ACCOUNTS_FILE,
-               DATA_FILE,
-               LATEX_FILE,
-/* print options, boolean values*/
-               PRINT_ALL,
-               PRINT_FORECAST,
-               PRINT_BANK,
-               PRINT_CASH,
-/* output file*/
-               GENERATE_TEX,
-               COMPILE_TEX
-              };
+/*! 
+   Five things here:
+     - general non compta options (help, version)
+     - Input/output files
+     - report on screen (print options)
+     - report on file (LaTeX only)
+     - the state of every account
+*/
 
-// only the printing
-  enum PrintOptions{
-                ALL = 0,
-                FORECAST,
-                BANK,
-                CASH
+/* helpers, boolean values */
+  namespace GENERAL{
+    enum Options{//
+               VERSION = 0,
+               HELP
               };
+  }
+
+/* read files */
+  namespace READ{
+    enum Options{
+               FORECAST = 0,
+               ACCOUNTS,
+               DATA
+              };
+  }
+
+/* print options, boolean values */
+  namespace PRINT{
+    enum Options{
+               NOPRINT = 0,
+               ALL,
+               FORECAST,
+               BANK,
+               CASH,
+               FROM,
+               TO
+              };
+  }
+
+/* write file */
+  namespace WRITE{
+    enum Options{
+               GENERATE_TEX = 0,
+               COMPILE_TEX,
+               LATEX,
+               FROM,
+               TO
+              };
+  }
 
 }
 

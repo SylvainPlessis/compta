@@ -38,33 +38,49 @@ namespace Compta
       return;
   }
 
+
+/*
+  - 1 : GENERAL
+  - 2 : READ
+  - 3 : PRINT
+  - 4 : WRITE
+*/
   ComptaOptions::ComptaOptions(int argc, char **argv):
-     _print_choice(ALL),
+     _from_stdout(DateUtils::date_min()),
+     _to_stdout(DateUtils::date_max()),
+     _print(true),
+     _print_forecast(false),
+     _print_bank(false),
+     _print_cash(false),
+     _from_file(DateUtils::date_min()),
+     _to_file(DateUtils::date_max()),
      _valid(true),
      _more(true)
   {
       this->build_maps();
       for(int i = 1; i < argc; i++)
       {
-          std::string argument(argv[i]);
-          if(argument[0] == '-') // options
+          if(std::string(argv[i])[0] != '-')
           {
-             i = this->pass_options(i,argv);
-          }else // file
+            if(_forecast_file.empty())
+            {
+               _forecast_file = value;
+             }else if(_accounts_file.empty())
+             {
+               _accounts_file = value;
+             }else if(_data_file.empty())
+             {
+               _data_file = value;
+             }else if(_latex_file.empty())
+             {
+               _latex_file = value;
+             }else
+             {
+               compta_option_error("Option non reconnue :\n" + std::string(argv[i]));
+             }
+          }else
           {
-              if(_forecast_file.empty())
-              {
-                  _forecast_file = argument;
-              }else if(_accounts_file.empty())
-              {
-                  _accounts_file = argument;
-              }else if(_data_file.empty())
-              {
-                  _data_file = argument;
-              }else if(_latex_file.empty())
-              {
-                  _latex_file = argument;
-              }
+            this->pass_options(i,argv);
           }
       }
 
@@ -76,44 +92,44 @@ namespace Compta
 
       if(_accounts_file.empty())_accounts_file = _forecast_file;
 
-      if(_data_file.empty())_data_file = _forecast_file;
+      if(_data_file.empty())    _data_file     = _forecast_file;
 
-      if(_latex_file.empty())_latex_file = _forecast_file + ".tex";
+      if(_latex_file.empty())   _latex_file    = _forecast_file + ".tex";
 
       return;
   }
 
   void ComptaOptions::build_maps()
   {
-      _options_map["--version"]        = VERSION;
-      _options_map["-v"]               = VERSION;
-      _options_map["--help"]           = HELP;
-      _options_map["-h"]               = HELP;
-      _options_map["--generate-latex"] = GENERATE_TEX;
-      _options_map["-g"]               = GENERATE_TEX;
-      _options_map["--compile-latex"]  = COMPILE_TEX;
-      _options_map["-c"]               = COMPILE_TEX;
-      _options_map["--forecast"]       = FORECAST_FILE;
-      _options_map["--accounts"]       = ACCOUNTS_FILE;
-      _options_map["--data"]           = DATA_FILE;
-      _options_map["--latex"]          = LATEX_FILE;
-      _options_map["--print-all"]      = PRINT_ALL;
-      _options_map["--print-forecast"] = PRINT_FORECAST;
-      _options_map["--print-bank"]     = PRINT_BANK;
-      _options_map["--print-cash"]     = PRINT_CASH;
+     // GENERAL
+      _general_options_map["--version"] = GENERAL::VERSION;
+      _general_options_map["-v"]        = GENERAL::VERSION;
+      _general_options_map["--help"]    = GENERAL::HELP;
+      _general_options_map["-h"]        = GENERAL::HELP;
 
-      _options_value_map[GENERATE_TEX]  = true;
-      _options_value_map[COMPILE_TEX]   = true;
+     // READ
+      _read_options_map["--forecast"]   = READ::FORECAST;
+      _read_options_map["--accounts"]   = READ::ACCOUNTS;
+      _read_options_map["--data"]       = READ::DATA;
 
-      _options_files_map[FORECAST_FILE] = &_forecast_file;
-      _options_files_map[DATA_FILE]     = &_data_file;
-      _options_files_map[LATEX_FILE]    = &_latex_file;
-      _options_files_map[ACCOUNTS_FILE] = &_accounts_file;
+     // PRINT
+      _print_options_map["--no_print"]       = PRINT::NOPRINT;
+      _print_options_map["--print-all"]      = PRINT::ALL;
+      _print_options_map["--print-forecast"] = PRINT::FORECAST;
+      _print_options_map["--print-bank"]     = PRINT::BANK;
+      _print_options_map["--print-cash"]     = PRINT::CASH;
+      _print_options_map["--print-from"]     = PRINT::FROM;
+      _print_options_map["--print-to"]       = PRINT::TO;
 
-      _options_print_map[PRINT_ALL]      = ALL;
-      _options_print_map[PRINT_FORECAST] = FORECAST;
-      _options_print_map[PRINT_BANK]     = BANK;
-      _options_print_map[PRINT_CASH]     = CASH;
+     // WRITE
+      _write_options_map["--write"]          = WRITE::LATEX;
+      _write_options_map["--generate-latex"] = WRITE::GENERATE_TEX;
+      _write_options_map["-g"]               = WRITE::GENERATE_TEX;
+      _write_options_map["--compile-latex"]  = WRITE::COMPILE_TEX;
+      _write_options_map["-c"]               = WRITE::COMPILE_TEX;
+      _write_options_map["--write-from"]     = WRITE::FROM;
+      _write_options_map["--write-to"]       = WRITE::TO;
+
   }
 
   bool ComptaOptions::valid() const
@@ -141,96 +157,220 @@ namespace Compta
       return _data_file;
   }
 
+  const Date ComptaOptions::from_stdout() const
+  {
+      return _from_stdout;
+  }
+
+  const Date ComptaOptions::to_stdout() const;
+  {
+      return _to_stdout;
+  }
+
+  const Date ComptaOptions::from_file() const
+  {
+      return _from_file;
+  }
+
+  const Date ComptaOptions::to_file() const;
+  {
+      return _to_file;
+  }
+
   int ComptaOptions::pass_options(int pos, char **opts)
   {
       std::string keyword(opts[pos]);
       std::string value;
       if(keyword.find('=') != std::string::npos)
       {
-        value = keyword.substr(keyword.find('=') + 1, std::string::npos);
-        keyword = keyword.substr(0,keyword.find('='));
-      }
-      if(!_options_map.count(keyword))compta_option_error(keyword);
-
-      if((_options_map.count(keyword) != VERSION) && // value if not help nor version
-         _options_map.count(keyword) != HELP)
+         value = keyword.substr(keyword.find('=') + 1, std::string::npos);
+         keyword = keyword.substr(0,keyword.find('='));
+      }else if(std::string(opts[pos+1]).find('=') != std::string::npos)
       {
-        if(std::string(opts[pos+1]) == "=")
-        {
-          pos += 2;
-        }else
-        {
-          pos++;
-        }
-        value = std::string(opts[pos]);
+         if(std::string(opts[pos+1]).size() == 1)
+         {
+            value = std::string(opts[pos+2]);
+         }else
+         {
+            value = std::string(opts[pos+1]).substr(1,std::string::npos);
+         }
+      }
+        // GENERAL
+      if(_general_options_map.count(keyword))
+      {
+         this->general_options(keyword); // general and get out
+        // READ
+      }else if(_read_options_map.count(keyword))
+      {
+         this->read_options(keyword,value);
+        // PRINT
+      }else if(_print_options_map.count(keyword))
+      {
+         this->print_options(keyword,value);
+        // WRITE
+      }else if(_write_options_map.count(keyword))
+      {
+         this->write_options(keyword,value);
+      }else
+      {
+         antioch_option_error("Erreur dans les options");
       }
 
-      this->process_option(_options_map.at(keyword),value);
-
-      return pos;
   }
 
-  void ComptaOptions::process_option(Options opt ,const std::string & value)
+  void ComptaOptions::general_options(const std::string &keyword)
   {
-     switch(opt)
-     {
-// file options
-        case FORECAST_FILE:
-        case ACCOUNTS_FILE:
-        case DATA_FILE:
-        case LATEX_FILE:
-        {
-          this->manage_file(opt,value);
-        }
-// LaTeX related options
-        case GENERATE_TEX:
-        {
-           bool gtex = (value == "yes");
-           _options_value_map[GENERATE_TEX]  = gtex;
-           break;
-        }
-        case COMPILE_TEX:
-        {
-           bool ctex = (value == "yes");
-           _options_value_map[COMPILE_TEX]   = ctex;
-           break;
-        }
-// print options
-        case PRINT_ALL:
-        case PRINT_FORECAST:
-        case PRINT_BANK:
-        case PRINT_CASH:
-        {
-           this->manage_print(opt);
-           break;
-        }
+     compta_assert(_general_options_map.count(keyword));
 // help and version
-        case HELP:
+     switch(_general_options_map.at(keyword))
+     {
+        case GENERAL::HELP:
         {
            compta_help_stdout();
            _more = false;
            _valid = true;
            break;
         }
-        case VERSION:
+        case GENERAL::VERSION:
         {
            compta_version_stdout();
            _more = false;
            _valid = true;
            break;
         }
+        default //WTF???
+        {
+          compta_error();
+        }
      }
   }
 
-  void ComptaOptions::report(ComptaObj & compte) const
+  void ComptaOptions::read_options(const std::string & keyword, const std::string & value)
   {
-//on screen report
-     compte.report(_print_choice);
+        compta_assert(_read_options_map.count(keyword));
+// file options
+     switch(_general_options_map.at(keyword))
+     {
+        case READ::FORECAST:
+        {
+            _forecast_file = value;
+            break;
+        }
+        case READ::ACCOUNTS:
+        {
+            _accounts_file = value;
+            break;
+        }
+        case READ::DATA:
+        {
+            _data_file = value;
+            break;
+        }
+        default //WTF???
+        {
+          compta_error();
+        }
+     }
+  }
 
-//LaTeX report
+  void ComptaOptions::print_options(const std::string & keyword, const std::string & value)
+  {
+     compta_assert(_read_options_map.count(keyword));
+
+     switch(_print_options_map.at(keyword))
+     {
+        case PRINT::NOPRINT:
+        {
+           _print = true;
+           break;
+        }
+        case PRINT::ALL:
+        {
+           _print = true;
+           _print_forecast = true;
+           _print_bank = true;
+           _print_cash = true;
+           break;
+        }
+        case PRINT::FORECAST:
+        {
+           _print_forecast = true;
+           break;
+        }
+        case PRINT::BANK:
+        {
+           _print_bank = true;
+           break;
+        }
+        case PRINT::CASH:
+        {
+           _print_cash = true;
+           break;
+        }
+        case PRINT::FROM:
+        {
+           _from_stdout.set_date(value);
+           break;
+        }
+        case PRINT::TO:
+        {
+           _to_stdout.set_date(value);
+           break;
+        }
+        default //WTF???
+        {
+          compta_error();
+        }
+     }
+  }
+ 
+  void ComptaOptions::write_options(const std::string & keyword, const std::string & value)
+  {
+     compta_assert(_write_options_map.count(keyword));
+
+     switch(_write_options_map.at(keyword))
+     {
+        case WRITE::GENERATE_TEX:
+        {
+          _write_tex = true;
+          break:
+        }
+        case WRITE::COMPILE_TEX:
+        {
+          _compile_tex = true;
+          break:
+        }
+        case WRITE::LATEX:
+        {
+          _latex_file = value;
+          break:
+        }
+        case WRITE::FROM:
+        {
+          _from_file.set_date(value);
+          break:
+        }
+        case WRITE::TO:
+        {
+          _to_file.set_date(value);
+          break:
+        }
+        default //WTF???
+        {
+          compta_error();
+        }
+     }
+  }
+
+  void ComptaOptions::report(const ComptaObj & compte) const
+  {
+// on screen report
+     compte.report(_from_stdout,_to_stdout,_print_forecast,_print_bank,_print_cash);
+
+// LaTeX report
      if(_options_value_map.at(GENERATE_TEX))
      {
-        latex_report(compte,_latex_file);
+        latex_report(compte,_from_file,_to_file,_latex_file);
        if(_options_value_map.at(COMPILE_TEX))
        {
           const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
@@ -247,13 +387,6 @@ namespace Compta
        }
      }
 
-  }
-
-  void ComptaOptions::manage_file(Options opt, const std::string& value)
-  {
-     *(_options_files_map.at(opt)) = value;
-     if(!_latex_file.empty() && _latex_file.find(".tex") != std::string::npos)_latex_file += ".tex";
-     return;
   }
 
   void ComptaOptions::manage_print(Options opt)

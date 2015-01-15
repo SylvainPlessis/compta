@@ -45,7 +45,7 @@ namespace Compta{
 
         bool more() const;
 
-        void report(ComptaObj & compte) const;
+        void report(const ComptaObj & compte) const;
 
         const std::string forecast_file() const;
 
@@ -53,31 +53,60 @@ namespace Compta{
 
         const std::string data_file() const;
 
+        const Date from_stdout() const;
+
+        const Date to_stdout() const;
+
+        const Date from_file() const;
+
+        const Date to_file() const;
+
         void unvalid_invocation(std::ostream & out, const std::string & prog) const;
 
       private:
         ComptaOptions();
 
-        std::string  _forecast_file;
-        std::string  _accounts_file;
-        std::string  _data_file;
-        std::string  _latex_file;
-        PrintOptions _print_choice;
+       // GENERAL
+       // READ
+        std::string _forecast_file;
+        std::string _accounts_file;
+        std::string _data_file;
+       // PRINT
+        bool _print;
+        bool _print_forecast;
+        bool _print_bank;
+        bool _print_cash;
+        Date _from_stdout;
+        Date _to_stdout;
+       // WRITE
+        std::string _latex_file;
+        Date        _from_file;
+        Date        _to_file;
 
         bool _valid;
         bool _more;
 
-        std::map<std::string,Options>   _options_map;
-        std::map<Options,bool>          _options_value_map;
-        std::map<Options,std::string*>  _options_files_map;
-        std::map<Options,PrintOptions>  _options_print_map;
+       // GENERAL
+        std::map<std::string, GENERAL::Options > _general_options_map;
+       // READ
+        std::map<std::string, READ::Options >    _read_options_map;
+       // PRINT
+        std::map<std::string, PRINT::Options >   _print_options_map;
+       // WRITE
+        std::map<std::string, WRITE::Options >   _write_options_map;
 
         void build_maps();
 
-        int pass_options(int pos, char **opts);
+        // GENERAL
+         void general_options(const std::string &keyword);
+        // READ
+         void read_options(const std::string & keyword, const std::string & value);
+        // PRINT
+         void print_options(const std::string & keyword, const std::string & value);
+        // WRITE
+         void write_options(const std::string & keyword, const std::string & value);
 
-        //! Highest level processing options method
-        void process_option(Options opt, const std::string & value);
+        int pass_options(int pos, char **opts);
 
         //! Low-level printing options method
         void manage_print(Options opt);
