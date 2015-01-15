@@ -39,6 +39,8 @@
 
 // The compta_assert() macro acts like C's assert(), but throws a
 // compta_error() (including stack trace, etc) instead of just exiting
+// brutally and shamelessly from Antioch (https://github.com/libantioch/antioch)
+#define compta_assert(asserted)  do { if (!(asserted)) { std::cerr << "Assertion `" #asserted "' failed." << std::endl; compta_error(); } } while(0)
 
 #define compta_error()                     do { compta_here(); COMPTA_THROW(Compta::LogicError()); }                   while(0)
 #define compta_not_implemented()           do { compta_here(); COMPTA_THROW(Compta::NotImplemented()); }               while(0)
