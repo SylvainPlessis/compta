@@ -35,19 +35,24 @@
 namespace Compta{
 
   //! prints the .tex output
-  void latex_report(const ComptaObj &compte, std::string file);
+  void latex_report(const ComptaObj &compte, const Date & from, const Date & to, std::string file);
+
   //! preamble
   const std::string latex_report_head();
   //! end of the document
   const std::string latex_report_foot();
+
   //! forecast
   void latex_forecast(std::ofstream &out, const Forecast &prev);
+
   //! bank account
-  void latex_account(std::ofstream &out, const History &acc, const std::string & name, const Currency::Currency &money);
+  void latex_account(std::ofstream &out, const Date & from, const Date & to, const History &acc, const std::string & name, const Currency::Currency &money);
+
   //! details by month
-  void latex_data(std::ofstream &out, const ComptaObj &compte);
+  void latex_data(std::ofstream &out, const Date & from, const Date & to, const ComptaObj &compte);
   //! details for a month
   void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money);
+
   //!color
   void add_color(float amount, float thres, float mar, std::ostream &out); 
 

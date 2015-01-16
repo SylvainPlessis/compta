@@ -96,20 +96,25 @@ namespace Compta
   }
 
   
-  void latex_account(std::ofstream &out, const History &acc, const std::string & name, const Currency::Currency &money)
+  void latex_account(std::ofstream &out, const Date & from, const Date & to, const History &acc, const std::string & name, const Currency::Currency &money)
   {
      if(acc.empty())return;
 
      Money cur(money);
      const std::string currency(cur.tex_money());
 
-     Date cur_month = acc.start_date(); //last date
-     cur_month.set_date(1, cur_month.month(), cur_month.year()); //last month
+     Date cur_month = acc.start_date(); //first date
+     cur_month.set_date(1, cur_month.month(), cur_month.year()); //at the start of the month
+
+        // rescaling if need be
+     if(cur_month < from) cur_month = from;
 
      out << "\\chapter{" << name << "}" << std::endl;
      out << std::endl;
      out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << currency << "}r<{~" << currency << "}}\\toprule" << std::endl;
      out << "Description & Date & Montant & Bilan \\\\\\midrule\\endhead" << std::endl;
+
+        // find starting state at date cur_month
      unsigned int ips(0);
      float courant(acc.starting_state());
      while(cur_month > acc.history()[ips].date())
@@ -117,6 +122,7 @@ namespace Compta
         courant += acc.history()[ips].amount();
         ips++;
      }
+
      out << "\\'Etat initial & " << cur_month.date_string() << " & & \\numprint{" << courant << "}\\\\[5pt]" << std::endl;
      for(unsigned int ip = ips; ip < acc.history().size(); ip++)
      {
@@ -152,10 +158,10 @@ namespace Compta
   }
 
   
-  void latex_data(std::ofstream &out, const ComptaObj &compte)
+  void latex_data(std::ofstream &out, const Date & from, const Date & to, const ComptaObj &compte)
   {
        std::vector<MonthlyReport> report;
-       compte.report_compta(report);
+       compte.report_compta(report,from,to);
        Money money;
        if(!compte.banque().empty())
        {
@@ -254,7 +260,7 @@ namespace Compta
 
 
   
-  void latex_report(const ComptaObj &compte, std::string file)
+  void latex_report(const ComptaObj &compte, const Date & from, const Date & to, std::string file)
   {
      if(file.find(".tex") == std::string::npos)file += ".tex";
      std::ofstream out(file.c_str());
@@ -288,7 +294,7 @@ namespace Compta
 
      out << "\\part{Détail}" << std::endl;
 
-     latex_data(out,compte);
+     latex_data(out, from, to, compte);
 
      out << latex_report_foot() << std::endl;
 
