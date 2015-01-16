@@ -389,42 +389,25 @@ namespace Compta
    }
 
    
-   void ComptaObj::report(PrintOptions opt, std::ostream &out) const
+   void ComptaObj::report(const Date & from, const Date & to, bool forecast, bool bank, bool cash) const
    {
-      switch(opt)
-      {
-         case ALL:
-         {
-            this->report_all(out);
-            break;
-         }
-         case FORECAST:
-         {
-            this->report_forecast(out);
-            break;
-         }
-         case BANK:
-         {
-            this->report_bank(out);
-            break;
-         }
-         case CASH:
-         {
-            this->report_cash(out);
-            break;
-         }
-      }
+       if(forecast)this->report_forecast(out);
+
+       if(bank)this->report_bank(from, to, out);
+
+       if(cash)this->report_cash(from, to, out);
+
       return;
    }
 
-   void ComptaObj::report_all(std::ostream &out) const
+   void ComptaObj::report_all(const Date & from, const Date & to, std::ostream &out) const
    {
 
      this->report_forecast(out);
 
-     this->report_bank(out);
+     this->report_bank(from, to, out);
 
-     this->report_cash(out);
+     this->report_cash(from, to, out);
    }
 
    
@@ -447,7 +430,7 @@ namespace Compta
    }
 
 
-   void ComptaObj::report_bank(std::ostream &out) const
+   void ComptaObj::report_bank(const Date & from, const Date & to, std::ostream &out) const
    {
       Money bifton;
       out << "\nBanque"; 
@@ -455,12 +438,12 @@ namespace Compta
       out << std::endl;
       for(unsigned int ib = 0; ib < _banque.size(); ib++)
       {
-          this->report_a_bank(out,ib);
+          this->report_a_bank(from, to, out,ib);
       }
       return;
    }
 
-   void ComptaObj::report_a_bank(std::ostream &out,unsigned int ib) const
+   void ComptaObj::report_a_bank(const Date & from, const Date & to, std::ostream &out,unsigned int ib) const
    {
      bifton.set_money(_banque[ib].currency());
      out << " * compte : "        << _banque[ib].name()                                                  << std::endl
@@ -489,7 +472,7 @@ namespace Compta
      out << std::endl;
    }
 
-   void ComptaObj::report_cash(std::ostream &out) const
+   void ComptaObj::report_cash(const Date & from, const Date & to, std::ostream &out) const
    {
       Money bifton;
       out << "Liquide"; 
@@ -498,12 +481,12 @@ namespace Compta
       for(unsigned int ic = 0; ic < _liquide.size(); ic++)
       {
 
-        this->report_a_cash(out,ic);
+        this->report_a_cash(from, to, out,ic);
       }
       return;
    }
 
-   void ComptaObj::report_a_cash(std::ostream &out, unsigned int ic) const
+   void ComptaObj::report_a_cash(const Date & from, const Date & to, std::ostream &out, unsigned int ic) const
    {
      bifton.set_money(_liquide[ic].currency());
      out << " * liquide : " << _liquide[ic].name() << std::endl
@@ -520,11 +503,12 @@ namespace Compta
   }
 
   
-  void ComptaObj::report_compta(std::vector<MonthlyReport> &rep) const
+  void ComptaObj::report_compta(std::vector<MonthlyReport> &rep, const Date &from, const Date & to) const
   {
     // no need for nothing in this case
     if(_banque.empty() && _liquide.empty())return;
 
+    // getting the full report start and end
     Date cur_date;
     if(!_banque.empty()  && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
@@ -534,6 +518,10 @@ namespace Compta
     if(!_banque.empty()  && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
         if(_liquide[0].records().end_date() > end_date)end_date = _liquide[0].records().end_date();
+
+    // rescaling if needed
+    if(cur_date < from)cur_date = from;
+    if(end_date > to)  end_date = to;
 
     while(cur_date <= end_date)
     {
