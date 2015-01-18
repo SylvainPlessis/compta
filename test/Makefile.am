@@ -64,6 +64,7 @@ TESTS += category_report_unit
 TESTS += compta_options.sh
 TESTS += compta_fail.sh
 TESTS += compta_files.sh
+TESTS += compta_version.sh
 XFAIL_TESTS += compta_fail.sh
 
 CLEANFILES =
