@@ -51,12 +51,12 @@ namespace Compta{
       ~ComptaObj();
 
       //!print fork
-      void report(const Date & from, const Date & to, bool forecast, bool bank, bool cash) const;
+      void report(const Date & from, const Date & to, bool forecast, bool bank, bool cash, std::ostream & out = std::cout) const;
 
       //!print all
       friend std::ostream &operator<< (std::ostream &out, const ComptaObj &obj)
       {
-          obj.report_all(out);
+          obj.report_all(Date(DateUtils::date_min()), Date(DateUtils::date_max()), out);
           return out;
       }
 

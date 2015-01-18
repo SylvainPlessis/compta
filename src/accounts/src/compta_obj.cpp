@@ -389,7 +389,7 @@ namespace Compta
    }
 
    
-   void ComptaObj::report(const Date & from, const Date & to, bool forecast, bool bank, bool cash) const
+   void ComptaObj::report(const Date & from, const Date & to, bool forecast, bool bank, bool cash, std::ostream & out) const
    {
        if(forecast)this->report_forecast(out);
 
@@ -432,7 +432,6 @@ namespace Compta
 
    void ComptaObj::report_bank(const Date & from, const Date & to, std::ostream &out) const
    {
-      Money bifton;
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
       out << std::endl;
@@ -445,6 +444,7 @@ namespace Compta
 
    void ComptaObj::report_a_bank(const Date & from, const Date & to, std::ostream &out,unsigned int ib) const
    {
+     Money bifton;
      bifton.set_money(_banque[ib].currency());
      out << " * compte : "        << _banque[ib].name()                                                  << std::endl
          << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
@@ -474,7 +474,6 @@ namespace Compta
 
    void ComptaObj::report_cash(const Date & from, const Date & to, std::ostream &out) const
    {
-      Money bifton;
       out << "Liquide"; 
       if(_liquide.size() > 1)out << "s";
       out << std::endl;
@@ -488,6 +487,7 @@ namespace Compta
 
    void ComptaObj::report_a_cash(const Date & from, const Date & to, std::ostream &out, unsigned int ic) const
    {
+     Money bifton;
      bifton.set_money(_liquide[ic].currency());
      out << " * liquide : " << _liquide[ic].name() << std::endl
          << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
