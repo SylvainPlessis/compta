@@ -280,16 +280,16 @@ namespace Compta
   
      for(unsigned int ib = 0; ib < compte.banque().size(); ib++)
      {
-       latex_account(out,compte.banque()[ib].records(),compte.banque()[ib].name(),compte.banque()[ib].currency());
+       latex_account(out,from,to,compte.banque()[ib].records(),compte.banque()[ib].name(),compte.banque()[ib].currency());
         for(unsigned int s = 0; s < compte.banque()[ib].savings().size(); s++)
         {
-         latex_account(out,compte.banque()[ib].savings()[s],compte.banque()[ib].savings_list()[s],compte.banque()[ib].currency());
+         latex_account(out,from,to,compte.banque()[ib].savings()[s],compte.banque()[ib].savings_list()[s],compte.banque()[ib].currency());
         }
      }
 
      for(unsigned int ic = 0; ic < compte.liquide().size(); ic++)
      {
-       latex_account(out, compte.liquide()[ic].records(), compte.liquide()[ic].name(),compte.liquide()[ic].currency());
+       latex_account(out, from, to, compte.liquide()[ic].records(), compte.liquide()[ic].name(),compte.liquide()[ic].currency());
      }
 
      out << "\\part{Détail}" << std::endl;
