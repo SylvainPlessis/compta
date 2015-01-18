@@ -46,12 +46,14 @@ namespace Compta
   - 4 : WRITE
 */
   ComptaOptions::ComptaOptions(int argc, char **argv):
-     _from_stdout(DateUtils::date_min()),
-     _to_stdout(DateUtils::date_max()),
      _print(true),
      _print_forecast(false),
      _print_bank(false),
      _print_cash(false),
+     _from_stdout(DateUtils::date_min()),
+     _to_stdout(DateUtils::date_max()),
+     _write_tex(true),
+     _compile_tex(true),
      _from_file(DateUtils::date_min()),
      _to_file(DateUtils::date_max()),
      _valid(true),
@@ -60,28 +62,28 @@ namespace Compta
       this->build_maps();
       for(int i = 1; i < argc; i++)
       {
-          if(std::string(argv[i])[0] != '-')
-          {
-            if(_forecast_file.empty())
-            {
-               _forecast_file = value;
-             }else if(_accounts_file.empty())
-             {
-               _accounts_file = value;
-             }else if(_data_file.empty())
-             {
-               _data_file = value;
-             }else if(_latex_file.empty())
-             {
-               _latex_file = value;
-             }else
-             {
-               compta_option_error("Option non reconnue :\n" + std::string(argv[i]));
-             }
-          }else
-          {
-            this->pass_options(i,argv);
-          }
+        if(argv[i][0] == '-')
+        {
+          this->pass_options(i,argv);
+        }else // providing names is implicit
+        {
+           if(_forecast_file.empty())
+           {
+              _forecast_file = std::string(argv[i]);
+           }else if(_accounts_file.empty())
+           {
+              _accounts_file = std::string(argv[i]);
+           }else if(_data_file.empty())
+           {
+              _data_file = std::string(argv[i]);
+           }else if(_latex_file.empty())
+           {
+              _latex_file = std::string(argv[i]);
+           }else
+           {
+             _valid=false;
+           }
+        }
       }
 
       if(_forecast_file.empty() && _more)
@@ -162,7 +164,7 @@ namespace Compta
       return _from_stdout;
   }
 
-  const Date ComptaOptions::to_stdout() const;
+  const Date ComptaOptions::to_stdout() const
   {
       return _to_stdout;
   }
@@ -172,12 +174,12 @@ namespace Compta
       return _from_file;
   }
 
-  const Date ComptaOptions::to_file() const;
+  const Date ComptaOptions::to_file() const
   {
       return _to_file;
   }
 
-  int ComptaOptions::pass_options(int pos, char **opts)
+  void ComptaOptions::pass_options(int pos, char **opts)
   {
       std::string keyword(opts[pos]);
       std::string value;
@@ -213,7 +215,7 @@ namespace Compta
          this->write_options(keyword,value);
       }else
       {
-         antioch_option_error("Erreur dans les options");
+         compta_option_error("Erreur dans les options");
       }
 
   }
@@ -238,7 +240,7 @@ namespace Compta
            _valid = true;
            break;
         }
-        default //WTF???
+        default: //WTF???
         {
           compta_error();
         }
@@ -249,7 +251,7 @@ namespace Compta
   {
         compta_assert(_read_options_map.count(keyword));
 // file options
-     switch(_general_options_map.at(keyword))
+     switch(_read_options_map.at(keyword))
      {
         case READ::FORECAST:
         {
@@ -266,7 +268,7 @@ namespace Compta
             _data_file = value;
             break;
         }
-        default //WTF???
+        default: //WTF???
         {
           compta_error();
         }
@@ -275,7 +277,7 @@ namespace Compta
 
   void ComptaOptions::print_options(const std::string & keyword, const std::string & value)
   {
-     compta_assert(_read_options_map.count(keyword));
+     compta_assert(_print_options_map.count(keyword));
 
      switch(_print_options_map.at(keyword))
      {
@@ -317,7 +319,7 @@ namespace Compta
            _to_stdout.set_date(value);
            break;
         }
-        default //WTF???
+        default: //WTF???
         {
           compta_error();
         }
@@ -333,29 +335,29 @@ namespace Compta
         case WRITE::GENERATE_TEX:
         {
           _write_tex = true;
-          break:
+          break;
         }
         case WRITE::COMPILE_TEX:
         {
           _compile_tex = true;
-          break:
+          break;
         }
         case WRITE::LATEX:
         {
           _latex_file = value;
-          break:
+          break;
         }
         case WRITE::FROM:
         {
           _from_file.set_date(value);
-          break:
+          break;
         }
         case WRITE::TO:
         {
           _to_file.set_date(value);
-          break:
+          break;
         }
-        default //WTF???
+        default: //WTF???
         {
           compta_error();
         }
@@ -368,10 +370,10 @@ namespace Compta
      compte.report(_from_stdout,_to_stdout,_print_forecast,_print_bank,_print_cash);
 
 // LaTeX report
-     if(_options_value_map.at(GENERATE_TEX))
+     if(_write_tex)
      {
         latex_report(compte,_from_file,_to_file,_latex_file);
-       if(_options_value_map.at(COMPILE_TEX))
+       if(_compile_tex)
        {
           const std::string commands("pdflatex --halt-on-error " + _latex_file + " > /dev/null");
           if(!system(NULL))compta_LaTeX_error("Failed to find preprocessor"); 
@@ -389,11 +391,6 @@ namespace Compta
 
   }
 
-  void ComptaOptions::manage_print(Options opt)
-  {
-     _print_choice = _options_print_map.at(opt);
-     return;
-  }
 
   void ComptaOptions::unvalid_invocation(std::ostream & out, const std::string & prog) const
   {

@@ -79,6 +79,8 @@ namespace Compta{
         Date _from_stdout;
         Date _to_stdout;
        // WRITE
+        bool        _write_tex;
+        bool        _compile_tex;
         std::string _latex_file;
         Date        _from_file;
         Date        _to_file;
@@ -105,13 +107,8 @@ namespace Compta{
          void print_options(const std::string & keyword, const std::string & value);
         // WRITE
          void write_options(const std::string & keyword, const std::string & value);
-
-        int pass_options(int pos, char **opts);
-
-        //! Low-level printing options method
-        void manage_print(Options opt);
-        //! Low-level file options method
-        void manage_file( Options opt, const std::string & value);
+        // manage options
+         void pass_options(int pos, char **opts);
 
   };
 
