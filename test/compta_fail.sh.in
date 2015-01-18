@@ -1,5 +1,5 @@
 #!/bin/bash
 
-PROG="@top_builddir@/src/compta"
+PROG="@top_builddir@/test/compta_options"
 
 $PROG
