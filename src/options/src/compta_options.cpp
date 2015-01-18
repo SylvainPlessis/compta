@@ -29,6 +29,7 @@
 #include "compta/compta_help.hpp"
 
 //C++
+#include <algorithm> //tolower
 
 namespace Compta
 {
@@ -46,7 +47,6 @@ namespace Compta
   - 4 : WRITE
 */
   ComptaOptions::ComptaOptions(int argc, char **argv):
-     _print(true),
      _print_forecast(false),
      _print_bank(false),
      _print_cash(false),
@@ -57,7 +57,9 @@ namespace Compta
      _from_file(DateUtils::date_min()),
      _to_file(DateUtils::date_max()),
      _valid(true),
-     _more(true)
+     _more(true),
+     YES("yes"),
+     NO("no")
   {
       this->build_maps();
       for(int i = 1; i < argc; i++)
@@ -115,8 +117,7 @@ namespace Compta
       _read_options_map["--data"]       = READ::DATA;
 
      // PRINT
-      _print_options_map["--no_print"]       = PRINT::NOPRINT;
-      _print_options_map["--print-all"]      = PRINT::ALL;
+      _print_options_map["--print"]          = PRINT::ALL;
       _print_options_map["--print-forecast"] = PRINT::FORECAST;
       _print_options_map["--print-bank"]     = PRINT::BANK;
       _print_options_map["--print-cash"]     = PRINT::CASH;
@@ -219,7 +220,7 @@ namespace Compta
          this->write_options(keyword,value);
       }else
       {
-         compta_option_error("Erreur dans les options");
+         compta_option_error("Unrecognized option: " + keyword);
       }
 
   }
@@ -285,17 +286,24 @@ namespace Compta
 
      switch(_print_options_map.at(keyword))
      {
-        case PRINT::NOPRINT:
-        {
-           _print = true;
-           break;
-        }
         case PRINT::ALL:
         {
-           _print = true;
-           _print_forecast = true;
-           _print_bank = true;
-           _print_cash = true;
+          std::string lvalue(value);
+          std::transform(lvalue.begin(),lvalue.end(),lvalue.begin(),::tolower);
+          if(lvalue == NO)
+          {
+             _print_forecast = false;
+             _print_bank = false;
+             _print_cash = false;
+          }else if(lvalue == YES)
+          {
+             _print_forecast = true;
+             _print_bank = true;
+             _print_cash = true;
+          }else
+          {
+              compta_option_error("Unrecognized value for option --print: " + value + "\nPlease use \"" + YES + "\" or \"" + NO + "\"");
+          }
            break;
         }
         case PRINT::FORECAST:
@@ -338,12 +346,30 @@ namespace Compta
      {
         case WRITE::GENERATE_TEX:
         {
-          _write_tex = true;
+         if(value.empty()) // -g
+         {
+            _write_tex = true;
+         }else // --generate-tex = yes/no
+         {
+           std::string lvalue(value);
+           std::transform(lvalue.begin(),lvalue.end(),lvalue.begin(),::tolower);
+           _write_tex = (lvalue == YES)?true:false;
+           if(!_write_tex && lvalue != NO)compta_option_error("Please give yes or no to this option: " + keyword);
+         }
           break;
         }
         case WRITE::COMPILE_TEX:
         {
-          _compile_tex = true;
+         if(value.empty()) // -c
+         {
+            _compile_tex = true;
+         }else // --compile-tex = yes/no
+         {
+           std::string lvalue(value);
+           std::transform(lvalue.begin(),lvalue.end(),lvalue.begin(),::tolower);
+           _compile_tex = (lvalue == YES)?true:false;
+           if(!_compile_tex && lvalue != NO)compta_option_error("Please give yes or no to this option: " + keyword);
+         }
           break;
         }
         case WRITE::LATEX:

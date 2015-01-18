@@ -72,7 +72,6 @@ namespace Compta{
         std::string _accounts_file;
         std::string _data_file;
        // PRINT
-        bool _print;
         bool _print_forecast;
         bool _print_bank;
         bool _print_cash;
@@ -87,6 +86,8 @@ namespace Compta{
 
         bool _valid;
         bool _more;
+        const std::string YES;
+        const std::string NO;
 
        // GENERAL
         std::map<std::string, GENERAL::Options > _general_options_map;

@@ -57,8 +57,7 @@ namespace Compta{
 /* print options, boolean values */
   namespace PRINT{
     enum Options{
-               NOPRINT = 0,
-               ALL,
+               ALL = 0,
                FORECAST,
                BANK,
                CASH,
