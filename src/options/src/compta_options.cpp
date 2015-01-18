@@ -64,7 +64,7 @@ namespace Compta
       {
         if(argv[i][0] == '-')
         {
-          this->pass_options(i,argv);
+          this->pass_options(i,argv,argc-1);
         }else // providing names is implicit
         {
            if(_forecast_file.empty())
@@ -179,7 +179,7 @@ namespace Compta
       return _to_file;
   }
 
-  void ComptaOptions::pass_options(int pos, char **opts)
+  void ComptaOptions::pass_options(int pos, char **opts, int maxarg)
   {
       std::string keyword(opts[pos]);
       std::string value;
@@ -187,15 +187,19 @@ namespace Compta
       {
          value = keyword.substr(keyword.find('=') + 1, std::string::npos);
          keyword = keyword.substr(0,keyword.find('='));
-      }else if(std::string(opts[pos+1]).find('=') != std::string::npos)
+      }else if(pos < maxarg)
       {
-         if(std::string(opts[pos+1]).size() == 1)
-         {
-            value = std::string(opts[pos+2]);
-         }else
-         {
+        if(std::string(opts[pos+1]).find('=') != std::string::npos)
+        {
+           if(std::string(opts[pos+1]).size() == 1)
+           {
+             if(pos+2 >= maxarg)compta_option_error("Missing value to option " + keyword);
+             value = std::string(opts[pos+2]);
+           }else
+           {
             value = std::string(opts[pos+1]).substr(1,std::string::npos);
-         }
+           }
+        }
       }
         // GENERAL
       if(_general_options_map.count(keyword))

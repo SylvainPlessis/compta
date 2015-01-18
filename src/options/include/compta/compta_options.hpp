@@ -108,7 +108,7 @@ namespace Compta{
         // WRITE
          void write_options  (const std::string & keyword, const std::string & value);
         // manage options
-         void pass_options(int pos, char **opts);
+         void pass_options(int pos, char **opts, int maxarg);
 
   };
 
