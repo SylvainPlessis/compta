@@ -15,6 +15,7 @@ check_PROGRAMS += savings_unit
 check_PROGRAMS += bank_unit
 check_PROGRAMS += category_report_unit
 check_PROGRAMS += files_name
+check_PROGRAMS += compta_options
 
 
 AM_CPPFLAGS  = 
@@ -44,6 +45,7 @@ savings_unit_SOURCES = savings_unit.cpp
 bank_unit_SOURCES = bank_unit.cpp
 category_report_unit_SOURCES = category_report_unit.cpp
 files_name_SOURCES = files_name.cpp
+compta_options_SOURCES = compta_options.cpp
 
 #Define tests to actually be run
 TESTS  =
