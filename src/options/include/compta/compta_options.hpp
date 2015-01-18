@@ -100,13 +100,13 @@ namespace Compta{
         void build_maps();
 
         // GENERAL
-         void general_options(const std::string &keyword);
+         void general_options(const std::string & keyword);
         // READ
-         void read_options(const std::string & keyword, const std::string & value);
+         void read_options   (const std::string & keyword, const std::string & value);
         // PRINT
-         void print_options(const std::string & keyword, const std::string & value);
+         void print_options  (const std::string & keyword, const std::string & value);
         // WRITE
-         void write_options(const std::string & keyword, const std::string & value);
+         void write_options  (const std::string & keyword, const std::string & value);
         // manage options
          void pass_options(int pos, char **opts);
 
