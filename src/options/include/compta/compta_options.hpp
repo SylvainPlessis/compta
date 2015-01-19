@@ -75,6 +75,9 @@ namespace Compta{
         bool _print_forecast;
         bool _print_bank;
         bool _print_cash;
+        std::vector<std::string> _print_bank_history;
+        std::vector<std::string> _print_cash_history;
+        bool _print_all_data;
         Date _from_stdout;
         Date _to_stdout;
        // WRITE

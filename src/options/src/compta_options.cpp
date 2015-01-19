@@ -50,6 +50,7 @@ namespace Compta
      _print_forecast(false),
      _print_bank(false),
      _print_cash(false),
+     _print_all_data(false),
      _from_stdout(DateUtils::date_min()),
      _to_stdout(DateUtils::date_max()),
      _write_tex(true),
@@ -117,12 +118,14 @@ namespace Compta
       _read_options_map["--data"]       = READ::DATA;
 
      // PRINT
-      _print_options_map["--print"]          = PRINT::ALL;
-      _print_options_map["--print-forecast"] = PRINT::FORECAST;
-      _print_options_map["--print-bank"]     = PRINT::BANK;
-      _print_options_map["--print-cash"]     = PRINT::CASH;
-      _print_options_map["--print-from"]     = PRINT::FROM;
-      _print_options_map["--print-to"]       = PRINT::TO;
+      _print_options_map["--print"]              = PRINT::ALL;
+      _print_options_map["--print-forecast"]     = PRINT::FORECAST;
+      _print_options_map["--print-bank"]         = PRINT::BANK;
+      _print_options_map["--print-cash"]         = PRINT::CASH;
+      _print_options_map["--print-bank-history"] = PRINT::BANK_HISTORY;
+      _print_options_map["--print-cash-history"] = PRINT::CASH_HISTORY;
+      _print_options_map["--print-from"]         = PRINT::FROM;
+      _print_options_map["--print-to"]           = PRINT::TO;
 
      // WRITE
       _write_options_map["--write"]          = WRITE::LATEX;
@@ -321,6 +324,23 @@ namespace Compta
            _print_cash = true;
            break;
         }
+        case PRINT::BANK_HISTORY:
+        {
+           SplitString(value,",",_print_bank_history,false);
+           shave_string(_print_bank_history);
+           break;
+        }
+        case PRINT::CASH_HISTORY:
+        {
+           SplitString(value,",",_print_cash_history,false);
+           shave_string(_print_cash_history);
+           break;
+        }
+        case PRINT::ALL_DATA:
+        {
+           _print_all_data = true;
+           break;
+        }
         case PRINT::FROM:
         {
            _from_stdout.set_date(value);
@@ -397,7 +417,10 @@ namespace Compta
   void ComptaOptions::report(const ComptaObj & compte) const
   {
 // on screen report
-     compte.report(_from_stdout,_to_stdout,_print_forecast,_print_bank,_print_cash);
+     compte.report(_print_forecast,_print_bank,_print_cash);
+
+// on screen data listing
+     compte.report(_from_stdout,_to_stdout,_print_bank_history,_print_cash_history);
 
 // LaTeX report
      if(_write_tex)
