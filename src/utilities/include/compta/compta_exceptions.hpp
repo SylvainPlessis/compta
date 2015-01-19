@@ -130,6 +130,24 @@ namespace Compta
     ReportError(const std::string& description) : std::runtime_error( "Error in report: " + description) {}
   };
 
+  /*!
+   * A class representing an option error
+   */
+  class OptionError : public std::runtime_error
+  {
+  public:
+    OptionError(const std::string& description) : std::runtime_error( "Unknown option \"" + description + "\"") {}
+  };
+
+  /*!
+   * A class representing a pdflatex fail error
+   */
+  class CompileLaTeXError : public std::runtime_error
+  {
+  public:
+    CompileLaTeXError(const std::string& commands) : std::runtime_error(commands + " command failed to compile LaTeX file") {}
+  };
+
 
 } // end namespace Compta
 

@@ -51,12 +51,12 @@ namespace Compta{
         //! adds a line
         void add_posting(const Posting &post);
         //! prints the history
-        void print(std::ostream& out = std::cout) const;
+        void print(const Date & from, const Date &to, std::ostream& out = std::cout) const;
 
         //! Formatted print.
         friend std::ostream& operator << (std::ostream& os, const History &histoire)
         {
-          histoire.print(os);
+          histoire.print(Date(DateUtils::date_min()), Date(DateUtils::date_max()),os);
           return os;
         }
 

@@ -66,13 +66,16 @@ namespace Compta{
       //! Operator
       AccountBase &operator=(const AccountBase &rhs);
 
+      //! prints part of the history
+      void report_data(const Date & from, const Date & to) const;
+
       //! prints the history + creation
-      void print(std::ostream& out = std::cout) const;
+      void print(const Date & from, const Date & to, std::ostream& out = std::cout) const;
 
       //! Formatted print.
       friend std::ostream& operator << (std::ostream& os, const AccountBase &histoire)
       {
-        histoire.print(os);
+        histoire.print(Date(DateUtils::date_min()), Date(DateUtils::date_max()), os);
         return os;
       }
 

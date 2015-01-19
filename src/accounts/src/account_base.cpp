@@ -113,12 +113,12 @@ namespace Compta{
   }
 
   
-  void AccountBase::print(std::ostream& out) const
+  void AccountBase::print(const Date & from, const Date & to, std::ostream& out) const
   {
       Money cur(_currency);
+      out << "Compte " << _name << std::endl;
       out << "Creation, le " << _creation << " avec " << _creation_amount << " " << cur.str_money() << std::endl;
-      out << _records;
+      _records.print(from,to,out);
   }
-
 
 }

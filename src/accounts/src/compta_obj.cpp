@@ -97,7 +97,6 @@ namespace Compta
   }
 
   template<typename Ac>
-  
   void ComptaObj::add_account(const Ac &src, const bool &main, std::vector<Ac> &target, std::map<std::string,unsigned int> &map)
   {
      if(target.empty() || !main)
@@ -233,7 +232,6 @@ namespace Compta
  }
 
  template<typename AccountTypeSrc, typename AccountTypeTrg>
- 
  void ComptaObj::posting_account_to_account(AccountTypeSrc &src, AccountTypeTrg &trg, Posting &post)
  {
    src.add_posting(post);
@@ -369,7 +367,6 @@ namespace Compta
 
 
   template<typename Ac>
-  
   void ComptaObj::add_posting(Posting &post, std::vector<Ac> &target, std::map<std::string,unsigned int> &map,
                               const std::string &decl, std::vector<std::string> &out)
   {
@@ -392,7 +389,90 @@ namespace Compta
    }
 
    
-   void ComptaObj::report(std::ostream &out) const
+   void ComptaObj::report(bool forecast, bool bank, bool cash, std::ostream & out) const
+   {
+       if(forecast)this->report_forecast(out);
+
+       if(bank)this->report_bank(out);
+
+       if(cash)this->report_cash(out);
+
+      return;
+   }
+
+   void ComptaObj::report(const Date & from, const Date & to, const std::vector<std::string> bank_accounts, 
+                                                              const std::vector<std::string> cash_accounts, std::ostream & out) const
+   {
+       bool fail(false);
+
+        //indexes of banks
+       std::vector<unsigned int> bank_index;
+       for(unsigned int ba = 0; ba < bank_accounts.size(); ba++)
+       {
+         if(! _banque_map.count(bank_accounts[ba]))
+         {
+            fail = true;
+            std::cerr << "Ce compte banquaire n'existe pas !\n" << bank_accounts[ba] << std::endl;
+         }else
+         {
+            bank_index.push_back(_banque_map.at(bank_accounts[ba]));
+         }
+       }
+
+        //indexes of cashes
+       std::vector<unsigned int> cash_index;
+       for(unsigned int ca = 0; ca < cash_accounts.size(); ca++)
+       {
+         if(! _liquide_map.count(cash_accounts[ca]))
+         {
+            fail = true;
+            std::cerr << "Ce compte de liquidités n'existe pas !\n" << cash_accounts[ca] << std::endl;
+         }else
+         {
+            cash_index.push_back(_liquide_map.at(cash_accounts[ca]));
+         }
+       }
+       if(fail)
+       {
+           std::cerr << "Comptes connus:\n";
+           for(std::map<std::string, unsigned int>::const_iterator it = _banque_map.begin();
+                        it != _banque_map.end(); it++)
+           {
+               std::cerr << "\t" << it->first << "\n";
+           }
+           for(std::map<std::string, unsigned int>::const_iterator it = _liquide_map.begin();
+                        it != _liquide_map.end(); it++)
+           {
+               std::cerr << "\t" << it->first << "\n";
+           }
+       }
+       
+       this->report_data_in_account(from,to,bank_index,_banque);
+
+       this->report_data_in_account(from,to,cash_index,_liquide);
+   }
+
+   template <typename Ac>
+   void ComptaObj::report_data_in_account(const Date & from, const Date & to, const std::vector<unsigned int> & indexes, const std::vector<Ac> & accounts) const
+   {
+       for(unsigned int ia = 0; ia < indexes.size(); ia++)
+       {
+          accounts[ia].print(from,to);
+       }
+   }
+
+   void ComptaObj::report_all(std::ostream &out) const
+   {
+
+     this->report_forecast(out);
+
+     this->report_bank(out);
+
+     this->report_cash(out);
+   }
+
+   
+   void ComptaObj::report_forecast(std::ostream &out) const
    {
        out << std::setprecision(2) << std::fixed;
        Money bifton(_previsionnel.currency());
@@ -401,66 +481,95 @@ namespace Compta
        out << "Forecast" << std::endl
            << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
            << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
-           << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() << std::endl;
+           << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() 
+           << std::endl 
+           << _previsionnel.forecast()
+           << std::endl;
 
+       return;
+
+   }
+
+
+   void ComptaObj::report_bank(std::ostream &out) const
+   {
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
       out << std::endl;
       for(unsigned int ib = 0; ib < _banque.size(); ib++)
       {
-          bifton.set_money(_banque[ib].currency());
-          out << " * compte : "        << _banque[ib].name()                                                  << std::endl
-              << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
-              << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
-          if(!_banque[ib].records().in_waiting().empty())
-          {
-             for(unsigned int ie = 0; ie < _banque[ib].records().in_waiting().size(); ie++)
-             {
-                 out << "\t  +++ " << _banque[ib].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
-             }
-          }
-          if(!_banque[ib].savings().empty())
-          {
-             out << std::endl;
-             for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
-             {
-                out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
-                    << "\t\tétat de l'épargne : " << _banque[ib].savings()[is].current_state()  << " " << bifton.str_money() << std::endl
-                    << "\t\tétat attendu : "      << _banque[ib].savings()[is].expected_state() << " " << bifton.str_money() << std::endl;
-             }
-          }else
-          {
-             out << "Il n'y a pas d'épargne associée à ce compte." << std::endl;
-          }
-          out << std::endl;
+          this->report_a_bank(out,ib);
       }
+      return;
+   }
 
+   void ComptaObj::report_a_bank(std::ostream &out,unsigned int ib) const
+   {
+     Money bifton;
+     bifton.set_money(_banque[ib].currency());
+     out << " * compte : "        << _banque[ib].name()                                                  << std::endl
+         << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
+         << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
+     if(!_banque[ib].records().in_waiting().empty())
+     {
+       for(unsigned int ie = 0; ie < _banque[ib].records().in_waiting().size(); ie++)
+       {
+         out << "\t  +++ " << _banque[ib].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
+       }
+     }
+     if(!_banque[ib].savings().empty())
+     {
+       out << std::endl;
+       for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
+       {
+         out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
+             << "\t\tétat de l'épargne : " << _banque[ib].savings()[is].current_state()  << " " << bifton.str_money() << std::endl
+             << "\t\tétat attendu : "      << _banque[ib].savings()[is].expected_state() << " " << bifton.str_money() << std::endl;
+       }
+     }else
+     {
+       out << "Il n'y a pas d'épargne associée à ce compte." << std::endl;
+     }
+     out << std::endl;
+   }
+
+   void ComptaObj::report_cash(std::ostream &out) const
+   {
       out << "Liquide"; 
       if(_liquide.size() > 1)out << "s";
       out << std::endl;
       for(unsigned int ic = 0; ic < _liquide.size(); ic++)
       {
-          bifton.set_money(_liquide[ic].currency());
-          out << " * liquide : " << _liquide[ic].name() << std::endl
-              << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
-              << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
-          out << std::endl;
-          if(!_liquide[ic].records().in_waiting().empty())
-          {
-             for(unsigned int ie = 0; ie < _liquide[ic].records().in_waiting().size(); ie++)
-             {
-                 out << "\t  +++ " << _liquide[ic].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
-             }
-          }
+
+        this->report_a_cash(out,ic);
       }
+      return;
    }
 
+   void ComptaObj::report_a_cash(std::ostream &out, unsigned int ic) const
+   {
+     Money bifton;
+     bifton.set_money(_liquide[ic].currency());
+     out << " * liquide : " << _liquide[ic].name() << std::endl
+         << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
+         << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
+     out << std::endl;
+     if(!_liquide[ic].records().in_waiting().empty())
+     {
+       for(unsigned int ie = 0; ie < _liquide[ic].records().in_waiting().size(); ie++)
+       {
+         out << "\t  +++ " << _liquide[ic].records().in_waiting()[ie] << " " << bifton.str_money() << std::endl;
+       }
+     }
+  }
+
   
-  void ComptaObj::report_compta(std::vector<MonthlyReport> &rep) const
+  void ComptaObj::report_compta(std::vector<MonthlyReport> &rep, const Date &from, const Date & to) const
   {
     // no need for nothing in this case
     if(_banque.empty() && _liquide.empty())return;
 
+    // getting the full report start and end
     Date cur_date;
     if(!_banque.empty()  && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
@@ -470,6 +579,10 @@ namespace Compta
     if(!_banque.empty()  && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
     if(!_liquide.empty() && !_liquide[0].records().empty())
         if(_liquide[0].records().end_date() > end_date)end_date = _liquide[0].records().end_date();
+
+    // rescaling if needed
+    if(cur_date < from)cur_date = from;
+    if(end_date > to)  end_date = to;
 
     while(cur_date <= end_date)
     {

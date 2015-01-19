@@ -21,40 +21,64 @@
 //
 //-----------------------------------------------------------------------el-
 
-#ifndef COMPTA_LATEX_FACTORY_H
-#define COMPTA_LATEX_FACTORY_H
+#ifndef OPTIONS_ENUM_H
+#define OPTIONS_ENUM_H
 
-//Compta
-#include "compta/compta_obj.hpp"
-
-//C++
-#include <fstream>
 #include <string>
-#include <iomanip>
 
 namespace Compta{
 
-  //! prints the .tex output
-  void latex_report(const ComptaObj &compte, const Date & from, const Date & to, std::string file);
+/*! 
+   Five things here:
+     - general non compta options (help, version)
+     - Input/output files
+     - report on screen (print options)
+     - report on file (LaTeX only)
+     - the state of every account
+*/
 
-  //! preamble
-  const std::string latex_report_head();
-  //! end of the document
-  const std::string latex_report_foot();
+/* helpers, boolean values */
+  namespace GENERAL{
+    enum Options{//
+               VERSION = 0,
+               HELP
+              };
+  }
 
-  //! forecast
-  void latex_forecast(std::ofstream &out, const Forecast &prev);
+/* read files */
+  namespace READ{
+    enum Options{
+               FORECAST = 0,
+               ACCOUNTS,
+               DATA
+              };
+  }
 
-  //! bank account
-  void latex_account(std::ofstream &out, const Date & from, const Date & to, const History &acc, const std::string & name, const Currency::Currency &money);
+/* print options, boolean values */
+  namespace PRINT{
+    enum Options{
+               ALL = 0,
+               FORECAST,
+               BANK,
+               CASH,
+               BANK_HISTORY,
+               CASH_HISTORY,
+               ALL_DATA,
+               FROM,
+               TO
+              };
+  }
 
-  //! details by month
-  void latex_data(std::ofstream &out, const Date & from, const Date & to, const ComptaObj &compte);
-  //! details for a month
-  void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money);
-
-  //!color
-  void add_color(float amount, float thres, float mar, std::ostream &out); 
+/* write file */
+  namespace WRITE{
+    enum Options{
+               GENERATE_TEX = 0,
+               COMPILE_TEX,
+               LATEX,
+               FROM,
+               TO
+              };
+  }
 
 }
 

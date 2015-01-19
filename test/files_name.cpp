@@ -22,7 +22,6 @@
 //-----------------------------------------------------------------------el-
 
 #include "compta/compta_options.hpp"
-#include "compta/read_compta_input_file.hpp"
 
 int main(int argc, char ** argv)
 {
@@ -30,17 +29,13 @@ int main(int argc, char ** argv)
 
  if(!options.valid())
  {
-    options.unvalid_invocation(std::cerr,std::string(argv[0]));
+    return 1;
  }
 
- if(options.more())
- {
-   Compta::ComptaObj compte;
-
-   Compta::parse_input_file(compte,options.forecast_file(),options.accounts_file(),options.data_file());
-
-   options.report(compte);
- }
+ if(options.forecast_file() != "forecast" && 
+    options.accounts_file().empty() && 
+    options.data_file().empty())return 1;
 
  return 0;
+
 }

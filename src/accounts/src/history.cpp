@@ -83,12 +83,14 @@ namespace Compta
   }
 
   
-  void History::print(std::ostream &out) const
+  void History::print(const Date & from, const Date & to, std::ostream &out) const
   {
 
      for(unsigned int i = 0; i < _history.size(); i++)
      {
-        out << _history[i] << std::endl;
+        if(_history[i].date() >= from &&
+           _history[i].date() <= to)
+                out << _history[i] << std::endl;
      }
 
      if(!_in_waiting.empty())

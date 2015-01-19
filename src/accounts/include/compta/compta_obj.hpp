@@ -33,6 +33,7 @@
 #include "compta/parsing_def.hpp"
 #include "compta/money.hpp"
 #include "compta/monthly_report.hpp"
+#include "compta/options_enum.hpp"
 
 //C++
 #include <vector>
@@ -49,13 +50,17 @@ namespace Compta{
       ComptaObj(const ComptaObj &rhs);
       ~ComptaObj();
 
-      //!print
-      void report(std::ostream &out = std::cout) const;
+      //! report the state of these
+      void report(bool forecast, bool bank, bool cash, std::ostream & out = std::cout) const;
 
-      //!print also
+      //! list the data of those
+      void report(const Date & from, const Date & to, const std::vector<std::string> bank_accounts, 
+                                                      const std::vector<std::string> cash_accounts, std::ostream & out = std::cout) const;
+
+      //!print all
       friend std::ostream &operator<< (std::ostream &out, const ComptaObj &obj)
       {
-          obj.report(out);
+          obj.report_all(out);
           return out;
       }
 
@@ -86,7 +91,7 @@ namespace Compta{
       void add_posting(Posting &post);
 
       //!build the report objects
-      void report_compta(std::vector<MonthlyReport> &rep) const;
+      void report_compta(std::vector<MonthlyReport> &rep, const Date &from, const Date &to) const;
 
       //!report a month, date is in the MonthlyReport object
       void report_compta(MonthlyReport &rep) const;
@@ -137,6 +142,28 @@ namespace Compta{
       //! actually adds the posting to source and target
       template<typename AccountTypeSrc, typename AccountTypeTrg>
       void posting_account_to_account(AccountTypeSrc &src, AccountTypeTrg &trg, Posting &post);
+
+      //!print all
+      void report_all(std::ostream &out = std::cout) const;
+
+      //!print forecast
+      void report_forecast(std::ostream &out = std::cout) const;
+
+      //!print bank accounts
+      void report_bank(std::ostream &out = std::cout) const;
+
+      //!print cash
+      void report_cash(std::ostream &out = std::cout) const;
+
+      //!print one bank
+      void report_a_bank(std::ostream &out,unsigned int ib) const;
+
+      //!print one cash
+      void report_a_cash(std::ostream &out,unsigned int ic) const;
+
+      //! reports the data in an account
+      template <typename Ac>
+      void report_data_in_account(const Date & from, const Date & to, const std::vector<unsigned int> & indexes, const std::vector<Ac> & accounts) const;
 
       Forecast _previsionnel;
       std::vector<Cash> _liquide;

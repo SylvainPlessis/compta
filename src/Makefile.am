@@ -26,6 +26,8 @@ libcompta_la_SOURCES += forecast/src/operation.cpp
 libcompta_la_SOURCES += utilities/src/date_utils.cpp
 libcompta_la_SOURCES += utilities/src/string_utils.cpp
 libcompta_la_SOURCES += utilities/src/static_error_variables.cpp
+libcompta_la_SOURCES += utilities/src/compta_help.cpp
+libcompta_la_SOURCES += utilities/src/compta_version.cpp
 
 # accounts
 libcompta_la_SOURCES += accounts/src/account_base.cpp
@@ -45,6 +47,9 @@ libcompta_la_SOURCES += tex/src/latex_factory.cpp
 # parsing
 libcompta_la_SOURCES += parsing/src/parsing_def.cpp
 libcompta_la_SOURCES += parsing/src/read_compta_input_file.cpp
+
+# options
+libcompta_la_SOURCES += options/src/compta_options.cpp
 
 #----------------------------
 # INCLUDES we want distributed
@@ -69,6 +74,7 @@ pkginclude_HEADERS += utilities/include/compta/compta_asserts.hpp
 pkginclude_HEADERS += utilities/include/compta/static_error_variables.hpp
 pkginclude_HEADERS += utilities/include/compta/date_utils.hpp
 pkginclude_HEADERS += utilities/include/compta/string_utils.hpp
+pkginclude_HEADERS += utilities/include/compta/compta_help.hpp
 
 # accounts
 pkginclude_HEADERS += accounts/include/compta/posting.hpp
@@ -86,6 +92,9 @@ pkginclude_HEADERS += report/include/compta/category_report.hpp
 
 # latex
 pkginclude_HEADERS += tex/include/compta/latex_factory.hpp
+# options
+pkginclude_HEADERS += options/include/compta/compta_options.hpp
+pkginclude_HEADERS += options/include/compta/options_enum.hpp
 
 # parsing
 pkginclude_HEADERS += parsing/include/compta/parsing_def.hpp
@@ -115,6 +124,7 @@ AM_CPPFLAGS += -I$(top_srcdir)/src/utilities/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/parsing/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/report/include
 AM_CPPFLAGS += -I$(top_srcdir)/src/tex/include
+AM_CPPFLAGS += -I$(top_srcdir)/src/options/include
 AM_CPPFLAGS += -I$(top_builddir)/src/utilities/include #compta_version.h
 
 CLEANFILES = 

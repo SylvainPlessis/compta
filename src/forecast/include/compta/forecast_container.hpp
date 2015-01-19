@@ -28,6 +28,8 @@
 #include "compta/operation.hpp"
 
 //C++
+#include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <map>
@@ -99,6 +101,26 @@ namespace Compta{
           //!Operator
           ForecastContainer<Containee> &operator=(const ForecastContainer<Containee> &rhs);
 
+          //! print
+          void print(std::ostream & out = std::cout) const
+          {
+             out.setf(std::ios::left);
+             out << std::setw(30) << _name 
+                 << std::setw(15) << _amount 
+                 << std::setw(4)  << " +/- " 
+                 << std::setw(15) << _margin << std::endl;
+             for(unsigned int i = 0; i < _operations_list.size(); i++)
+             {
+               out << _operations_list.at(i) << std::endl;
+             }
+          }
+
+          //! print
+          friend std::ostream &operator<< (std::ostream &out, const ForecastContainer<Containee> &obj)
+          {
+             obj.print(out);
+             return out;
+          }
         private:
 
 
