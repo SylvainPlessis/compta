@@ -61,6 +61,9 @@ namespace Compta{
                FORECAST,
                BANK,
                CASH,
+               BANK_HISTORY,
+               CASH_HISTORY,
+               ALL_DATA,
                FROM,
                TO
               };
