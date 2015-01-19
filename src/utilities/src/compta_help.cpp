@@ -41,8 +41,8 @@ namespace Compta{
                << "--print-forecast                           print forecast info on screen\n"
                << "--print-bank                               print bank info on screen\n"
                << "--print-cash                               print cash info on screen\n"
-               << "--print-bank-history  (= bank1, bank2,...) list bank history on screen, from date given int --print-from to date given in --print-to\n"
-               << "--print-cash-history  (= cash1, cash2,...) list cash history on screen, from date given int --print-from to date given in --print-to\n"
+               << "--print-bank-history  (= bank1, bank2,...) list bank history on screen, from date given in --print-from to date given in --print-to\n"
+               << "--print-cash-history  (= cash1, cash2,...) list cash history on screen, from date given in --print-from to date given in --print-to\n"
                << "--print-from          (= dd/mm/yyyy)       start date for screen report (DD/MM/YYYY, default 01/01/1900)\n"
                << "--print-to            (= dd/mm/yyyy)       end date for screen report (SS/MM/YYYY, default 31/12/3000)\n"
                << std::endl;
