@@ -389,25 +389,86 @@ namespace Compta
    }
 
    
-   void ComptaObj::report(const Date & from, const Date & to, bool forecast, bool bank, bool cash, std::ostream & out) const
+   void ComptaObj::report(bool forecast, bool bank, bool cash, std::ostream & out) const
    {
        if(forecast)this->report_forecast(out);
 
-       if(bank)this->report_bank(from, to, out);
+       if(bank)this->report_bank(out);
 
-       if(cash)this->report_cash(from, to, out);
+       if(cash)this->report_cash(out);
 
       return;
    }
 
-   void ComptaObj::report_all(const Date & from, const Date & to, std::ostream &out) const
+   void ComptaObj::report(const Date & from, const Date & to, const std::vector<std::string> bank_accounts, 
+                                                              const std::vector<std::string> cash_accounts, std::ostream & out) const
+   {
+       bool fail(false);
+
+        //indexes of banks
+       std::vector<unsigned int> bank_index;
+       for(unsigned int ba = 0; ba < bank_accounts.size(); ba++)
+       {
+         if(! _banque_map.count(bank_accounts[ba]))
+         {
+            fail = true;
+            std::cerr << "Ce compte banquaire n'existe pas !\n" << bank_accounts[ba] << std::endl;
+         }else
+         {
+            bank_index.push_back(_banque_map.at(bank_accounts[ba]));
+         }
+       }
+
+        //indexes of cashes
+       std::vector<unsigned int> cash_index;
+       for(unsigned int ca = 0; ca < cash_accounts.size(); ca++)
+       {
+         if(! _liquide_map.count(cash_accounts[ca]))
+         {
+            fail = true;
+            std::cerr << "Ce compte de liquidités n'existe pas !\n" << cash_accounts[ca] << std::endl;
+         }else
+         {
+            cash_index.push_back(_liquide_map.at(cash_accounts[ca]));
+         }
+       }
+       if(fail)
+       {
+           std::cerr << "Comptes connus:\n";
+           for(std::map<std::string, unsigned int>::const_iterator it = _banque_map.begin();
+                        it != _banque_map.end(); it++)
+           {
+               std::cerr << "\t" << it->first << "\n";
+           }
+           for(std::map<std::string, unsigned int>::const_iterator it = _liquide_map.begin();
+                        it != _liquide_map.end(); it++)
+           {
+               std::cerr << "\t" << it->first << "\n";
+           }
+       }
+       
+       this->report_data_in_account(from,to,bank_index,_banque);
+
+       this->report_data_in_account(from,to,cash_index,_liquide);
+   }
+
+   template <typename Ac>
+   void ComptaObj::report_data_in_account(const Date & from, const Date & to, const std::vector<unsigned int> & indexes, const std::vector<Ac> & accounts) const
+   {
+       for(unsigned int ia = 0; ia < indexes.size(); ia++)
+       {
+          accounts[ia].print(from,to);
+       }
+   }
+
+   void ComptaObj::report_all(std::ostream &out) const
    {
 
      this->report_forecast(out);
 
-     this->report_bank(from, to, out);
+     this->report_bank(out);
 
-     this->report_cash(from, to, out);
+     this->report_cash(out);
    }
 
    
@@ -430,19 +491,19 @@ namespace Compta
    }
 
 
-   void ComptaObj::report_bank(const Date & from, const Date & to, std::ostream &out) const
+   void ComptaObj::report_bank(std::ostream &out) const
    {
       out << "\nBanque"; 
       if(_banque.size() > 1)out << "s";
       out << std::endl;
       for(unsigned int ib = 0; ib < _banque.size(); ib++)
       {
-          this->report_a_bank(from, to, out,ib);
+          this->report_a_bank(out,ib);
       }
       return;
    }
 
-   void ComptaObj::report_a_bank(const Date & from, const Date & to, std::ostream &out,unsigned int ib) const
+   void ComptaObj::report_a_bank(std::ostream &out,unsigned int ib) const
    {
      Money bifton;
      bifton.set_money(_banque[ib].currency());
@@ -472,7 +533,7 @@ namespace Compta
      out << std::endl;
    }
 
-   void ComptaObj::report_cash(const Date & from, const Date & to, std::ostream &out) const
+   void ComptaObj::report_cash(std::ostream &out) const
    {
       out << "Liquide"; 
       if(_liquide.size() > 1)out << "s";
@@ -480,12 +541,12 @@ namespace Compta
       for(unsigned int ic = 0; ic < _liquide.size(); ic++)
       {
 
-        this->report_a_cash(from, to, out,ic);
+        this->report_a_cash(out,ic);
       }
       return;
    }
 
-   void ComptaObj::report_a_cash(const Date & from, const Date & to, std::ostream &out, unsigned int ic) const
+   void ComptaObj::report_a_cash(std::ostream &out, unsigned int ic) const
    {
      Money bifton;
      bifton.set_money(_liquide[ic].currency());

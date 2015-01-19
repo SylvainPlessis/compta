@@ -50,13 +50,17 @@ namespace Compta{
       ComptaObj(const ComptaObj &rhs);
       ~ComptaObj();
 
-      //!print fork
-      void report(const Date & from, const Date & to, bool forecast, bool bank, bool cash, std::ostream & out = std::cout) const;
+      //! report the state of these
+      void report(bool forecast, bool bank, bool cash, std::ostream & out = std::cout) const;
+
+      //! list the data of those
+      void report(const Date & from, const Date & to, const std::vector<std::string> bank_accounts, 
+                                                      const std::vector<std::string> cash_accounts, std::ostream & out = std::cout) const;
 
       //!print all
       friend std::ostream &operator<< (std::ostream &out, const ComptaObj &obj)
       {
-          obj.report_all(Date(DateUtils::date_min()), Date(DateUtils::date_max()), out);
+          obj.report_all(out);
           return out;
       }
 
@@ -140,22 +144,26 @@ namespace Compta{
       void posting_account_to_account(AccountTypeSrc &src, AccountTypeTrg &trg, Posting &post);
 
       //!print all
-      void report_all(const Date & from, const Date & to, std::ostream &out = std::cout) const;
+      void report_all(std::ostream &out = std::cout) const;
 
       //!print forecast
       void report_forecast(std::ostream &out = std::cout) const;
 
       //!print bank accounts
-      void report_bank(const Date & from, const Date & to, std::ostream &out = std::cout) const;
+      void report_bank(std::ostream &out = std::cout) const;
 
       //!print cash
-      void report_cash(const Date & from, const Date & to, std::ostream &out = std::cout) const;
+      void report_cash(std::ostream &out = std::cout) const;
 
       //!print one bank
-      void report_a_bank(const Date & from, const Date & to, std::ostream &out,unsigned int ib) const;
+      void report_a_bank(std::ostream &out,unsigned int ib) const;
 
       //!print one cash
-      void report_a_cash(const Date & from, const Date & to, std::ostream &out,unsigned int ic) const;
+      void report_a_cash(std::ostream &out,unsigned int ic) const;
+
+      //! reports the data in an account
+      template <typename Ac>
+      void report_data_in_account(const Date & from, const Date & to, const std::vector<unsigned int> & indexes, const std::vector<Ac> & accounts) const;
 
       Forecast _previsionnel;
       std::vector<Cash> _liquide;
