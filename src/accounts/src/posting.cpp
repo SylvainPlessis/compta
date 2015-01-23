@@ -21,7 +21,11 @@
 //
 //-----------------------------------------------------------------------el-
 
+// this class
 #include "compta/posting.hpp"
+
+// C++
+#include <iomanip>
 
 namespace Compta
 {
@@ -150,12 +154,15 @@ namespace Compta
   
   void Posting::print(std::ostream& out) const
   {
-      out << _category    << ", en date du "
-          << _date        << ", "
-          << _description << ", une somme de "
-          << _amount;
+      out.setf(std::ios::left, std::ios::adjustfield);
+      out << std::setw(15)
+          << _category    << ", le "
+          << _date        << ",    "
+          << std::setw(10) 
+          << _amount      << " ";
       if(!_accounted)out << " non";
-      out << " prise en compte.";
+      out << " prise en compte,   "
+          << _description;
   }
 
   

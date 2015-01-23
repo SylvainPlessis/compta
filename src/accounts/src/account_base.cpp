@@ -116,9 +116,12 @@ namespace Compta{
   void AccountBase::print(const Date & from, const Date & to, std::ostream& out) const
   {
       Money cur(_currency);
-      out << "Compte " << _name << std::endl;
-      out << "Creation, le " << _creation << " avec " << _creation_amount << " " << cur.str_money() << std::endl;
+      for(unsigned int i = 0; i < 31; i++)out << "*";
+      out << "\nCompte " << _name << std::endl;
+      out << "Creation, le " << _creation << " avec " << _creation_amount << " " << cur.str_money() << std::endl << std::endl;
       _records.print(from,to,out);
+      for(unsigned int i = 0; i < 31; i++)out << "*";
+      out << std::endl;
   }
 
 }

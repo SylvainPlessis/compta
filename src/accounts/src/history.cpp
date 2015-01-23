@@ -95,7 +95,7 @@ namespace Compta
 
      if(!_in_waiting.empty())
      {
-       out << "# Pas encore pris en compte" << std::endl;
+       out << "\n# Pas encore pris en compte\n" << std::endl;
 
        for(unsigned int i = 0; i < _in_waiting.size(); i++)
        {
