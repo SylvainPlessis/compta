@@ -326,13 +326,13 @@ namespace Compta
         }
         case PRINT::BANK_HISTORY:
         {
-           SplitString(value,",",_print_bank_history,false);
+           if(SplitString(value,",",_print_bank_history,false) == 0)_print_bank_history.push_back(value);
            shave_string(_print_bank_history);
            break;
         }
         case PRINT::CASH_HISTORY:
         {
-           SplitString(value,",",_print_cash_history,false);
+           if(SplitString(value,",",_print_cash_history,false) == 0)_print_cash_history.push_back(value);
            shave_string(_print_cash_history);
            break;
         }
