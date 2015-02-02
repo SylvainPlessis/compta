@@ -54,6 +54,7 @@ namespace Compta
   void latex_forecast(std::ofstream &out, const Forecast &prev)
   {
      Money money(prev.currency());
+     out << std::setprecision(2) << std::fixed;
      out << "\\centering" << std::endl;
      out << "\\renewcommand{\\arraystretch}{1.2}" << std::endl;
      out << "\\begin{longtable}{lccc}\\toprule" << std::endl;
@@ -109,6 +110,7 @@ namespace Compta
         // rescaling if need be
      if(cur_month < from) cur_month = from;
 
+     out << std::setprecision(2) << std::fixed;
      out << "\\chapter{" << name << "}" << std::endl;
      out << std::endl;
      out << "\\begin{longtable}{p{8cm}>{\\tt}cr<{~" << currency << "}r<{~" << currency << "}}\\toprule" << std::endl;
@@ -160,6 +162,7 @@ namespace Compta
   
   void latex_data(std::ofstream &out, const Date & from, const Date & to, const ComptaObj &compte)
   {
+       out << std::setprecision(2) << std::fixed;
        std::vector<MonthlyReport> report;
        compte.report_compta(report,from,to);
        Money money;
@@ -184,6 +187,7 @@ namespace Compta
   
   void latex_month(std::ofstream &out, const MonthlyReport &month_report, const Money &money)
   {
+     out << std::setprecision(2) << std::fixed;
      out << "\\begin{longtable}{p{6cm}cr}\\toprule" << std::endl;
      out << "\\textbf{\\underline{Catégorie}} & \\sl Montant dépensé & \\bf Prévisionnel \\\\" << std::endl;
      out << "\\hspace{12pt}Operation & Date & Montant \\\\\\midrule\\endhead" << std::endl;
@@ -265,6 +269,7 @@ namespace Compta
      if(file.find(".tex") == std::string::npos)file += ".tex";
      std::ofstream out(file.c_str());
 
+     out << std::setprecision(2) << std::fixed;
      out << latex_report_head() << std::endl;
 
      out << "\\title{" << compte.title() << "}" << std::endl;

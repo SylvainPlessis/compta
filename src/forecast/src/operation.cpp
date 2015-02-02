@@ -223,6 +223,7 @@ namespace Compta
   
   void Operation::print(std::ostream &out) const
   {
+    out << std::setprecision(2) << std::fixed;
     out << _name       << ": " 
         << _amount     << " +/- " << _margin << " "
         << _start_date << " - "   << _end_date;

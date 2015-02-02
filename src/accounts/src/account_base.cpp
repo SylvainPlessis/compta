@@ -117,6 +117,7 @@ namespace Compta{
   {
       Money cur(_currency);
       for(unsigned int i = 0; i < 31; i++)out << "*";
+      out << std::setprecision(2) << std::fixed;
       out << "\nCompte " << _name << std::endl;
       out << "Creation, le " << _creation << " avec " << _creation_amount << " " << cur.str_money() << std::endl << std::endl;
       _records.print(from,to,out);

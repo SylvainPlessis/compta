@@ -105,6 +105,7 @@ namespace Compta{
           void print(std::ostream & out = std::cout) const
           {
              out.setf(std::ios::left);
+             out << std::setprecision(2) << std::fixed;
              out << std::setw(30) << _name 
                  << std::setw(15) << _amount 
                  << std::setw(4)  << " +/- " 

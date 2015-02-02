@@ -507,6 +507,7 @@ namespace Compta
    {
      Money bifton;
      bifton.set_money(_banque[ib].currency());
+     out << std::setprecision(2) << std::fixed;
      out << " * compte : "        << _banque[ib].name()                                                  << std::endl
          << "\tétat du compte : " << _banque[ib].records().current_state()  << " " << bifton.str_money() << std::endl
          << "\tétat attendu : "   << _banque[ib].records().expected_state() << " " << bifton.str_money() << std::endl;
@@ -520,6 +521,7 @@ namespace Compta
      if(!_banque[ib].savings().empty())
      {
        out << std::endl;
+       out << std::setprecision(2) << std::fixed;
        for(unsigned int is = 0; is < _banque[ib].savings().size(); is++)
        {
          out << "\t** épargne "            << _banque[ib].savings_list()[is]                                          << std::endl
@@ -536,6 +538,7 @@ namespace Compta
    void ComptaObj::report_cash(std::ostream &out) const
    {
       out << "Liquide"; 
+      out << std::setprecision(2) << std::fixed;
       if(_liquide.size() > 1)out << "s";
       out << std::endl;
       for(unsigned int ic = 0; ic < _liquide.size(); ic++)
@@ -550,6 +553,7 @@ namespace Compta
    {
      Money bifton;
      bifton.set_money(_liquide[ic].currency());
+     out << std::setprecision(2) << std::fixed;
      out << " * liquide : " << _liquide[ic].name() << std::endl
          << "\tétat du compte : " << _liquide[ic].records().current_state()  << " " << bifton.str_money() << std::endl
          << "\tétat attendu : "   << _liquide[ic].records().expected_state() << " " << bifton.str_money() << std::endl;
