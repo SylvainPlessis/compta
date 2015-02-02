@@ -159,9 +159,7 @@ namespace Compta
           << _category    << ", le "
           << _date        << ",    "
           << std::setw(10) 
-          << _amount      << " ";
-      if(!_accounted)out << " non";
-      out << " prise en compte,   "
+          << _amount      << " "
           << _description;
   }
 
