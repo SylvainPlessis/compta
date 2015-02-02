@@ -391,6 +391,10 @@ namespace Compta
    
    void ComptaObj::report(bool forecast, bool bank, bool cash, std::ostream & out) const
    {
+
+       if(forecast || bank || cash)
+           out << "\n\nRapport de la comptabilité << " << _title << " >>\n" <<  std::endl;
+
        if(forecast)this->report_forecast(out);
 
        if(bank)this->report_bank(out);
@@ -476,7 +480,6 @@ namespace Compta
    {
        out << std::setprecision(2) << std::fixed;
        Money bifton(_previsionnel.currency());
-       out << "\n\nRapport de la comptabilité << " << _title << " >>\n" <<  std::endl;
 
        out << "Forecast" << std::endl
            << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
