@@ -112,7 +112,7 @@ namespace Compta{
                  << std::setw(15) << _margin << std::endl;
              for(unsigned int i = 0; i < _operations_list.size(); i++)
              {
-               out << _operations_list.at(i) << std::endl;
+               out << "   " << _operations_list.at(i) << std::endl;
              }
           }
 

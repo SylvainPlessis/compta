@@ -485,7 +485,7 @@ namespace Compta
            << "  le forecast contient "              << _previsionnel.forecast().n_objects() << " catégories," << std::endl
            << "  la limite globale mensualisée est " << _previsionnel.forecast().amount()    << " " << bifton.str_money() << " "
            << "plus ou moins "                       << _previsionnel.forecast().margin()    << " " << bifton.str_money() 
-           << std::endl 
+           << std::endl << std::endl 
            << _previsionnel.forecast()
            << std::endl;
 
