@@ -33,6 +33,7 @@ namespace Compta
    static unsigned int _current_line(0);
    static std::string  _raw_line;
    static std::string  _error_message;
+   static std::string  _current_file;
 
    unsigned int current_line()
    {
@@ -62,7 +63,7 @@ namespace Compta
    std::string raw_error_message()
    {
       std::stringstream oss;
-      oss << "Line #" << current_line() << "\n"
+      oss << "Line #" << current_line() << " of file " << current_file() << "\n"
           << raw_line() << std::endl;
       return oss.str();
    }
@@ -80,6 +81,16 @@ namespace Compta
    void clear_error_message()
    {
       _error_message.clear();
+   }
+
+   std::string current_file()
+   {
+     return _current_file;
+   }
+
+   void set_current_file(const std::string & file)
+   {
+     _current_file = file;
    }
  }
 }

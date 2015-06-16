@@ -51,6 +51,9 @@ namespace Compta
    //!error message giving line number and line
    std::string error_message();
 
+   //!current parsed file
+   std::string current_file();
+
    //!error message giving line number and line
    std::string raw_error_message();
 
@@ -59,6 +62,9 @@ namespace Compta
 
    //!clear error message giving line number and line
    void clear_error_message();
+
+   //!set current parsed file
+   void set_current_file(const std::string & file);
  }
 
 }
