@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc. 51 Franklin Street, Fifth Floor,
-// Boston, MA  02110-1301  USA
+// Boston, MA  02110-1301  USAstring to float
 //
 //-----------------------------------------------------------------------el-
 
@@ -46,15 +46,18 @@ namespace Compta
 //The first category to be parsed is the forecast
       Forecast forecast;
       FilesParsing::set_current_line(0);
+      FilesParsing::set_current_file(forecast_file);
       read_forecast(forecast,forecast_file);
       compte.set_forecast(forecast);
 
 //Then the accounts description
       FilesParsing::set_current_line(0);
+      FilesParsing::set_current_file(accounts_file);
       read_accounts(compte,accounts_file);
 
 //Finally the data
       FilesParsing::set_current_line(0);
+      FilesParsing::set_current_file(data_file);
       read_data(compte,data_file);
   }
 
@@ -149,7 +152,7 @@ namespace Compta
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             ascii_getline(data,line);
+             if(!ascii_getline(data,line))compta_error();
              continue;
           }
 
@@ -157,7 +160,7 @@ namespace Compta
              first_word != AccountsParsing::cash() &&
              first_word != AccountsParsing::savings())
           {
-             ascii_getline(data,line);
+             if(!ascii_getline(data,line))compta_error();
              continue;
           }
 
@@ -168,7 +171,7 @@ namespace Compta
           float amount;
 
           data >> dependance >> amount >> start_date;
-          ascii_getline(data,name);
+          if(!ascii_getline(data,name))compta_reading_error("Error while reading");
           shave_string(name);
           std::vector<std::string> out;
           int nstr = SplitString(name,AccountsParsing::delimiter(),out,false);
@@ -225,15 +228,16 @@ namespace Compta
           FilesParsing::clear_error_message();
           std::string first_word;
           data >> first_word;
+          if(!data.good())break;
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             ascii_getline(data,line);
+             if(!ascii_getline(data,line))compta_error();
              continue; // comment
           }
           if(first_word.find("/") == std::string::npos)
           {
-             ascii_getline(data,line);
+             if(!ascii_getline(data,line))compta_error();
              continue;
           }
 
@@ -241,17 +245,19 @@ namespace Compta
           std::string cat,id,descr;
           float deb,cred;
           data >> cat >> deb >> cred >> id;
-          ascii_getline(data,descr);
+
+          if(!ascii_getline(data,descr))compta_reading_error("Error while reading");
+
           std::stringstream ss;
           ss << first_word << "\t" << cat << "\t" << deb << "\t" << cred << "\t" << id;
           FilesParsing::set_error_message(FilesParsing::raw_error_message().insert(FilesParsing::raw_error_message().find('\n') + 1,ss.str()));
           shave_string(descr);
 //formatting tests
-          if(cred != 0. && deb != 0.) //one operation at a time
+          if(std::abs(cred) > 1e-3 && std::abs(deb) > 1e3) //one operation at a time
                 compta_reading_error("Debit and credit cannot be both non zero");
           if(id.size() > 2) //identifier format
                 compta_reading_error("Identifier should be one or two character(s)");
-          if(cred < 0. || deb < 0.)
+          if(cred < 0 || deb < 0)
           {
               std::cerr << "Negative amounts are permitted, but are ridiculous...\n"
                         << "Note that a negative credit is a debit, and a negative debit is a credit, "
