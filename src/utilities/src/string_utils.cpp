@@ -154,22 +154,28 @@ namespace Compta
 
   int ascii_getline(std::istream & buf, std::string & line)
   {
-     char c('a');
-     line.clear();
-     while(!buf.eof())
+     line = "Couldn't parse this line...";
+
+     if(buf.good())
      {
-        c = buf.get();
-        if(c == '\n' || c == '\r')break;
-        line += c;
-     }
-     char n = buf.peek();
+       char c('a');
+       line.clear();
+       while(!buf.eof())
+       {
+          c = buf.get();
+          if(c == '\n' || c == '\r')break;
+          line += c;
+       }
+       char n = buf.peek();
 
      /* never trust ascii files, they may come from
         Windows, suppodedly \n\r, but let's not
         underestimate Windows's viciousness
       */
-     if((c == '\n' && n == '\r') ||
-        (n == '\n' && c == '\r'))c = buf.get();
+       if((c == '\n' && n == '\r') ||
+          (n == '\n' && c == '\r'))c = buf.get();
+
+     }
 
      FilesParsing::add_current_line();
      FilesParsing::set_raw_line(line);
