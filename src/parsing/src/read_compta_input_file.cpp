@@ -68,8 +68,8 @@ namespace Compta
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!ascii_getline(data,line))compta_error();
-      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading"); //title
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading"); //money
       shave_string(line);
       Money money(line);
       forecast.set_currency(money.money());
@@ -137,10 +137,10 @@ namespace Compta
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading");
       shave_string(line);
       compte.set_title(line);
-      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading");
       shave_string(line);
       Money money(line);
       Currency::Currency default_currency(money.money());
@@ -152,7 +152,7 @@ namespace Compta
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             if(!ascii_getline(data,line))compta_error();
+             if(!ascii_getline(data,line))compta_reading_error("Error while reading");
              continue;
           }
 
@@ -160,7 +160,7 @@ namespace Compta
              first_word != AccountsParsing::cash() &&
              first_word != AccountsParsing::savings())
           {
-             if(!ascii_getline(data,line))compta_error();
+             if(!ascii_getline(data,line))compta_reading_error("Error while reading");
              continue;
           }
 
@@ -219,10 +219,10 @@ namespace Compta
       std::ifstream data(file.c_str());
       if(!data.is_open())compta_file_error(file);
       std::string line;
-      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading");
       shave_string(line);
       compte.set_title(line);
-      if(!ascii_getline(data,line))compta_error();
+      if(!ascii_getline(data,line))compta_reading_error("Error while reading");
       while(!data.eof())
       {
           FilesParsing::clear_error_message();
@@ -232,12 +232,12 @@ namespace Compta
           if(first_word.length() == 0)continue; //empty line
           if(first_word[0] == '#')
           {
-             if(!ascii_getline(data,line))compta_error();
+             if(!ascii_getline(data,line))compta_reading_error("Error while reading");
              continue; // comment
           }
           if(first_word.find("/") == std::string::npos)
           {
-             if(!ascii_getline(data,line))compta_error();
+             if(!ascii_getline(data,line))compta_reading_error("Error while reading");
              continue;
           }
 
