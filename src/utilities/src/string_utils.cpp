@@ -167,20 +167,20 @@ namespace Compta
           line += c;
        }
        char n = buf.peek();
-
      /* never trust ascii files, they may come from
         Windows, suppodedly \n\r, but let's not
         underestimate Windows's viciousness
       */
        if((c == '\n' && n == '\r') ||
-          (n == '\n' && c == '\r'))c = buf.get();
-
+          (n == '\n' && c == '\r')){
+         c = buf.get();
+      }
      }
 
      FilesParsing::add_current_line();
      FilesParsing::set_raw_line(line);
 
-     return buf.good();
+     return buf.good() || buf.eof();
   }
 
 } // end namespace Compta
