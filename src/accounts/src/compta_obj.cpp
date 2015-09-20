@@ -614,18 +614,20 @@ namespace Compta
   {
      std::vector<Posting> b_history,b_in_waiting;
 
-     if(!_banque.empty())
+     for(unsigned int ib = 0; ib < _banque.size(); ib++)
      {
-       _banque[0].records().history_of_month(rep.date(),b_history); //adds bank history
-       _banque[0].records().in_waiting_of_month(rep.date(),b_in_waiting);//adds bank in waiting
+       if(_previsionnel.currency() != _banque[ib].currency())continue;
+       _banque[ib].records().history_of_month(rep.date(),b_history); //adds bank history
+       _banque[ib].records().in_waiting_of_month(rep.date(),b_in_waiting);//adds bank in waiting
      }
 
 
      std::vector<Posting> c_history,c_in_waiting;
-     if(!_liquide.empty())
+     for(unsigned int ic = 0; ic < _liquide.size(); ic++)
      {
-       _liquide[0].records().history_of_month(rep.date(),c_history);//adds cash history
-       _liquide[0].records().in_waiting_of_month(rep.date(),c_in_waiting);//adds cash in waiting
+       if(_previsionnel.currency() != _liquide[ic].currency())continue;
+       _liquide[ic].records().history_of_month(rep.date(),c_history);//adds cash history
+       _liquide[ic].records().in_waiting_of_month(rep.date(),c_in_waiting);//adds cash in waiting
      }
 
      rep.add_posting(b_history);

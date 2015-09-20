@@ -151,7 +151,6 @@ namespace Compta
   void History::posting_between_dates(const Date &start, const Date &end, const std::vector<Posting> &storage, std::vector<Posting> &out) const
   {
 //Posting are sorted by date
-     out.clear();
      for(unsigned int ip = 0; ip < storage.size(); ip++)
      {
         if(storage[ip].date() < start)continue;
@@ -184,7 +183,6 @@ namespace Compta
   
   const Date History::start_date() const
   {
- //    if(_history.empty())compta_error();
 
      Date out_date(DateUtils::date_min());
 
