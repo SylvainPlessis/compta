@@ -578,14 +578,48 @@ namespace Compta
 
     // getting the full report start and end
     Date cur_date;
-    if(!_banque.empty()  && !_banque[0].records().empty())cur_date = _banque[0].records().start_date();
-    if(!_liquide.empty() && !_liquide[0].records().empty())
-        if(_liquide[0].records().start_date() < cur_date)cur_date = _liquide[0].records().start_date();
+    for(unsigned int i = 0; i < _banque.size(); i++)
+    {
+      if(!_banque[i].records().empty())
+      {
+         if(cur_date.count_date() == 0 || cur_date > _banque[i].records().start_date())
+         {
+            cur_date = _banque[i].records().start_date();
+         }
+      }
+    }
+    for(unsigned int i = 0; i < _liquide.size(); i++)
+    { 
+        if(!_liquide[i].records().empty())
+        {
+          if(_liquide[i].records().start_date() < cur_date)
+          {
+            cur_date = _liquide[i].records().start_date();
+          }
+        }
+    }
 
     Date end_date;
-    if(!_banque.empty()  && !_banque[0].records().empty())end_date = _banque[0].records().end_date();
-    if(!_liquide.empty() && !_liquide[0].records().empty())
-        if(_liquide[0].records().end_date() > end_date)end_date = _liquide[0].records().end_date();
+    for(unsigned int i = 0; i < _banque.size(); i++)
+    {  
+      if(!_banque[i].records().empty())
+      {
+         if(end_date.count_date() == 0 || _banque[i].records().end_date() > end_date)
+         {
+            end_date = _banque[i].records().end_date();
+         }
+      }
+    }
+    for(unsigned int i = 0; i < _liquide.size(); i++)
+    {
+      if(!_liquide[i].records().empty())
+      {
+        if(end_date.count_date() == 0 || _liquide[i].records().end_date() > end_date)
+        {
+          end_date = _liquide[i].records().end_date();
+        }
+      }
+    }
 
     // rescaling if needed
     if(cur_date < from)cur_date = from;
