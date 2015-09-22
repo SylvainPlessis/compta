@@ -65,10 +65,14 @@ namespace Compta
 
         const std::vector<CategoryReport> & report() const;
 
-        float amount()          const;
-        float expected_amount() const;
-        float forecast_amount() const;
-        float forecast_margin() const;
+        float amount()                    const;
+        float expected_amount()           const;
+        float amount_no_income()          const;
+        float expected_amount_no_income() const;
+        float forecast_amount()           const;
+        float forecast_margin()           const;
+        float forecast_amount_no_income() const;
+        float forecast_margin_no_income() const;
 
      private:
 
@@ -81,6 +85,8 @@ namespace Compta
 
         float                       _forecast_amount;
         float                       _forecast_margin;
+        float                       _forecast_amount_no_income;
+        float                       _forecast_margin_no_income;
   };
 
 }
