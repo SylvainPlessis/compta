@@ -250,6 +250,16 @@ namespace Compta
         out << "\\addlinespace\\cmidrule(r{2cm}l{5cm}){1-2}" << std::endl;
      }
 
+     out << "\\addlinespace Dépenses totales   & ";
+     out << "\\numprint{" << month_report.amount_no_income() << "} " << money.tex_money() << " & \\numprint{" 
+         << month_report.forecast_amount_no_income() << "} +/- \\numprint{"
+         << month_report.forecast_margin_no_income() << "} " << money.tex_money() << "\\\\\\bottomrule" 
+         << std::endl;
+
+     out << "Attendu & ";
+     out << "\\numprint{" << month_report.expected_amount_no_income() << "} " << money.tex_money() << " & \\\\\\bottomrule" 
+         << std::endl;
+
      out << "\\addlinespace Total   & {";
      add_color(month_report.amount(),month_report.forecast_amount(),month_report.forecast_margin(),out);
      out << "\\numprint{" << month_report.amount() << "}} " << money.tex_money() << " & \\numprint{" 
