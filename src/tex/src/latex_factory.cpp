@@ -253,7 +253,8 @@ namespace Compta
      out << "\\addlinespace Dépenses totales   & ";
      out << "\\numprint{" << month_report.amount_no_income() << "} " << money.tex_money() << " & \\numprint{" 
          << month_report.forecast_amount_no_income() << "} +/- \\numprint{"
-         << month_report.forecast_margin_no_income() << "} " << money.tex_money() << "\\\\\\bottomrule" 
+         << "NULL" //month_report.forecast_margin_no_income() 
+         << "} " << money.tex_money() << "\\\\\\bottomrule" 
          << std::endl;
 
      out << "Attendu & ";
