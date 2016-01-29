@@ -119,10 +119,13 @@ namespace Compta
         // find starting state at date cur_month
      unsigned int ips(0);
      float courant(acc.starting_state());
-     while(cur_month > acc.history()[ips].date())
+     if(!acc.done_empty())
      {
-        courant += acc.history()[ips].amount();
-        ips++;
+       while(cur_month > acc.history()[ips].date())
+       {
+         courant += acc.history()[ips].amount();
+         ips++;
+       }
      }
 
      out << "\\'Etat initial & " << cur_month.date_string() << " & & \\numprint{" << courant << "}\\\\[5pt]" << std::endl;
@@ -138,7 +141,7 @@ namespace Compta
      out << "\\midrule" << std::endl;
      out << "\\'Etat actuel & \\today & & \\numprint{" << acc.current_state() << "}\\\\" << std::endl;
 
-     if(!acc.in_waiting().empty())
+     if(!acc.expected_empty())
      {
        out << "\\midrule\\addlinespace[10pt]" << std::endl;
        out << "\\underline{Opération(s) en attente}\\\\[3pt]" << std::endl;

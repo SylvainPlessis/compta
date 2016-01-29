@@ -80,6 +80,12 @@ namespace Compta{
         //!\return the last date
         const Date end_date() const;
 
+        //! false if _history contains something
+        bool done_empty() const;
+
+        //! false if _in_waiting contains something
+        bool expected_empty() const;
+
         //! false if contains something more than creation
         bool empty() const;
 

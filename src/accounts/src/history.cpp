@@ -229,4 +229,14 @@ namespace Compta
   {
      return (_history.empty() && _in_waiting.empty());
   }
+
+  bool History::done_empty() const
+  {
+     return _history.empty();
+  }
+
+  bool History::expected_empty() const
+  {
+     return _in_waiting.empty();
+  }
 }
