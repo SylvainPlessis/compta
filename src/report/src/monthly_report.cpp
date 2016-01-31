@@ -56,7 +56,9 @@ namespace Compta
     _forecast((&rhs.forecast())),
     _date(rhs.date()),
     _forecast_amount(rhs.forecast_amount()),
-    _forecast_margin(rhs.forecast_margin())
+    _forecast_margin(rhs.forecast_margin()),
+    _forecast_amount_no_income(rhs.forecast_amount_no_income()),
+    _forecast_margin_no_income(rhs.forecast_margin_no_income())
   {
     _report = rhs.report();
     return;
